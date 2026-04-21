@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Noto_Sans, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import Analytics from "../components/Analytics";
+import DifyChat from "../components/DifyChat";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -18,7 +18,6 @@ const notoSansJp = Noto_Sans_JP({
   display: "swap",
 });
 
-const DIFY_TOKEN = process.env.NEXT_PUBLIC_DIFY_TOKEN || "WnX69EkeJYork2rTBtbB3wnY";
 const SITE_URL = "https://sericia.com";
 
 export const metadata: Metadata = {
@@ -128,19 +127,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <Toaster position="top-right" richColors />
         <Analytics />
-        <Script id="dify-config" strategy="afterInteractive">
-          {`window.difyChatbotConfig = { token: '${DIFY_TOKEN}' };`}
-        </Script>
-        <Script
-          src="https://udify.app/embed.min.js"
-          id={DIFY_TOKEN}
-          strategy="afterInteractive"
-          defer
-        />
-        <style>{`
-          #dify-chatbot-bubble-button { background-color: #5c5d45 !important; }
-          #dify-chatbot-bubble-window { width: 24rem !important; height: 40rem !important; }
-        `}</style>
+        <DifyChat />
       </body>
     </html>
   );

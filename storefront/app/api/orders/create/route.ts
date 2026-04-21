@@ -20,6 +20,7 @@ const OrderSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  try {
   const json = await req.json().catch(() => null);
   const parsed = OrderSchema.safeParse(json);
   if (!parsed.success) {
@@ -73,7 +74,7 @@ export async function POST(req: NextRequest) {
 
   if (orderErr || !order) {
     console.error("[orders/create] insert failed", orderErr);
-    return NextResponse.json({ error: "order_create_failed" }, { status: 500 });
+    return NextResponse.json({ error: "order_create_failed", detail: orderErr?.message ?? null, code: orderErr?.code ?? null }, { status: 500 });
   }
 
   await supabaseAdmin.from("sericia_events").insert({
@@ -89,4 +90,9 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json({ order_id: order.id, amount_usd: order.amount_usd });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[orders/create] unhandled exception", message, err);
+    return NextResponse.json({ error: "unhandled_exception", detail: message }, { status: 500 });
+  }
 }
