@@ -24,6 +24,7 @@ export type PseoArticle = {
   shipping_info_md: string;
   faq: { q: string; a: string }[];
   related_drop_handle: string | null;
+  ogp_url: string | null;
   published_at: string;
   updated_at: string;
 };

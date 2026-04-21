@@ -14,12 +14,35 @@ const DROP = {
     "Three small Japanese producers had 480g of surplus on their hands — craft sencha near peak, barrel-aged miso, and hand-dried shiitake. Rescued before disposal. Same quality. Half the waste.",
 };
 
+const productJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: DROP.title,
+  description: DROP.story,
+  brand: { "@type": "Brand", name: "Sericia" },
+  offers: {
+    "@type": "Offer",
+    url: "https://sericia.com",
+    priceCurrency: "USD",
+    price: DROP.price,
+    availability: DROP.remaining > 0 ? "https://schema.org/LimitedAvailability" : "https://schema.org/SoldOut",
+    seller: { "@type": "Organization", name: "Sericia" },
+    shippingDetails: {
+      "@type": "OfferShippingDetails",
+      shippingRate: { "@type": "MonetaryAmount", value: "0", currency: "USD" },
+      shippingDestination: { "@type": "DefinedRegion", addressCountry: ["US","GB","DE","FR","AU","SG","CA","HK","JP"] },
+      deliveryTime: { "@type": "ShippingDeliveryTime", transitTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 7, unitCode: "DAY" } },
+    },
+  },
+};
+
 export default async function Home() {
   const country = (await cookies()).get("country")?.value ?? "us";
   const localPrice = formatPricePPP(DROP.price, country);
   const isLocalized = country !== "us" && PPP[country];
   return (
     <main className="min-h-screen bg-sericia-paper text-sericia-ink">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       <header className="border-b border-sericia-ink/10">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <h1 className="text-2xl font-serif tracking-tight">Sericia</h1>

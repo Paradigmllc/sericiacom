@@ -35,15 +35,25 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const article = await getArticle(country, product);
   if (!article) return { title: "Not found — Sericia" };
   const canonical = `https://sericia.com/guides/${country}/${product}`;
+  const languages = Object.fromEntries(
+    COUNTRIES.map((c) => [c.locale, `https://sericia.com/guides/${c.code}/${product}`])
+  );
   return {
     title: article.title,
     description: article.meta_description,
-    alternates: { canonical },
+    alternates: { canonical, languages: { ...languages, "x-default": `https://sericia.com/guides/us/${product}` } },
     openGraph: {
       title: article.title,
       description: article.meta_description,
       url: canonical,
       type: "article",
+      images: article.ogp_url ? [{ url: article.ogp_url, width: 1200, height: 630 }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.meta_description,
+      images: article.ogp_url ? [article.ogp_url] : undefined,
     },
   };
 }
@@ -70,10 +80,32 @@ export default async function GuidePage({ params }: { params: Promise<Params> })
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sericia", item: "https://sericia.com" },
+      { "@type": "ListItem", position: 2, name: "Guides", item: "https://sericia.com/guides" },
+      { "@type": "ListItem", position: 3, name: article.country_name, item: `https://sericia.com/guides/${country}` },
+      { "@type": "ListItem", position: 4, name: article.product_name },
+    ],
+  };
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.meta_description,
+    image: article.ogp_url,
+    author: { "@type": "Organization", name: "Sericia" },
+    publisher: { "@type": "Organization", name: "Sericia", logo: { "@type": "ImageObject", url: "https://sericia.com/logo.png" } },
+    mainEntityOfPage: `https://sericia.com/guides/${country}/${product}`,
+  };
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16 font-serif text-sericia-ink">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
 
       <nav className="mb-8 text-sm text-sericia-ink/60">
         <Link href="/" className="hover:underline">Sericia</Link>
