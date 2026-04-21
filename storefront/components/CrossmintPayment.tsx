@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CrossmintProvider, CrossmintPaymentElement } from "@crossmint/client-sdk-react-ui";
+import { CrossmintProvider, CrossmintEmbeddedCheckout } from "@crossmint/client-sdk-react-ui";
 import { toast } from "sonner";
 
 type Props = { orderId: string; amountUSD: number };
@@ -51,9 +51,14 @@ export default function CrossmintPayment({ orderId, amountUSD }: Props) {
 
   return (
     <CrossmintProvider apiKey={clientApiKey}>
-      <CrossmintPaymentElement
+      <CrossmintEmbeddedCheckout
         clientSecret={clientSecret}
-        onEvent={(event) => {
+        orderId={orderId}
+        payment={{
+          fiat: { enabled: true, allowedMethods: { card: true, applePay: true, googlePay: true } },
+          defaultMethod: "fiat",
+        }}
+        onEvent={(event: { type: string }) => {
           if (event.type === "payment:process.succeeded") {
             toast.success("Payment confirmed! Redirecting…");
             router.push(`/thank-you?order=${orderId}`);
