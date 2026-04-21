@@ -1,13 +1,32 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CrossmintProvider, CrossmintEmbeddedCheckout } from "@crossmint/client-sdk-react-ui";
+import {
+  CrossmintProvider,
+  CrossmintCheckoutProvider,
+  CrossmintEmbeddedCheckout,
+  useCrossmintCheckout,
+} from "@crossmint/client-sdk-react-ui";
 import { toast } from "sonner";
 
 type Props = { orderId: string; amountUSD: number };
 
-export default function CrossmintPayment({ orderId, amountUSD }: Props) {
+function CheckoutStatus({ orderId }: { orderId: string }) {
   const router = useRouter();
+  const { order } = useCrossmintCheckout();
+
+  useEffect(() => {
+    if (!order) return;
+    if (order.phase === "completed") {
+      toast.success("Payment confirmed! Redirecting…");
+      router.push(`/thank-you?order=${orderId}`);
+    }
+  }, [order, orderId, router]);
+
+  return null;
+}
+
+export default function CrossmintPayment({ orderId, amountUSD }: Props) {
   const clientApiKey = process.env.NEXT_PUBLIC_CROSSMINT_CLIENT_ID ?? "";
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -51,27 +70,24 @@ export default function CrossmintPayment({ orderId, amountUSD }: Props) {
 
   return (
     <CrossmintProvider apiKey={clientApiKey}>
-      <CrossmintEmbeddedCheckout
-        clientSecret={clientSecret}
-        orderId={orderId}
-        payment={{
-          fiat: { enabled: true, allowedMethods: { card: true, applePay: true, googlePay: true } },
-          crypto: { enabled: false },
-          defaultMethod: "fiat",
-        }}
-        onEvent={(event: { type: string }) => {
-          if (event.type === "payment:process.succeeded") {
-            toast.success("Payment confirmed! Redirecting…");
-            router.push(`/thank-you?order=${orderId}`);
-          }
-          if (event.type === "payment:process.rejected") {
-            toast.error("Payment was rejected. Please try another method.");
-          }
-        }}
-      />
-      <p className="text-xs text-sericia-ink/50 text-center mt-4">
-        Total: ${amountUSD} USD · Secured by Crossmint · Visa, Mastercard, AmEx, Apple Pay
-      </p>
+      <CrossmintCheckoutProvider>
+        <CrossmintEmbeddedCheckout
+          clientSecret={clientSecret}
+          orderId={orderId}
+          payment={{
+            crypto: { enabled: false },
+            fiat: {
+              enabled: true,
+              allowedMethods: { card: true, applePay: true, googlePay: true },
+            },
+            defaultMethod: "fiat",
+          }}
+        />
+        <CheckoutStatus orderId={orderId} />
+        <p className="text-xs text-sericia-ink/50 text-center mt-4">
+          Total: ${amountUSD} USD · Secured by Crossmint · Visa, Mastercard, AmEx, Apple Pay
+        </p>
+      </CrossmintCheckoutProvider>
     </CrossmintProvider>
   );
 }
