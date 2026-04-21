@@ -609,6 +609,7 @@ Ships within 14 days from Japan.
 | **M4a-Webhook hard** | Crossmint webhook fail-close（本番で `CROSSMINT_WEBHOOK_SECRET` 未設定時は 503 を返す）| ✅ 完了 | `9d12bfb4` | prod で未署名POSTが 200 で受理されるセキュリティリグレッションを封鎖（Rule V） / dev/test は従来通り bypass 可能 / verify-live-storefront.sh で 503 をランチブロッカー表示 |
 | **M4a-Header mobile** | ヘッダーUXモバイル修正（国旗横の英語ラベル削除・アカウントアイコンを sm 以下でも表示）| ✅ 完了 | `3208fc19` | `HeaderClient.tsx` / `LocaleSwitcher.tsx` 両方更新 / 本番で検証済み |
 | **M4a-Dify v2** | `udify.app` embed を破棄し `/api/dify-chat` サーバープロキシ + カスタム Sericia UI に全面刷新 | ✅ 完了 | `f31e17a0` | `DIFY_SERVICE_API_KEY`（`app-*` 秘密鍵）がクライアントJSに漏れない設計 / 503 時は offline 状態で `hello@sericia.com` 案内表示（Rule V）/ Tailwind `sericia-accent` 等のデザイントークンで統一 / Dify KB の Sericia コンテキストをそのまま活用 |
+| **M4a-8 Webhook live** | Crossmint `whsec_Svrn+w...` signing secret を Coolify env + memory に反映 → storefront restart (`kvox6zxs02jinepf2gjdm4z2`) で new container 起動 → webhook **503→401 flip** 確認 → **HMAC SHA-256 署名付き POST で 200 OK** E2E 確認 | ✅ 完了 | (this session) | Rule R 準拠で `whsec_...` をメモリ永続化 / Coolify API 経由で Rule S 完全遵守（ダッシュボード操作ゼロ）/ container env 4 secrets 全部ロード確認（CROSSMINT_WEBHOOK_SECRET:38 / N8N_ESCAL:48 / DIFY:28 / RESEND:36）/ 残り `SLACK_WEBHOOK_URL` は graceful null-return で launch blocker ではない |
 | **M4b-f** | Payload 配線 / 共通サイドバー / Aesopヒーロー・桜・赤ハート・マーケ / アラビア語RTL / PWA・SEO | ⏸️ 待機 | — | — |
 | **M5** | pSEO 量産基盤（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル） | ⏸️ 待機 | — | — |
 
