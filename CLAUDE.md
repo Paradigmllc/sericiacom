@@ -18,7 +18,7 @@
 | ★★☆☆☆ | 12 | [🌐 ドメイン・商標](#s12) | sericia.com取得予定 |
 | ★☆☆☆☆ | 13 | [📚 リソース一覧](#s13) | 未整備 |
 | ★★★★☆ | 14 | [🧠 壁打ち詳細メモ](#s14) | 仕入れTier/EMS最適化/非採用/Phase戦略 |
-| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3完了・i18nホットフィックス済み / M4-M5待機（2026-04-21〜） |
+| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3/M4a-1完了・i18nホットフィックス済み / M4a-2以降待機（2026-04-21〜） |
 
 ⚠️ **要強化**: 6(法的) / 10(運用) / 13(リソース)
 
@@ -595,7 +595,9 @@ Ships within 14 days from Japan.
 | **M1** | /tools/* 500/404 修正 + Dify チャットボット | ✅ 完了 | `fe30f8c2`, `87782adf` | 全ツール200 / Dify 2段フォールバック（SDK→iframe） |
 | **M2** | PayloadCMS v3 インストール（7 collections + 2 globals + 6 blocks） | ✅ 完了 | `db83336b` | ビルド成功・要Coolify env 設定 + migrate + bootstrap |
 | **M3** | Medusa v2 起動（9 regions + 4 products + Coolifyデプロイ） | ✅ 完了 | `46384141`, `6737fd61` | `api.sericia.com/health` 200 / `/store/regions` 9件 / `/store/products` 4件 / `/admin` JWT 200 |
-| **M4** | 統合（Aesopヒーロー/桜/赤ハート/マーケ/アラビア語/PWA/SEO/全ページ共通サイドバー） | ⏸️ 待機 | — | — |
+| **M4a-1** | storefront products facade → Medusa（listing/PDP/search-index の data source 切替 + Strategy B カテゴリ紐付け 4 products） | ✅ 完了 | `40d7b9e6`, `f858ac5c` | `/store/products` 4件にカテゴリ付き（tea/miso/mushroom/seasoning）/ Coolify storefront の env vars 待ち |
+| **M4a-2** | checkout rewrite（`/api/orders/create-cart` を Medusa cart API 経由に移行 + admin UI 廃止誘導） | ⏸️ 待機 | — | — |
+| **M4b-f** | Payload 配線 / 共通サイドバー / Aesopヒーロー・桜・赤ハート・マーケ / アラビア語RTL / PWA・SEO | ⏸️ 待機 | — | — |
 | **M5** | pSEO 量産基盤（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル） | ⏸️ 待機 | — | — |
 
 ### M1 根本原因（完了済）
@@ -685,6 +687,37 @@ NEXT_PUBLIC_DEFAULT_REGION=jp
 **Postmortem (Medusa v2.4 learnings)**:
 1. `shipping_profile_id` は **もはや `product` テーブルに存在しない**（v2.4で削除）。`createLinksWorkflow` で商品作成後に module link を張る必要あり
 2. `createLinksWorkflow` は (product ↔ shipping_profile) ペアの **リンク登録が事前に必要**。デフォルトでは Medusa は登録しないため、`medusa-backend/src/links/product-shipping-profile.ts` に `defineLink(ProductModule.linkable.product, FulfillmentModule.linkable.shippingProfile)` を追加
+
+### M4a-1 スコープ（完了・`40d7b9e6` + `f858ac5c` / 2026-04-21）
+
+**目的**: storefront の商品一覧/詳細/検索インデックスの **データソースを Supabase `sericia_products` から Medusa v2 Store API に完全切替**する。cart-store が保持する `productId` は Medusa `prod_01K...` id に切替わるため、以降追加される checkout 経路も Medusa cart API を前提に設計できる。
+
+**実装**:
+- `storefront/lib/medusa.ts` 新規: `@medusajs/js-sdk@2.4.0` singleton ＋ region slug→region_id resolver (1h Next fetch cache)。env guard (`NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` 未設定時は console.error でCoolifyログに可視化、silent 空配列化は避ける — rule V 準拠)
+- `storefront/lib/products-medusa.ts` 新規: Medusa Store API から `Product` 型形状で fetch する shim。3 関数（`listActiveProducts` / `getProductBySlug` / `getProductsByIds`）を実装し、variants から cheapest price を選出・images は thumbnail 先頭 + gallery、weight/stock も Medusa 由来に統一
+- `storefront/lib/products.ts` を **facade に転換**: `Product` 型 + `categoryLabel` は canonical 定義としてここに残し、fetcher は `./products-medusa` から re-export。consumer 4 箇所（`app/products/page.tsx` / `app/products/[slug]/page.tsx` / `app/page.tsx` / `app/api/products/search-index/route.ts`）は import 文無変更のまま Medusa データで稼働
+- `medusa-backend/src/scripts/categorize-products.ts` 新規: 4 top-level product_category（tea/miso/mushroom/seasoning）を冪等生成し、seed の4製品を紐付け。新規環境・DB リセット時の再現性を担保
+
+**カテゴリ戦略 (B: category handle)**:
+| product handle | category handle | Medusa ID |
+|---------------|----------------|-----------|
+| `product-sencha` | `tea` | `pcat_01KPQRFNWAVKCYN8YBPH0RXGBK` |
+| `product-miso` | `miso` | `pcat_01KPQRFQ53QN8TBER8Z9J3343A` |
+| `product-shiitake` | `mushroom` | `pcat_01KPQRFRD5C0JXVJ5VQ7430QH3` |
+| `drop-001-tea-miso-shiitake` | `seasoning` | `pcat_01KPQRFSN1Q6GPWDEV7A4JDKMF` *(仮置・専用"drops"カテゴリ検討余地)* |
+
+`inferCategory()` は categories[0].handle → 4-enum 変換、fallback として handle keyword match（新管理画面追加商品がカテゴリ未設定でも UI に現れる安全網）
+
+**Coolify Storefront に必須の env vars**:
+```
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.sericia.com
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_3cbe523eed266eb8eead0a6d75841c341ddc63faa31275c37b7e025b1c64798e
+NEXT_PUBLIC_DEFAULT_REGION=jp
+```
+
+未設定のままデプロイ → storefront の商品一覧は空になる（env guard で console.error が Coolify ログに流れる）。設定後に再デプロイ必須。
+
+**残件（M4a-2）**: `/api/orders/create-cart` は依然として Supabase `sericia_products` を参照（checkout 経路は未移行）。admin UI 3 ページも同じ。カート→決済を Medusa `sdk.store.cart.*` + `createPaymentCollection` → Stripe 経由に rewrite する作業を M4a-2 として切り出し
 
 ### 2026-04-21 i18n ホットフィックス（完了・`302f037b` + `874a903d`）
 
