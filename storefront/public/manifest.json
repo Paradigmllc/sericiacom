@@ -3,13 +3,21 @@
   "short_name": "Sericia",
   "description": "Limited drops of rescued Japanese craft food, shipped worldwide.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f5f1e8",
-  "theme_color": "#8b5a2b",
+  "theme_color": "#1a1a1a",
   "orientation": "portrait",
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/logo-mark.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
   ],
-  "categories": ["food", "shopping", "lifestyle"]
+  "categories": ["food", "shopping", "lifestyle"],
+  "shortcuts": [
+    { "name": "Current drop", "url": "/products", "description": "Latest rescued Japanese craft food drop" },
+    { "name": "Journal", "url": "/journal", "description": "Long-form writing on Japanese craft food" },
+    { "name": "Tools", "url": "/tools", "description": "Shipping calculator, shelf-life, miso finder" }
+  ]
 }

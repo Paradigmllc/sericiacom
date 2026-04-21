@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Sans, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -7,6 +7,9 @@ import { getLocale, getMessages } from "next-intl/server";
 import Analytics from "../components/Analytics";
 import DifyChat from "../components/DifyChat";
 import GlobalOverlay from "../components/GlobalOverlay";
+import RouteProgress from "../components/RouteProgress";
+import LuxuryLoader from "../components/LuxuryLoader";
+import { Suspense } from "react";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -68,13 +71,13 @@ export const metadata: Metadata = {
     title: "Sericia — Rescued Japanese Craft Food",
     description:
       "Limited drops of surplus Japanese craft food. Tea, miso, shiitake — rescued before disposal, shipped worldwide.",
-    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Sericia — rescued Japanese craft food" }],
+    images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "Sericia — rescued Japanese craft food" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Sericia — Rescued Japanese Craft Food",
     description: "Limited drops of surplus Japanese craft food, shipped worldwide.",
-    images: ["/og-default.png"],
+    images: ["/og-default.svg"],
   },
   robots: {
     index: true,
@@ -88,15 +91,22 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico" },
-    ],
-    apple: "/apple-touch-icon.png",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: "/favicon.svg",
   },
   manifest: "/manifest.json",
   category: "food & beverage",
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f1e8" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a1a1a" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
 };
 
 const orgJsonLd = {
@@ -137,6 +147,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <LuxuryLoader />
+          <Suspense fallback={null}>
+            <RouteProgress />
+          </Suspense>
           {children}
           <GlobalOverlay />
           <Toaster position="top-right" richColors />
