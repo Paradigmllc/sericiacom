@@ -157,7 +157,7 @@ export default async function Home() {
                   <WaitlistForm source="sold-out" country={country} />
                 </div>
               ) : (
-                <Button href="/checkout" size="large" fullWidth>
+                <Button href={`/checkout?drop=${dropData.id}`} size="large" fullWidth>
                   Purchase — ${dropData.price_usd}
                 </Button>
               )}

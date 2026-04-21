@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   if (isSuccess) {
     const { data: order } = await supabaseAdmin
       .from("sericia_orders")
-      .select("id, drop_id, status, email, full_name, amount_usd, quantity")
+      .select("id, drop_id, order_type, status, email, full_name, amount_usd, quantity")
       .eq("id", sericiaOrderId)
       .maybeSingle();
     if (!order) return NextResponse.json({ error: "order_not_found" }, { status: 404 });
@@ -63,17 +63,21 @@ export async function POST(req: NextRequest) {
       .update({ status: "paid", crossmint_order_id: crossmintOrderId, tx_hash: txHash, paid_at: now, updated_at: now })
       .eq("id", order.id);
 
-    const { data: drop } = await supabaseAdmin
-      .from("sericia_drops")
-      .select("sold_units, total_units, title")
-      .eq("id", order.drop_id)
-      .maybeSingle();
-    if (drop) {
-      const newSold = Math.min(drop.sold_units + order.quantity, drop.total_units);
-      await supabaseAdmin
+    let drop: { sold_units: number; total_units: number; title: string } | null = null;
+    if (order.drop_id) {
+      const { data: d } = await supabaseAdmin
         .from("sericia_drops")
-        .update({ sold_units: newSold, status: newSold >= drop.total_units ? "sold_out" : "active" })
-        .eq("id", order.drop_id);
+        .select("sold_units, total_units, title")
+        .eq("id", order.drop_id)
+        .maybeSingle();
+      drop = d;
+      if (drop) {
+        const newSold = Math.min(drop.sold_units + order.quantity, drop.total_units);
+        await supabaseAdmin
+          .from("sericia_drops")
+          .update({ sold_units: newSold, status: newSold >= drop.total_units ? "sold_out" : "active" })
+          .eq("id", order.drop_id);
+      }
     }
 
     await supabaseAdmin.from("sericia_events").insert({
