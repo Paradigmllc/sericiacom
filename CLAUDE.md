@@ -18,7 +18,7 @@
 | ★★☆☆☆ | 12 | [🌐 ドメイン・商標](#s12) | sericia.com取得予定 |
 | ★☆☆☆☆ | 13 | [📚 リソース一覧](#s13) | 未整備 |
 | ★★★★☆ | 14 | [🧠 壁打ち詳細メモ](#s14) | 仕入れTier/EMS最適化/非採用/Phase戦略 |
-| ★★★☆☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1完了 / M2M3実行中 / M4-M5待機（2026-04-21〜） |
+| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3完了・i18nホットフィックス済み / M4-M5待機（2026-04-21〜） |
 
 ⚠️ **要強化**: 6(法的) / 10(運用) / 13(リソース)
 
@@ -594,7 +594,7 @@ Ships within 14 days from Japan.
 |---|-------------|-----|---------|------|
 | **M1** | /tools/* 500/404 修正 + Dify チャットボット | ✅ 完了 | `fe30f8c2`, `87782adf` | 全ツール200 / Dify 2段フォールバック（SDK→iframe） |
 | **M2** | PayloadCMS v3 インストール（7 collections + 2 globals + 6 blocks） | ✅ 完了 | `db83336b` | ビルド成功・要Coolify env 設定 + migrate + bootstrap |
-| **M3** | Medusa v2 起動（9 regions + 4 products + Coolifyデプロイ） | 🔄 実行中 | — | `medusa.sericia.com/app` 200 |
+| **M3** | Medusa v2 起動（9 regions + 4 products + Coolifyデプロイ） | ✅ 完了 | `46384141`, `6737fd61` | `api.sericia.com/health` 200 / `/store/regions` 9件 / `/store/products` 4件 / `/admin` JWT 200 |
 | **M4** | 統合（Aesopヒーロー/桜/赤ハート/マーケ/アラビア語/PWA/SEO/全ページ共通サイドバー） | ⏸️ 待機 | — | — |
 | **M5** | pSEO 量産基盤（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル） | ⏸️ 待機 | — | — |
 
@@ -646,18 +646,45 @@ Ships within 14 days from Japan.
 - `S3` プラグインは `SUPABASE_S3_*` 4変数揃って有効化。未設定時はローカルディスクにフォールバック
 - Next.js 15.1.3 で `turbopack` 警告（無害・15.2+で解消予定）
 
-### M3 スコープ（実行中）
+### M3 スコープ（完了・`46384141` + `6737fd61` / 2026-04-21）
 
 **目的**: Medusa v2 Admin を本番稼働させ、商品・注文・在庫・割引・配送を集中管理。
 
-**配置**: `medusa.sericia.com/app` (Coolify Hetzner CPX22)
+**配置**: `api.sericia.com/app` (Coolify Hetzner CPX22 / UUID `wl8ke5lf6rxjoepi058qv89u`)
 
 **リソース**:
 - Coolify project `qnry7poqtz364qhgupfq4c0k`
 - Postgres `h128il6uh7sxdkb5s3w0vuz7` / Redis `yau9i5yafa98tc8dm8ag5kmp`
-- 新規サービス `sericia-medusa-backend` を作成中
 
-**Seed 拡張**: 9 regions（JP/US/EU/UK/CA/AU/SG/HK/**ME**）+ 4 products（sencha/miso/shiitake 単体 + Drop #1 bundle）+ EMS配送プロファイル + Tokyo Fulfillment stock location + Default Sericia sales channel
+**Seed 実績** (idempotent `medusa-backend/src/scripts/seed.ts`):
+- **9 regions**: JP / US / EU (×11 countries) / GB / CA / AU (×2) / SG / HK / ME (×6)
+- **4 products**: sencha / miso / shiitake 単体 + `drop-001` bundle
+- **7 SKUs × 100 units** @ Tokyo Fulfillment stock location
+- **EMS Worldwide** shipping profile + shipping options
+- Default Sericia sales channel + publishable API key
+- Admin: `admin@sericia.com`
+
+**検証 (全 200)**:
+| Endpoint | 結果 |
+|---------|------|
+| `GET /health` | 200 |
+| `GET /store/regions` (pk 認証) | 200 / 9 regions |
+| `GET /store/products` (pk 認証) | 200 / 4 products |
+| `POST /auth/user/emailpass` | 200 + JWT |
+| `GET /admin/inventory-items` (bearer) | 200 / 7 SKUs × 100 stock |
+
+**クレデンシャル**: `~/.claude/projects/C--Users-apple-OneDrive-Desktop-sericiacom/memory/reference_api_keys.md` に永続保存済（R ルール準拠）
+
+**Storefront 接続用 env vars** (Coolify Storefront に要設定):
+```
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.sericia.com
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_3cbe523eed266eb8eead0a6d75841c341ddc63faa31275c37b7e025b1c64798e
+NEXT_PUBLIC_DEFAULT_REGION=jp
+```
+
+**Postmortem (Medusa v2.4 learnings)**:
+1. `shipping_profile_id` は **もはや `product` テーブルに存在しない**（v2.4で削除）。`createLinksWorkflow` で商品作成後に module link を張る必要あり
+2. `createLinksWorkflow` は (product ↔ shipping_profile) ペアの **リンク登録が事前に必要**。デフォルトでは Medusa は登録しないため、`medusa-backend/src/links/product-shipping-profile.ts` に `defineLink(ProductModule.linkable.product, FulfillmentModule.linkable.shippingProfile)` を追加
 
 ### 2026-04-21 i18n ホットフィックス（完了・`302f037b` + `874a903d`）
 
