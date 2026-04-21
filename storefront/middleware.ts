@@ -1,17 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import createIntlMiddleware from "next-intl/middleware";
 import { PPP } from "@/lib/ppp";
-import { routing } from "@/i18n/routing";
-
-const intlMiddleware = createIntlMiddleware(routing);
 
 const ADMIN_COOKIE = "sericia_admin";
+
+// Locales supported. Keep in sync with i18n/routing.ts.
+const LOCALES = ["en", "ja", "de", "fr", "es", "it", "ko", "zh-TW"] as const;
+const DEFAULT_LOCALE = "en";
+const LOCALE_COOKIE = "NEXT_LOCALE";
+
+// Paths that are NOT covered by i18n (flat, always English).
+// Admin + API + legal + utility pages do not get locale prefixes.
+const NON_I18N_PREFIXES = [
+  "/admin",
+  "/api",
+  "/guides",
+  "/tools",
+  "/privacy",
+  "/terms",
+  "/refund",
+  "/shipping",
+  "/pay",
+  "/auth",
+  "/reset",
+];
+
+function stripLocalePrefix(path: string): { locale: string | null; pathWithoutLocale: string } {
+  for (const l of LOCALES) {
+    if (l === DEFAULT_LOCALE) continue; // default locale has no prefix
+    if (path === `/${l}`) return { locale: l, pathWithoutLocale: "/" };
+    if (path.startsWith(`/${l}/`)) return { locale: l, pathWithoutLocale: path.slice(l.length + 1) };
+  }
+  return { locale: null, pathWithoutLocale: path };
+}
+
+function isNonI18nPath(path: string): boolean {
+  return NON_I18N_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`));
+}
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  // --- Admin gate (runs before i18n) ---
+  // --- Redirect /en or /en/* to unprefixed canonical (default locale has no prefix) ---
+  if (path === "/en" || path.startsWith("/en/")) {
+    const url = req.nextUrl.clone();
+    url.pathname = path === "/en" ? "/" : path.slice(3);
+    return NextResponse.redirect(url);
+  }
+
+  // --- Admin gate (runs before everything else) ---
   if (path.startsWith("/admin") && path !== "/admin/login") {
     const secret = process.env.SERICIA_ADMIN_SECRET;
     const provided = req.cookies.get(ADMIN_COOKIE)?.value ?? "";
@@ -21,23 +58,41 @@ export async function middleware(req: NextRequest) {
       url.searchParams.set("redirect", path);
       return NextResponse.redirect(url);
     }
-    // admin ok — skip i18n/supabase middleware
     return NextResponse.next({ request: { headers: req.headers } });
   }
 
-  // --- Skip i18n/supabase for /admin/login, /api, static ---
+  // --- Skip i18n + country cookie + supabase for admin/login, API ---
   if (path.startsWith("/admin/login") || path.startsWith("/api")) {
     return NextResponse.next({ request: { headers: req.headers } });
   }
 
-  // --- i18n routing (locale prefix handling) ---
-  // Returns a response with locale prefix or rewrites for default locale
-  const intlResponse = intlMiddleware(req);
+  // --- i18n: strip locale prefix via rewrite so flat app routes resolve ---
+  // For default locale (en) paths are already bare — no rewrite needed.
+  // For other locales, we rewrite `/ja/products` -> `/products` while
+  // keeping the browser URL at `/ja/products`, and set NEXT_LOCALE cookie
+  // so getRequestConfig can pick it up.
+  const { locale: prefixLocale, pathWithoutLocale } = stripLocalePrefix(path);
 
-  // intlResponse is a NextResponse; we treat it as our base response
-  let res = intlResponse;
+  let res: NextResponse;
+  if (prefixLocale && !isNonI18nPath(pathWithoutLocale)) {
+    const url = req.nextUrl.clone();
+    url.pathname = pathWithoutLocale;
+    res = NextResponse.rewrite(url);
+    res.cookies.set(LOCALE_COOKIE, prefixLocale, { path: "/", sameSite: "lax" });
+  } else if (prefixLocale && isNonI18nPath(pathWithoutLocale)) {
+    // e.g. /ja/guides/... — redirect to the unlocalized canonical.
+    const url = req.nextUrl.clone();
+    url.pathname = pathWithoutLocale;
+    return NextResponse.redirect(url);
+  } else {
+    res = NextResponse.next({ request: { headers: req.headers } });
+    // Ensure NEXT_LOCALE cookie exists for default locale users.
+    if (!req.cookies.get(LOCALE_COOKIE)) {
+      res.cookies.set(LOCALE_COOKIE, DEFAULT_LOCALE, { path: "/", sameSite: "lax" });
+    }
+  }
 
-  // Country cookie (PPP) — attach to intl response
+  // --- Country cookie (PPP) ---
   if (!req.cookies.get("country")) {
     const cf = req.headers.get("cf-ipcountry")?.toLowerCase() ?? "";
     const al = req.headers.get("accept-language") ?? "";
@@ -52,7 +107,7 @@ export async function middleware(req: NextRequest) {
     res.cookies.set("country", country, { maxAge: 60 * 60 * 24 * 30, path: "/" });
   }
 
-  // Supabase SSR session refresh
+  // --- Supabase SSR session refresh ---
   const supaUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supaKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!supaUrl || !supaKey) return res;
@@ -66,12 +121,6 @@ export async function middleware(req: NextRequest) {
         for (const { name, value } of cookiesToSet) {
           req.cookies.set(name, value);
         }
-        // preserve intl rewrites/headers by copying headers from intl response onto fresh response
-        const fresh = NextResponse.next({ request: { headers: req.headers } });
-        res.headers.forEach((v, k) => {
-          if (!fresh.headers.has(k)) fresh.headers.set(k, v);
-        });
-        res = fresh;
         for (const { name, value, options } of cookiesToSet) {
           res.cookies.set(name, value, options as CookieOptions);
         }
