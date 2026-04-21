@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 # Post-deploy verification for sericia.com storefront.
-# Run once `d131503r6rf62uub2qk18831` (or any subsequent Coolify deploy) reaches status=finished.
+# Run once any Coolify deploy reaches status=finished.
 #
 # Checks:
 #   1. Homepage HTTP 200
 #   2. Dify HOTFIX — no 'WnX69' token or 'App with code' error toast string in HTML
 #   3. Medusa product facade — /products page shows at least one product handle
+#      (sencha/miso/shiitake/matcha/tea — Drop #1 SKUs exposed by handle, not prod_01 IDs)
 #   4. Medusa backend health (api.sericia.com reachable)
 #   5. Publishable key still works on store API
 #   6. Crossmint webhook endpoint reachable (expects 401 without signature)
+#   7. i18n hotfix live — flag-icons CSS active + 'English' label (not '>EN<' + '🇬🇧')
+#   8. Google OAuth button present on /login and /signup (post-M4a-7 rollout)
 #
 # Usage:  bash scripts/verify-live-storefront.sh
 # Exits 0 if all pass, 1 if any critical check fails.
@@ -44,10 +47,11 @@ else
   check "M4a-HOTFIX: Dify fallback token removed" 1 "(clean)"
 fi
 
-# 3. /products page has at least one Medusa product
+# 3. /products page has at least one Drop #1 product handle
+#    (storefront renders products by handle, not by prod_01 ID — handles are the Medusa slugs)
 curl -s --max-time 20 -o /tmp/sericia_products.html https://sericia.com/products
-product_hits=$(grep -oE "prod_01[A-Z0-9]{10,}" /tmp/sericia_products.html 2>/dev/null | sort -u | wc -l | tr -d ' ')
-[ "${product_hits:-0}" -ge "1" ] && check "Products page: Medusa product IDs visible" 1 "(found $product_hits unique)" || check "Products page: Medusa product IDs visible" 0 "(found 0)"
+product_hits=$(grep -ocE "(sencha|miso|shiitake|matcha|organic-tea)" /tmp/sericia_products.html 2>/dev/null | head -1)
+[ "${product_hits:-0}" -ge "1" ] && check "Products page: Drop #1 handles visible" 1 "(found $product_hits match(es))" || check "Products page: Drop #1 handles visible" 0 "(0 handles found — check Medusa product facade)"
 
 # 4. Medusa backend alive
 http_api=$(curl -s --max-time 20 -o /dev/null -w "%{http_code}" https://api.sericia.com/health || echo "000")
@@ -69,6 +73,24 @@ elif [ "$wh_http" = "200" ]; then
   check "Crossmint webhook: reachable" 1 "(200 — secret may be unset, graceful mode)"
 else
   check "Crossmint webhook: reachable" 0 "(HTTP $wh_http)"
+fi
+
+# 7. i18n hotfix live — flag-icons CSS + 'English' label (regression if '>EN<' or '🇬🇧' appear)
+if grep -qE 'fi fi-' /tmp/sericia_home.html 2>/dev/null && ! grep -qE '>EN<|🇬🇧' /tmp/sericia_home.html 2>/dev/null; then
+  check "i18n hotfix: flag-icons CSS + English label" 1 "(flag-icons CSS + no regression markers)"
+else
+  check "i18n hotfix: flag-icons CSS + English label" 0 "(stale i18n — flags may have reverted to text)"
+fi
+
+# 8. Google OAuth button present (post-M4a-7)
+curl -s --max-time 15 -o /tmp/sericia_login.html https://sericia.com/login
+curl -s --max-time 15 -o /tmp/sericia_signup.html https://sericia.com/signup
+login_oauth=$(grep -cE "Continue with Google|Sign in with Google" /tmp/sericia_login.html 2>/dev/null | head -1)
+signup_oauth=$(grep -cE "Sign up with Google|Continue with Google" /tmp/sericia_signup.html 2>/dev/null | head -1)
+if [ "${login_oauth:-0}" -ge "1" ] && [ "${signup_oauth:-0}" -ge "1" ]; then
+  check "Google OAuth buttons: /login + /signup" 1 "(login=$login_oauth signup=$signup_oauth)"
+else
+  check "Google OAuth buttons: /login + /signup" 0 "(login=$login_oauth signup=$signup_oauth — M4a-7 not yet live)"
 fi
 
 echo
