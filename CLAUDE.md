@@ -593,7 +593,7 @@ Ships within 14 days from Japan.
 | # | マイルストーン | 状態 | コミット | 検証 |
 |---|-------------|-----|---------|------|
 | **M1** | /tools/* 500/404 修正 + Dify チャットボット | ✅ 完了 | `fe30f8c2`, `87782adf` | 全ツール200 / Dify 2段フォールバック（SDK→iframe） |
-| **M2** | PayloadCMS v3 インストール（7 collections + 2 globals + 6 blocks） | 🔄 実行中 | — | `/cms/admin` ログイン確認 |
+| **M2** | PayloadCMS v3 インストール（7 collections + 2 globals + 6 blocks） | ✅ 完了 | `db83336b` | ビルド成功・要Coolify env 設定 + migrate + bootstrap |
 | **M3** | Medusa v2 起動（9 regions + 4 products + Coolifyデプロイ） | 🔄 実行中 | — | `medusa.sericia.com/app` 200 |
 | **M4** | 統合（Aesopヒーロー/桜/赤ハート/マーケ/アラビア語/PWA/SEO/全ページ共通サイドバー） | ⏸️ 待機 | — | — |
 | **M5** | pSEO 量産基盤（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル） | ⏸️ 待機 | — | — |
@@ -609,7 +609,7 @@ Ships within 14 days from Japan.
 2. 3秒後に `#dify-chatbot-bubble-button` の存在確認
 3. 欠けていれば自前の浮遊ボタン + iframe パネルにフォールバック（CDNブロック/SDKクラッシュ時もUI到達可能）
 
-### M2 スコープ（実行中）
+### M2 スコープ（完了・`db83336b`）
 
 **目的**: 記事/メディア/テスティモニアル/ヒーロー/サイト設定をエディタが編集可能にする。
 
@@ -619,11 +619,32 @@ Ships within 14 days from Japan.
 
 **ロケール**: 9 言語（en/ja/de/fr/es/it/ko/zh-TW/**ar** 新規）・ `ar` は M4 で RTL 有効化
 
-**Collections**: Users / Articles / Guides / Tools / Media / Testimonials / PressMentions
+**インストール済パッケージ** (全て `3.83.0`):
+- `payload` / `@payloadcms/next` / `@payloadcms/db-postgres` / `@payloadcms/richtext-lexical` / `@payloadcms/plugin-cloud-storage` / `@payloadcms/storage-s3` / `sharp 0.34.5` / `graphql 16.13.2`
 
-**Globals**: SiteSettings / Homepage
+**Collections** (7): Users / Articles / Guides / Tools / Media / Testimonials / PressMentions
 
-**Blocks**: Hero / Drop / Testimonials / PressStrip / Story / Newsletter
+**Globals** (2): SiteSettings / Homepage
+
+**Blocks** (6): Hero / Drop / Testimonials / PressStrip / Story / Newsletter
+
+**ビルド検証**: `node ./node_modules/next/dist/bin/next build` 成功・新規ルート 4 個登録:
+- `/cms/admin/[[...segments]]` (Payload admin UI、730kB)
+- `/cms/api/[...slug]` (REST)
+- `/cms/api/graphql` + `/cms/api/graphql-playground`
+
+**既存ルート**（`/admin/*`・`/tools/*`・`/products`・`/guides`・`/journal`等 20+）は全て変更なしでコンパイル成功。
+
+**Coolifyデプロイ手順** (M3完了後に実施):
+1. Coolify env に `PAYLOAD_SECRET` (32文字+) / `DATABASE_URL_PAYLOAD` (`?schema=payload` suffix必須) / `PAYLOAD_ADMIN_EMAIL` / `PAYLOAD_ADMIN_PASSWORD` / `SUPABASE_S3_*` をセット
+2. `npm run payload:migrate` で `payload` schema作成
+3. `npm run payload:bootstrap` で admin ユーザー作成
+4. `https://sericia.com/cms/admin` ログイン検証
+
+**既知の留意点**:
+- Windowsビルドは `node ./node_modules/next/dist/bin/next build` 直呼び必要（`npm run build` の cmd.exe PATH 問題）。Linux/Coolifyでは問題なし
+- `S3` プラグインは `SUPABASE_S3_*` 4変数揃って有効化。未設定時はローカルディスクにフォールバック
+- Next.js 15.1.3 で `turbopack` 警告（無害・15.2+で解消予定）
 
 ### M3 スコープ（実行中）
 
