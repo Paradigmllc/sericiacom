@@ -7,6 +7,7 @@ import {
 import {
   createApiKeysWorkflow,
   createInventoryLevelsWorkflow,
+  createLinksWorkflow,
   createProductsWorkflow,
   createRegionsWorkflow,
   createSalesChannelsWorkflow,
@@ -560,19 +561,48 @@ export default async function seedSericia({ container }: ExecArgs) {
   const productsToCreate = productSpecs.filter((p) => !existingHandles.has(p.handle));
 
   if (productsToCreate.length > 0) {
-    await createProductsWorkflow(container).run({
+    const { result: createdProducts } = await createProductsWorkflow(container).run({
       input: {
         products: productsToCreate.map((p) => ({
           ...p,
           status: ProductStatus.PUBLISHED,
-          shipping_profile_id: shippingProfile.id,
+          // shipping_profile_id is NOT a column on the product table in Medusa v2.4.
+          // The association is a module link (Modules.PRODUCT ↔ Modules.FULFILLMENT).
+          // It's created below via createLinksWorkflow after the products exist.
           sales_channels: [{ id: defaultSalesChannels[0].id }],
         })),
       },
     });
     logger.info(`[products] created ${productsToCreate.length} products`);
+
+    // Link each new product to the EMS Worldwide shipping profile.
+    const productProfileLinks = (createdProducts ?? []).map((p: any) => ({
+      [Modules.PRODUCT]: { product_id: p.id },
+      [Modules.FULFILLMENT]: { shipping_profile_id: shippingProfile.id },
+    }));
+    if (productProfileLinks.length > 0) {
+      await createLinksWorkflow(container).run({ input: productProfileLinks });
+      logger.info(`[products] linked ${productProfileLinks.length} products to shipping profile`);
+    }
   } else {
     logger.info("[products] all 4 products already present");
+
+    // Idempotency: ensure each existing product is still linked to the shipping profile.
+    // If the link already exists, createRemoteLinkStep is a no-op by design.
+    try {
+      const productProfileLinks = existingProducts
+        .filter((p: any) => productSpecs.some((s) => s.handle === p.handle))
+        .map((p: any) => ({
+          [Modules.PRODUCT]: { product_id: p.id },
+          [Modules.FULFILLMENT]: { shipping_profile_id: shippingProfile.id },
+        }));
+      if (productProfileLinks.length > 0) {
+        await createLinksWorkflow(container).run({ input: productProfileLinks });
+        logger.info(`[products] re-asserted ${productProfileLinks.length} product→shipping-profile links`);
+      }
+    } catch (e: any) {
+      logger.warn(`[products] link re-assert skipped: ${e?.message || e}`);
+    }
   }
 
   // ---------- 9. Inventory Levels ----------
