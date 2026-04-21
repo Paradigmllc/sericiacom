@@ -83,7 +83,12 @@ export async function getRegionId(slug: string): Promise<string | null> {
         const keys: (string | undefined)[] = [
           (r.metadata?.slug as string | undefined)?.toLowerCase(),
           r.name?.toLowerCase(),
-          ...((r.countries ?? []).map((c) => c.iso_2?.toLowerCase())),
+          // `fields:` projection weakens countries to a partial shape, so the
+          // SDK's row type no longer carries `iso_2`. Annotate explicitly
+          // rather than `as any` — keeps `noImplicitAny` strict-mode honest.
+          ...((r.countries ?? []).map(
+            (c: { iso_2?: string | null }) => c.iso_2?.toLowerCase(),
+          )),
         ];
         for (const k of keys) {
           if (k) _regionCache.set(k, r.id);
