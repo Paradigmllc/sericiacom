@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "sonner";
+import Analytics from "@/components/Analytics";
 
 const DIFY_TOKEN = process.env.NEXT_PUBLIC_DIFY_TOKEN || "WnX69EkeJYork2rTBtbB3wnY";
 const SITE_URL = "https://sericia.com";
@@ -112,6 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <Toaster position="top-right" richColors />
+        <Analytics />
         <Script id="dify-config" strategy="afterInteractive">
           {`window.difyChatbotConfig = { token: '${DIFY_TOKEN}' };`}
         </Script>
