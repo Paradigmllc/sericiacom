@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@crossmint/client-sdk-react-ui": "1.14.0",
     "@medusajs/js-sdk": "^2.4.0",
     "@supabase/supabase-js": "^2.47.10",
     "resend": "^4.0.0",
