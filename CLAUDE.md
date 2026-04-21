@@ -18,7 +18,7 @@
 | ★★☆☆☆ | 12 | [🌐 ドメイン・商標](#s12) | sericia.com取得予定 |
 | ★☆☆☆☆ | 13 | [📚 リソース一覧](#s13) | 未整備 |
 | ★★★★☆ | 14 | [🧠 壁打ち詳細メモ](#s14) | 仕入れTier/EMS最適化/非採用/Phase戦略 |
-| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3/M4a-1〜7 + Dify hotfix + OOM対策完了 / ストアオープン可（2026-04-21〜） |
+| ★★★★★ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1〜M4a全完了 + M4c launch-ready（リージョン3層解決 / 特商法 / About / thumbnails / Google OAuth）/ ストアオープン（2026-04-21〜） |
 
 ⚠️ **要強化**: 6(法的) / 10(運用) / 13(リソース)
 
@@ -611,6 +611,7 @@ Ships within 14 days from Japan.
 | **M4a-Header mobile** | ヘッダーUXモバイル修正（国旗横の英語ラベル削除・アカウントアイコンを sm 以下でも表示）| ✅ 完了 | `3208fc19` | `HeaderClient.tsx` / `LocaleSwitcher.tsx` 両方更新 / 本番で検証済み |
 | **M4a-Dify v2** | `udify.app` embed を破棄し `/api/dify-chat` サーバープロキシ + カスタム Sericia UI に全面刷新 | ✅ 完了 | `f31e17a0` | `DIFY_SERVICE_API_KEY`（`app-*` 秘密鍵）がクライアントJSに漏れない設計 / 503 時は offline 状態で `hello@sericia.com` 案内表示（Rule V）/ Tailwind `sericia-accent` 等のデザイントークンで統一 / Dify KB の Sericia コンテキストをそのまま活用 |
 | **M4a-8 Webhook live** | Crossmint `whsec_Svrn+w...` signing secret を Coolify env + memory に反映 → storefront restart (`kvox6zxs02jinepf2gjdm4z2`) で new container 起動 → webhook **503→401 flip** 確認 → **HMAC SHA-256 署名付き POST で 200 OK** E2E 確認 | ✅ 完了 | (this session) | Rule R 準拠で `whsec_...` をメモリ永続化 / Coolify API 経由で Rule S 完全遵守（ダッシュボード操作ゼロ）/ container env 4 secrets 全部ロード確認（CROSSMINT_WEBHOOK_SECRET:38 / N8N_ESCAL:48 / DIFY:28 / RESEND:36）/ 残り `SLACK_WEBHOOK_URL` は graceful null-return で launch blocker ではない |
+| **M4c launch-ready** | ストアオープン直前ブロッカー 7 件を一発 PR で解消（リージョン3層解決 / 特商法 / About / thumbnails / Google OAuth / ENV `japan` / noImplicitAny hotfix）| ✅ 完了 | `492dd9f7` + `7bdab6d2` | ① `lib/medusa.ts` getRegionId が **metadata.slug / name / countries.iso_2** 3キー全部を lowercase index → `"jp"`/`"japan"`/`"JP"` すべて同じ region_id に解決（従来は PDP 404 / `/products` 空の根本原因）② `/tokushoho` — 特商法 section 11 全12項目 bilingual（Paradigm LLC / 050-3120-3706 / 請求あれば遅滞なく開示方式）③ `/about` — Server-rendered ブランド長文 5 H2（Why / How a drop / Producer-share / Limited drops / Who's behind）④ 4商品に Unsplash placeholder thumbnails を **admin API 冪等スクリプト** で適用（`storefront/scripts/upload-product-thumbnails.ts` + `product-thumbnails.json` / 再実行で no-op・brand photography 来たら JSON 差し替え）⑤ Supabase Management API（`sbp_...` PAT）で `external_google_enabled=true` + `site_url=https://sericia.com` + `uri_allow_list` whitelist ⑥ Coolify env PATCH `NEXT_PUBLIC_DEFAULT_REGION=japan`（`jp` から変更・belt & suspenders）⑦ 3-deploy roulette: deploy #1 失敗（`noImplicitAny` on `countries.map` — `tsc --noEmit` をローカルで実行せずに push した代償）→ 1行型注釈で hotfix commit `7bdab6d2` → deploy #2 も失敗だが**build は通過**し Docker `#27 exporting to image` exit 255（host-level transient・コード無罪）→ code 変更なしで retry → deploy #3 (`w81azrqs70v9zd0wa3xagq4v`) 成功（finished @ 2026-04-21T23:28:25Z） | 全 8 URL 200 verified: `/` `/products` `/products/{sencha,miso,shiitake,drop-001-tea-miso-shiitake}` `/tokushoho` `/about` — PDP は `<title>Single-Origin Sencha (Rescued) — Sericia</title>` と `<h1>` が正しくレンダ、`/tokushoho` に `Paradigm LLC / 050-3120-3706 / 特定商取引法`、`/about` に 5 H2 全て出現 |
 | **M4b-f** | Payload 配線 / 共通サイドバー / Aesopヒーロー・桜・赤ハート・マーケ / アラビア語RTL / PWA・SEO | ⏸️ 待機 | — | — |
 | **M5** | pSEO 量産基盤（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル） | ⏸️ 待機 | — | — |
 
