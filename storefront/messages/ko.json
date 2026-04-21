@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "shop": "쇼핑",
+    "current_drop": "현재 드롭",
+    "guides": "가이드",
+    "our_story": "우리 이야기",
+    "shipping": "배송",
+    "sign_in": "로그인",
+    "account": "계정",
+    "overview": "개요",
+    "orders": "주문",
+    "addresses": "주소",
+    "sign_out": "로그아웃",
+    "cart": "장바구니",
+    "signed_in": "로그인됨"
+  },
+  "footer": {
+    "tagline": "교토에서 전 세계로, 되살린 일본 공예품.",
+    "shop": "쇼핑",
+    "company": "회사",
+    "support": "지원",
+    "legal": "법적 고지",
+    "copyright": "© 2026 Sericia. 모든 권리 보유."
+  },
+  "home": {
+    "eyebrow": "Drop No. 01 — 한정 출시",
+    "hero_title_1": "되살린 일본의",
+    "hero_title_2": "수제 식품을,",
+    "hero_title_3": "전 세계로.",
+    "hero_lede": "모든 드롭은 유통기한이 임박한 일본 소규모 생산자들의 잉여 제품을 엄선한 번들입니다 — 차, 미소, 표고버섯 등. 매진되면 끝입니다.",
+    "kyoto_japan": "교토, 일본",
+    "ems_worldwide": "EMS 국제 배송",
+    "units_only": "개 한정",
+    "cta_shop": "드롭 보기",
+    "cta_view_all": "모든 상품 보기",
+    "english_notice": "이 페이지는 영어로만 제공됩니다."
+  },
+  "products": {
+    "title": "쇼핑",
+    "all": "전체",
+    "add_to_cart": "장바구니에 담기",
+    "out_of_stock": "품절",
+    "region": "지역",
+    "producer": "생산자",
+    "weight": "중량",
+    "price": "가격",
+    "category": "카테고리",
+    "back_to_shop": "쇼핑으로 돌아가기",
+    "details": "상세",
+    "story": "스토리"
+  },
+  "cart": {
+    "title": "장바구니",
+    "empty": "장바구니가 비어 있습니다.",
+    "continue_shopping": "쇼핑 계속하기",
+    "subtotal": "소계",
+    "shipping": "배송비",
+    "shipping_calculated": "결제 시 계산됨",
+    "total": "합계",
+    "checkout": "결제하기",
+    "remove": "삭제",
+    "quantity": "수량"
+  },
+  "checkout": {
+    "title": "결제",
+    "shipping_address": "배송 주소",
+    "email": "이메일",
+    "full_name": "성명",
+    "address_line1": "주소 1",
+    "address_line2": "주소 2 (선택)",
+    "city": "도시",
+    "region": "도/주",
+    "postal_code": "우편번호",
+    "country": "국가",
+    "phone": "전화번호 (선택)",
+    "order_summary": "주문 요약",
+    "place_order": "주문하기",
+    "card_or_crypto": "카드 또는 스테이블코인 — USD",
+    "empty_redirect": "장바구니가 비어 있습니다. 쇼핑으로 리디렉션됩니다…"
+  },
+  "auth": {
+    "sign_in": "로그인",
+    "sign_up": "계정 만들기",
+    "reset_password": "비밀번호 재설정",
+    "email": "이메일",
+    "password": "비밀번호",
+    "confirm_password": "비밀번호 확인",
+    "full_name": "성명",
+    "submit_sign_in": "로그인",
+    "submit_sign_up": "계정 만들기",
+    "submit_reset": "재설정 링크 보내기",
+    "no_account": "계정이 없으신가요?",
+    "have_account": "이미 계정이 있으신가요?",
+    "create_account": "만들기",
+    "forgot_password": "비밀번호를 잊으셨나요?"
+  },
+  "account": {
+    "overview": "개요",
+    "orders": "주문",
+    "addresses": "주소",
+    "settings": "설정",
+    "welcome": "다시 오신 것을 환영합니다",
+    "no_orders": "아직 주문이 없습니다.",
+    "no_addresses": "저장된 주소가 없습니다.",
+    "order_number": "주문",
+    "status": "상태",
+    "total": "합계",
+    "date": "날짜"
+  },
+  "thank_you": {
+    "title": "감사합니다",
+    "message": "주문이 완료되었습니다. 확인 이메일을 보내드립니다.",
+    "track_in_account": "계정에서 추적하기",
+    "continue_shopping": "쇼핑 계속하기"
+  },
+  "locale_switcher": {
+    "label": "언어"
+  }
+}

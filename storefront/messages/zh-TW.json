@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "shop": "商店",
+    "current_drop": "當期發售",
+    "guides": "指南",
+    "our_story": "我們的故事",
+    "shipping": "配送",
+    "sign_in": "登入",
+    "account": "帳戶",
+    "overview": "總覽",
+    "orders": "訂單",
+    "addresses": "地址",
+    "sign_out": "登出",
+    "cart": "購物車",
+    "signed_in": "已登入"
+  },
+  "footer": {
+    "tagline": "從京都寄出,拯救的日本職人食品。",
+    "shop": "商店",
+    "company": "公司",
+    "support": "支援",
+    "legal": "法律條款",
+    "copyright": "© 2026 Sericia. 版權所有。"
+  },
+  "home": {
+    "eyebrow": "第 01 號發售 — 限量釋出",
+    "hero_title_1": "拯救的日本",
+    "hero_title_2": "職人食品,",
+    "hero_title_3": "寄送全球。",
+    "hero_lede": "每次發售都是一套精選組合,來自日本小生產者即將到期的剩餘品——茶、味噌、香菇等。售完即止。",
+    "kyoto_japan": "日本京都",
+    "ems_worldwide": "EMS 全球配送",
+    "units_only": "件限定",
+    "cta_shop": "查看發售",
+    "cta_view_all": "查看所有商品",
+    "english_notice": "此頁面僅提供英文版本。"
+  },
+  "products": {
+    "title": "商店",
+    "all": "全部",
+    "add_to_cart": "加入購物車",
+    "out_of_stock": "售完",
+    "region": "產地",
+    "producer": "生產者",
+    "weight": "重量",
+    "price": "價格",
+    "category": "類別",
+    "back_to_shop": "返回商店",
+    "details": "詳情",
+    "story": "故事"
+  },
+  "cart": {
+    "title": "您的購物車",
+    "empty": "購物車是空的。",
+    "continue_shopping": "繼續購物",
+    "subtotal": "小計",
+    "shipping": "運費",
+    "shipping_calculated": "於結帳時計算",
+    "total": "總計",
+    "checkout": "結帳",
+    "remove": "移除",
+    "quantity": "數量"
+  },
+  "checkout": {
+    "title": "結帳",
+    "shipping_address": "配送地址",
+    "email": "電子郵件",
+    "full_name": "姓名",
+    "address_line1": "地址第一行",
+    "address_line2": "地址第二行(選填)",
+    "city": "城市",
+    "region": "地區/州",
+    "postal_code": "郵遞區號",
+    "country": "國家",
+    "phone": "電話(選填)",
+    "order_summary": "訂單摘要",
+    "place_order": "確認下單",
+    "card_or_crypto": "信用卡或穩定幣 — 美元",
+    "empty_redirect": "購物車是空的。正在跳轉到商店…"
+  },
+  "auth": {
+    "sign_in": "登入",
+    "sign_up": "建立帳戶",
+    "reset_password": "重設密碼",
+    "email": "電子郵件",
+    "password": "密碼",
+    "confirm_password": "確認密碼",
+    "full_name": "姓名",
+    "submit_sign_in": "登入",
+    "submit_sign_up": "建立帳戶",
+    "submit_reset": "發送重設連結",
+    "no_account": "還沒有帳戶?",
+    "have_account": "已經有帳戶?",
+    "create_account": "建立一個",
+    "forgot_password": "忘記密碼?"
+  },
+  "account": {
+    "overview": "總覽",
+    "orders": "訂單",
+    "addresses": "地址",
+    "settings": "設定",
+    "welcome": "歡迎回來",
+    "no_orders": "尚無訂單。",
+    "no_addresses": "尚未儲存地址。",
+    "order_number": "訂單",
+    "status": "狀態",
+    "total": "總計",
+    "date": "日期"
+  },
+  "thank_you": {
+    "title": "謝謝您",
+    "message": "您的訂單已確認。確認電子郵件正在寄送中。",
+    "track_in_account": "在您的帳戶中追蹤",
+    "continue_shopping": "繼續購物"
+  },
+  "locale_switcher": {
+    "label": "語言"
+  }
+}

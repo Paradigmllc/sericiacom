@@ -2,9 +2,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 import { useCart } from "@/lib/cart-store";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 type SessionState = {
   status: "loading" | "anon" | "authed";
@@ -12,6 +14,7 @@ type SessionState = {
 };
 
 export default function HeaderClient() {
+  const t = useTranslations("nav");
   const router = useRouter();
   const [session, setSession] = useState<SessionState>({ status: "loading", email: null });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,7 +45,7 @@ export default function HeaderClient() {
   async function signOut() {
     try {
       await supabaseBrowser().auth.signOut();
-      toast.success("Signed out");
+      toast.success(t("sign_out"));
       setMenuOpen(false);
       router.push("/");
       router.refresh();
@@ -63,7 +66,7 @@ export default function HeaderClient() {
           href="/login"
           className="hidden md:inline-block hover:text-sericia-ink transition"
         >
-          Sign in
+          {t("sign_in")}
         </Link>
       )}
       {session.status === "authed" && (
@@ -75,12 +78,12 @@ export default function HeaderClient() {
             aria-expanded={menuOpen}
             aria-label="Account menu"
           >
-            Account
+            {t("account")}
           </button>
           {menuOpen && (
             <div className="absolute right-0 top-full mt-3 w-56 border border-sericia-line bg-sericia-paper z-20">
               <div className="px-5 py-4 border-b border-sericia-line">
-                <div className="label mb-1">Signed in</div>
+                <div className="label mb-1">{t("signed_in")}</div>
                 <div className="text-[12px] text-sericia-ink break-all">{session.email}</div>
               </div>
               <Link
@@ -88,28 +91,28 @@ export default function HeaderClient() {
                 onClick={() => setMenuOpen(false)}
                 className="block px-5 py-3 text-[13px] text-sericia-ink hover:bg-sericia-paper-card transition"
               >
-                Overview
+                {t("overview")}
               </Link>
               <Link
                 href="/account/orders"
                 onClick={() => setMenuOpen(false)}
                 className="block px-5 py-3 text-[13px] text-sericia-ink hover:bg-sericia-paper-card transition"
               >
-                Orders
+                {t("orders")}
               </Link>
               <Link
                 href="/account/addresses"
                 onClick={() => setMenuOpen(false)}
                 className="block px-5 py-3 text-[13px] text-sericia-ink hover:bg-sericia-paper-card transition"
               >
-                Addresses
+                {t("addresses")}
               </Link>
               <button
                 type="button"
                 onClick={signOut}
                 className="block w-full text-left px-5 py-3 text-[13px] text-sericia-ink hover:bg-sericia-paper-card transition border-t border-sericia-line"
               >
-                Sign out
+                {t("sign_out")}
               </button>
             </div>
           )}
@@ -120,8 +123,9 @@ export default function HeaderClient() {
         className="relative hover:text-sericia-ink transition"
         aria-label={`Cart with ${count} item${count === 1 ? "" : "s"}`}
       >
-        Cart{mounted && count > 0 ? ` (${count})` : ""}
+        {t("cart")}{mounted && count > 0 ? ` (${count})` : ""}
       </Link>
+      <LocaleSwitcher />
     </div>
   );
 }

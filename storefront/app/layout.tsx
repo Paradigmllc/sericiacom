@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Sans, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import Analytics from "../components/Analytics";
 import DifyChat from "../components/DifyChat";
 
@@ -116,18 +118,22 @@ const websiteJsonLd = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
-    <html lang="en" className={`${notoSans.variable} ${notoSansJp.variable}`}>
+    <html lang={locale} className={`${notoSans.variable} ${notoSansJp.variable}`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       </head>
       <body className="font-sans antialiased">
-        {children}
-        <Toaster position="top-right" richColors />
-        <Analytics />
-        <DifyChat />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+          <Toaster position="top-right" richColors />
+          <Analytics />
+          <DifyChat />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

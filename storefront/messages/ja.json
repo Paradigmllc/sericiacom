@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "shop": "ショップ",
+    "current_drop": "現在のドロップ",
+    "guides": "ガイド",
+    "our_story": "私たちの物語",
+    "shipping": "配送について",
+    "sign_in": "ログイン",
+    "account": "アカウント",
+    "overview": "概要",
+    "orders": "注文履歴",
+    "addresses": "住所",
+    "sign_out": "ログアウト",
+    "cart": "カート",
+    "signed_in": "ログイン中"
+  },
+  "footer": {
+    "tagline": "京都から世界へ、救済された日本のクラフト。",
+    "shop": "ショップ",
+    "company": "会社情報",
+    "support": "サポート",
+    "legal": "法的情報",
+    "copyright": "© 2026 Sericia. All rights reserved."
+  },
+  "home": {
+    "eyebrow": "Drop No. 01 — 限定リリース",
+    "hero_title_1": "救済された日本の",
+    "hero_title_2": "クラフト食品を、",
+    "hero_title_3": "世界へお届け。",
+    "hero_lede": "各ドロップは、賞味期限間近の日本の生産者の余剰品を一つにまとめたキュレーションバンドル — お茶、味噌、椎茸など。完売次第終了。",
+    "kyoto_japan": "京都、日本",
+    "ems_worldwide": "EMSで世界へ",
+    "units_only": "個限定",
+    "cta_shop": "ドロップを見る",
+    "cta_view_all": "全商品を見る",
+    "english_notice": "このページは英語のみでご利用いただけます。"
+  },
+  "products": {
+    "title": "ショップ",
+    "all": "すべて",
+    "add_to_cart": "カートに追加",
+    "out_of_stock": "在庫切れ",
+    "region": "産地",
+    "producer": "生産者",
+    "weight": "内容量",
+    "price": "価格",
+    "category": "カテゴリー",
+    "back_to_shop": "ショップに戻る",
+    "details": "詳細",
+    "story": "ストーリー"
+  },
+  "cart": {
+    "title": "カート",
+    "empty": "カートは空です。",
+    "continue_shopping": "買い物を続ける",
+    "subtotal": "小計",
+    "shipping": "配送料",
+    "shipping_calculated": "レジで計算されます",
+    "total": "合計",
+    "checkout": "レジへ進む",
+    "remove": "削除",
+    "quantity": "数量"
+  },
+  "checkout": {
+    "title": "レジ",
+    "shipping_address": "配送先住所",
+    "email": "メールアドレス",
+    "full_name": "氏名",
+    "address_line1": "住所1",
+    "address_line2": "住所2（任意）",
+    "city": "市区町村",
+    "region": "都道府県",
+    "postal_code": "郵便番号",
+    "country": "国",
+    "phone": "電話番号（任意）",
+    "order_summary": "注文内容",
+    "place_order": "注文を確定する",
+    "card_or_crypto": "カードまたはステーブルコイン — USD決済",
+    "empty_redirect": "カートは空です。ショップにリダイレクトします…"
+  },
+  "auth": {
+    "sign_in": "ログイン",
+    "sign_up": "アカウント作成",
+    "reset_password": "パスワードをリセット",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "confirm_password": "パスワード（確認）",
+    "full_name": "氏名",
+    "submit_sign_in": "ログイン",
+    "submit_sign_up": "アカウントを作成",
+    "submit_reset": "リセットリンクを送信",
+    "no_account": "アカウントをお持ちでないですか？",
+    "have_account": "すでにアカウントをお持ちですか？",
+    "create_account": "作成する",
+    "forgot_password": "パスワードをお忘れですか？"
+  },
+  "account": {
+    "overview": "概要",
+    "orders": "注文履歴",
+    "addresses": "住所",
+    "settings": "設定",
+    "welcome": "おかえりなさい",
+    "no_orders": "まだ注文はありません。",
+    "no_addresses": "住所が保存されていません。",
+    "order_number": "注文番号",
+    "status": "ステータス",
+    "total": "合計",
+    "date": "日付"
+  },
+  "thank_you": {
+    "title": "ありがとうございます",
+    "message": "ご注文が確定しました。確認メールをお送りします。",
+    "track_in_account": "アカウントで追跡する",
+    "continue_shopping": "買い物を続ける"
+  },
+  "locale_switcher": {
+    "label": "言語"
+  }
+}

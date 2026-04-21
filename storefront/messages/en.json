@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "current_drop": "Current drop",
+    "guides": "Guides",
+    "our_story": "Our story",
+    "shipping": "Shipping",
+    "sign_in": "Sign in",
+    "account": "Account",
+    "overview": "Overview",
+    "orders": "Orders",
+    "addresses": "Addresses",
+    "sign_out": "Sign out",
+    "cart": "Cart",
+    "signed_in": "Signed in"
+  },
+  "footer": {
+    "tagline": "Rescued Japanese craft, shipped from Kyoto.",
+    "shop": "Shop",
+    "company": "Company",
+    "support": "Support",
+    "legal": "Legal",
+    "copyright": "© 2026 Sericia. All rights reserved."
+  },
+  "home": {
+    "eyebrow": "Drop No. 01 — Limited release",
+    "hero_title_1": "Rescued Japanese",
+    "hero_title_2": "craft food,",
+    "hero_title_3": "shipped worldwide.",
+    "hero_lede": "Each drop is a single curated bundle of near-expiry Japanese producers' surplus — tea, miso, shiitake, and more. When it is gone, it is gone.",
+    "kyoto_japan": "Kyoto, Japan",
+    "ems_worldwide": "EMS worldwide",
+    "units_only": "units only",
+    "cta_shop": "Shop the drop",
+    "cta_view_all": "View all products",
+    "english_notice": "This page is available in English only."
+  },
+  "products": {
+    "title": "Shop",
+    "all": "All",
+    "add_to_cart": "Add to cart",
+    "out_of_stock": "Out of stock",
+    "region": "Region",
+    "producer": "Producer",
+    "weight": "Weight",
+    "price": "Price",
+    "category": "Category",
+    "back_to_shop": "Back to shop",
+    "details": "Details",
+    "story": "Story"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty.",
+    "continue_shopping": "Continue shopping",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shipping_calculated": "Calculated at checkout",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping_address": "Shipping address",
+    "email": "Email",
+    "full_name": "Full name",
+    "address_line1": "Address line 1",
+    "address_line2": "Address line 2 (optional)",
+    "city": "City",
+    "region": "Region / State",
+    "postal_code": "Postal code",
+    "country": "Country",
+    "phone": "Phone (optional)",
+    "order_summary": "Order summary",
+    "place_order": "Place order",
+    "card_or_crypto": "Card or stablecoin — USD",
+    "empty_redirect": "Your cart is empty. Redirecting to shop…"
+  },
+  "auth": {
+    "sign_in": "Sign in",
+    "sign_up": "Create account",
+    "reset_password": "Reset password",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm password",
+    "full_name": "Full name",
+    "submit_sign_in": "Sign in",
+    "submit_sign_up": "Create account",
+    "submit_reset": "Send reset link",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "create_account": "Create one",
+    "forgot_password": "Forgot password?"
+  },
+  "account": {
+    "overview": "Overview",
+    "orders": "Orders",
+    "addresses": "Addresses",
+    "settings": "Settings",
+    "welcome": "Welcome back",
+    "no_orders": "No orders yet.",
+    "no_addresses": "No addresses saved yet.",
+    "order_number": "Order",
+    "status": "Status",
+    "total": "Total",
+    "date": "Date"
+  },
+  "thank_you": {
+    "title": "Thank you",
+    "message": "Your order has been placed. A confirmation email is on its way.",
+    "track_in_account": "Track it in your account",
+    "continue_shopping": "Continue shopping"
+  },
+  "locale_switcher": {
+    "label": "Language"
+  }
+}

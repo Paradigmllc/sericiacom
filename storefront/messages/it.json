@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "current_drop": "Edizione attuale",
+    "guides": "Guide",
+    "our_story": "La nostra storia",
+    "shipping": "Spedizioni",
+    "sign_in": "Accedi",
+    "account": "Account",
+    "overview": "Panoramica",
+    "orders": "Ordini",
+    "addresses": "Indirizzi",
+    "sign_out": "Esci",
+    "cart": "Carrello",
+    "signed_in": "Accesso effettuato"
+  },
+  "footer": {
+    "tagline": "Artigianato giapponese salvato, spedito da Kyoto.",
+    "shop": "Shop",
+    "company": "Azienda",
+    "support": "Supporto",
+    "legal": "Note legali",
+    "copyright": "© 2026 Sericia. Tutti i diritti riservati."
+  },
+  "home": {
+    "eyebrow": "Edizione N°01 — Rilascio limitato",
+    "hero_title_1": "Cibo artigianale",
+    "hero_title_2": "giapponese salvato,",
+    "hero_title_3": "spedito nel mondo.",
+    "hero_lede": "Ogni edizione è un unico bundle curato di eccedenze di produttori giapponesi in prossimità di scadenza — tè, miso, shiitake e altro. Finito significa finito.",
+    "kyoto_japan": "Kyoto, Giappone",
+    "ems_worldwide": "EMS nel mondo",
+    "units_only": "unità totali",
+    "cta_shop": "Vedi l'edizione",
+    "cta_view_all": "Vedi tutti i prodotti",
+    "english_notice": "Questa pagina è disponibile solo in inglese."
+  },
+  "products": {
+    "title": "Shop",
+    "all": "Tutti",
+    "add_to_cart": "Aggiungi al carrello",
+    "out_of_stock": "Esaurito",
+    "region": "Regione",
+    "producer": "Produttore",
+    "weight": "Peso",
+    "price": "Prezzo",
+    "category": "Categoria",
+    "back_to_shop": "Torna allo shop",
+    "details": "Dettagli",
+    "story": "Storia"
+  },
+  "cart": {
+    "title": "Il tuo carrello",
+    "empty": "Il tuo carrello è vuoto.",
+    "continue_shopping": "Continua gli acquisti",
+    "subtotal": "Subtotale",
+    "shipping": "Spedizione",
+    "shipping_calculated": "Calcolata al pagamento",
+    "total": "Totale",
+    "checkout": "Checkout",
+    "remove": "Rimuovi",
+    "quantity": "Quantità"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping_address": "Indirizzo di spedizione",
+    "email": "Email",
+    "full_name": "Nome completo",
+    "address_line1": "Indirizzo riga 1",
+    "address_line2": "Indirizzo riga 2 (facoltativo)",
+    "city": "Città",
+    "region": "Regione",
+    "postal_code": "CAP",
+    "country": "Paese",
+    "phone": "Telefono (facoltativo)",
+    "order_summary": "Riepilogo ordine",
+    "place_order": "Conferma ordine",
+    "card_or_crypto": "Carta o stablecoin — USD",
+    "empty_redirect": "Il carrello è vuoto. Reindirizzamento allo shop…"
+  },
+  "auth": {
+    "sign_in": "Accedi",
+    "sign_up": "Crea account",
+    "reset_password": "Reimposta password",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Conferma password",
+    "full_name": "Nome completo",
+    "submit_sign_in": "Accedi",
+    "submit_sign_up": "Crea account",
+    "submit_reset": "Invia link",
+    "no_account": "Non hai un account?",
+    "have_account": "Hai già un account?",
+    "create_account": "Crea",
+    "forgot_password": "Password dimenticata?"
+  },
+  "account": {
+    "overview": "Panoramica",
+    "orders": "Ordini",
+    "addresses": "Indirizzi",
+    "settings": "Impostazioni",
+    "welcome": "Bentornato",
+    "no_orders": "Nessun ordine al momento.",
+    "no_addresses": "Nessun indirizzo salvato.",
+    "order_number": "Ordine",
+    "status": "Stato",
+    "total": "Totale",
+    "date": "Data"
+  },
+  "thank_you": {
+    "title": "Grazie",
+    "message": "Il tuo ordine è stato confermato. Una email di conferma è in arrivo.",
+    "track_in_account": "Traccia dal tuo account",
+    "continue_shopping": "Continua gli acquisti"
+  },
+  "locale_switcher": {
+    "label": "Lingua"
+  }
+}

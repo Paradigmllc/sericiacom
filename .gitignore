@@ -11,3 +11,4 @@ build/
 .vercel/
 coverage/
 .medusa/
+*.tsbuildinfo
