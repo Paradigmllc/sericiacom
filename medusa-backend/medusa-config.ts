@@ -5,6 +5,13 @@ loadEnv(process.env.NODE_ENV || "development", process.cwd());
 export default defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    databaseDriverOptions: {
+      // Coolify's internal PostgreSQL runs on a private overlay network and
+      // does not terminate TLS. Disable SSL so pg does not send a StartSSL
+      // packet. Flip to true + reject self-signed when moving to an
+      // Internet-facing DB.
+      ssl: false,
+    },
     redisUrl: process.env.REDIS_URL,
     http: {
       storeCors: process.env.STORE_CORS || "",

@@ -17,5 +17,7 @@ COPY --from=build /app/.medusa/server ./
 COPY --from=build /app/node_modules ./node_modules
 COPY package.json ./
 COPY medusa-config.ts ./
+COPY tsconfig.json ./
+COPY src ./src
 EXPOSE 9000
 CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]
