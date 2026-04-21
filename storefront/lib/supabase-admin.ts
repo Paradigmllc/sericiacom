@@ -1,14 +1,24 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+let cached: SupabaseClient | null = null;
 
-if (!url || !serviceKey) {
-  console.error("[supabase-admin] missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+function getClient(): SupabaseClient {
+  if (cached) return cached;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) {
+    throw new Error("[supabase-admin] missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+  }
+  cached = createClient(url, serviceKey, { auth: { persistSession: false } });
+  return cached;
 }
 
-export const supabaseAdmin = createClient(url ?? "", serviceKey ?? "", {
-  auth: { persistSession: false },
+export const supabaseAdmin = new Proxy({} as SupabaseClient, {
+  get(_t, prop) {
+    const client = getClient() as unknown as Record<string | symbol, unknown>;
+    const value = client[prop];
+    return typeof value === "function" ? value.bind(client) : value;
+  },
 });
 
 export type Drop = {
