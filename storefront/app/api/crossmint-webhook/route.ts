@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "node:crypto";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { supabaseAdmin } from "../../../lib/supabase-admin";
 
 /**
  * Crossmint webhook receiver.

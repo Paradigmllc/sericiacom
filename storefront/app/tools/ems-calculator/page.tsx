@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { calcEms, EMS_ZONES } from "@/lib/ems";
+import { calcEms, EMS_ZONES } from "../../../lib/ems";
 
 const COUNTRY_LIST = [
   ["us", "🇺🇸 United States"], ["uk", "🇬🇧 United Kingdom"], ["de", "🇩🇪 Germany"],

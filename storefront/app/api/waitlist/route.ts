@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { supabaseAdmin } from "../../../lib/supabase-admin";
 
 const Schema = z.object({
   email: z.string().email(),
