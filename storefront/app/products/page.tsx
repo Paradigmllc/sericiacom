@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Small-batch tea, miso, mushrooms and seasonings rescued from Japan's finest producers. Ships EMS worldwide from Kyoto.",
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   tea: "from-[#c8d4b0] to-[#6a7d4c]",

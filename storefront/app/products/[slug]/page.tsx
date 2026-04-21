@@ -7,6 +7,8 @@ import { Container, Rule } from "@/components/ui";
 import { getProductBySlug, listActiveProducts, categoryLabel } from "@/lib/products";
 import AddToCartButton from "./AddToCartButton";
 
+export const dynamic = "force-dynamic";
+
 type Params = { slug: string };
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
