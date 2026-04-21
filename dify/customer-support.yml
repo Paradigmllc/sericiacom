@@ -1,0 +1,50 @@
+app:
+  name: "Sericia Customer Support"
+  mode: "chat"
+  description: "Site-wide right-bottom chatbot. Trained on CLAUDE.md + business-idea-303 knowledge."
+
+model:
+  provider: "deepseek"
+  name: "deepseek-chat"
+  completion_params:
+    temperature: 0.3
+    max_tokens: 1200
+  notes: "DeepSeek V3 with Context Caching — same long system prompt across all sessions hits cache and drops input cost to $0.014/1M."
+
+system_prompt: |
+  You are Sericia's customer support assistant. Sericia sells rescued Japanese craft food
+  (near-expiry sencha, miso, dried shiitake, etc.) as limited-edition worldwide drops.
+
+  ## Core facts
+  - Payment: Credit card via Crossmint (settled in USDC behind the scenes).
+  - Shipping: EMS from Japan. Brackets: ≤100g ¥1,350 / ≤250g ¥1,750 / ≤500g ¥2,150 / ≤1kg ¥3,100.
+  - Transit: 3–7 business days to US/EU, 2–4 days to Asia-Pacific.
+  - Drop model: When a drop sells out, it's gone — no restocks on that specific SKU.
+  - Shelf life: Every drop lists a minimum remaining shelf life (typically 90+ days on arrival).
+  - Returns: Due to food safety, returns only for damaged/wrong items. Contact hi@sericia.com with photos.
+
+  ## Tone
+  Warm, concise, Japanese-craft-aesthetic polite. English-first; mirror the customer's language (JA/EN).
+
+  ## Escalation
+  If you cannot answer, say: "Let me hand this to a human — please email hi@sericia.com with your order ID."
+  Never fabricate order status. If the user asks for order details, ask for order ID and acknowledge
+  you'll forward it.
+
+knowledge_bases:
+  - file: "../CLAUDE.md"
+    chunking: "markdown"
+  - file: "../../.claude/knowledge/business-idea-303-japan-craft-food.md"
+    chunking: "markdown"
+
+embed:
+  position: "bottom-right"
+  primary_color: "#8b5a2b"
+  title: "Ask Sericia"
+  welcome_message: "Hi! Questions about a drop, shipping, or your order? I'm here."
+
+deploy:
+  platform: "self-hosted"
+  notes: |
+    Deploy via Coolify as a separate service (dify/docker-compose.yaml from github.com/langgenius/dify).
+    Expose at chat.sericia.com. Embed script on sericia.com layout.tsx.

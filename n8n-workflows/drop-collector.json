@@ -1,0 +1,106 @@
+{
+  "name": "Sericia — Drop Collector (3-layer product pipeline)",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 6 }] } },
+      "id": "cron",
+      "name": "Every 6h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://kuradashi.jp/search?category=craft",
+        "options": { "timeout": 30000 }
+      },
+      "id": "layer1-kuradashi",
+      "name": "Layer 1: KURADASHI + Otameshi scrape",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 200],
+      "notes": "Use Playwright service for JS-rendered lists. Target near-expiry craft food with >70% profit tier potential."
+    },
+    {
+      "parameters": {
+        "url": "https://thebase.in/search?q=craft-food",
+        "options": { "timeout": 30000 }
+      },
+      "id": "layer2-base",
+      "name": "Layer 2: BASE calcOptimalOrder scan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "notes": "For each shop: detect free-shipping threshold and autocompute optimal order quantity. Drop if no threshold OR threshold > $200 USD equivalent."
+    },
+    {
+      "parameters": {
+        "url": "https://www.amazon.com/gp/goldbox",
+        "options": { "timeout": 30000 }
+      },
+      "id": "layer3-amzus",
+      "name": "Layer 3: Amazon US filter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 400],
+      "notes": "Reject any SKU already listed on Amazon US at <30% markup vs JP price (arbitrage dead)."
+    },
+    {
+      "parameters": {
+        "functionCode": "// Profit tier classifier\nconst items = $input.all();\nconst PROFIT_TIERS = { SS: 0.85, S: 0.80, A: 0.75, B: 0.70 };\nconst EMS = [{max:100,jpy:1350},{max:250,jpy:1750},{max:500,jpy:2150},{max:1000,jpy:3100}];\nconst usdJpy = 150;\n\nfunction ems(gram){ return (EMS.find(b => gram <= b.max) || {jpy:4000}).jpy; }\nfunction tier(margin){ if(margin>=0.85) return 'SS'; if(margin>=0.80) return 'S'; if(margin>=0.75) return 'A'; if(margin>=0.70) return 'B'; return 'OUT'; }\n\nreturn items.map(i => {\n  const d = i.json;\n  const costJpy = d.cost_jpy || 0;\n  const weightG = d.weight_g || 500;\n  const priceUsd = d.price_usd || 0;\n  const revenueJpy = priceUsd * usdJpy;\n  const totalCost = costJpy + ems(weightG) + 300; // +300 packaging\n  const margin = (revenueJpy - totalCost) / revenueJpy;\n  return { json: { ...d, margin, tier: tier(margin), ems_jpy: ems(weightG) } };\n}).filter(x => x.json.tier !== 'OUT');"
+      },
+      "id": "profit-classifier",
+      "name": "Profit tier classifier (SS/S/A/B)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "select": "channel",
+        "channelId": "C0A9SPSTL4X",
+        "text": "=🗾 Sericia Drop candidates ready: {{ $json.count }} items, tiers={{ $json.tiers }}. Approve to post?",
+        "otherOptions": {}
+      },
+      "id": "slack-approval",
+      "name": "Slack approval (Block Kit)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [980, 300],
+      "notes": "Block Kit with Approve/Reject buttons. On Approve -> POST to Medusa /admin/products."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.sericia.com/admin/products",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{ $env.MEDUSA_ADMIN_TOKEN }}" }] },
+        "sendBody": true,
+        "bodyParameters": { "parameters": [] }
+      },
+      "id": "medusa-create",
+      "name": "Create Medusa product (on approve)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1240, 300]
+    }
+  ],
+  "connections": {
+    "Every 6h": {
+      "main": [[
+        { "node": "Layer 1: KURADASHI + Otameshi scrape", "type": "main", "index": 0 },
+        { "node": "Layer 2: BASE calcOptimalOrder scan", "type": "main", "index": 0 },
+        { "node": "Layer 3: Amazon US filter", "type": "main", "index": 0 }
+      ]]
+    },
+    "Layer 1: KURADASHI + Otameshi scrape": { "main": [[{ "node": "Profit tier classifier (SS/S/A/B)", "type": "main", "index": 0 }]] },
+    "Layer 2: BASE calcOptimalOrder scan": { "main": [[{ "node": "Profit tier classifier (SS/S/A/B)", "type": "main", "index": 0 }]] },
+    "Layer 3: Amazon US filter": { "main": [[{ "node": "Profit tier classifier (SS/S/A/B)", "type": "main", "index": 0 }]] },
+    "Profit tier classifier (SS/S/A/B)": { "main": [[{ "node": "Slack approval (Block Kit)", "type": "main", "index": 0 }]] },
+    "Slack approval (Block Kit)": { "main": [[{ "node": "Create Medusa product (on approve)", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "sericia" }, { "name": "drop-pipeline" }]
+}
