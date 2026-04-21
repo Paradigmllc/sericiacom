@@ -193,16 +193,27 @@ Crossmint決済完了
 → Resend でメール送信
 ```
 
-### 環境変数（s10-1に実値）
+### 環境変数（実値はreference_api_keys.md参照）
 
 ```
-DATABASE_URL=postgresql://medusa:***@postgres:5432/medusa
-REDIS_URL=redis://redis:6379
-JWT_SECRET=***
-COOKIE_SECRET=***
-CROSSMINT_API_KEY=***
-RESEND_API_KEY=***
+DATABASE_URL=postgres://medusa:***@h128il6uh7sxdkb5s3w0vuz7:5432/medusa
+REDIS_URL=redis://default:***@yau9i5yafa98tc8dm8ag5kmp:6379/0
+JWT_SECRET=（Medusa生成時に設定）
+COOKIE_SECRET=（同上）
+CROSSMINT_API_KEY=（Crossmint dashboard取得）
+RESEND_API_KEY=（Coolify設定済み・共通）
 ```
+
+### Coolify構築済みリソース（2026-04-21）
+
+| リソース | UUID | 状態 |
+|---------|------|------|
+| Server (This Machine) | `s2d9yizjphbvw93sg21l7wly` | ✅ reachable |
+| Project sericia | `qnry7poqtz364qhgupfq4c0k` | ✅ 作成済み |
+| PostgreSQL | `h128il6uh7sxdkb5s3w0vuz7` | ✅ instant_deploy |
+| Redis | `yau9i5yafa98tc8dm8ag5kmp` | ✅ instant_deploy |
+| Medusa Backend | 未構築 | 次回: ソースコードscaffold→GitHub push→Coolifyでデプロイ |
+| Next.js Storefront | 未構築 | Medusa後 |
 
 ---
 
