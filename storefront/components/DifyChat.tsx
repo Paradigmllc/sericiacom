@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const DIFY_TOKEN = process.env.NEXT_PUBLIC_DIFY_TOKEN || "WnX69EkeJYork2rTBtbB3wnY";
-
 /**
  * Dify chatbot with a resilient two-tier rendering strategy:
  *
@@ -13,13 +11,29 @@ const DIFY_TOKEN = process.env.NEXT_PUBLIC_DIFY_TOKEN || "WnX69EkeJYork2rTBtbB3w
  *    render our own floating button + iframe panel. This guarantees the
  *    chatbot is reachable even if `udify.app/embed.min.js` is blocked,
  *    throws on initialisation, or the CDN has issues.
+ *
+ * Graceful degradation: if NEXT_PUBLIC_DIFY_TOKEN is not set, render nothing
+ * (previously we hard-coded a fallback token which Dify now 404s on, surfacing
+ * a loud "App with code X not found" toast on the live site). Rule V: no silent
+ * env fallbacks — emit a warning once and bail cleanly.
  */
+const DIFY_TOKEN = process.env.NEXT_PUBLIC_DIFY_TOKEN;
+
 export default function DifyChat() {
   const [fallbackMode, setFallbackMode] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!DIFY_TOKEN) {
+      // Only warn once per page load. Visitors see no chat button at all,
+      // which is the correct UX while the Dify app is being provisioned.
+      if (!(window as unknown as { __sericiaDifyWarned?: boolean }).__sericiaDifyWarned) {
+        console.warn("[dify] NEXT_PUBLIC_DIFY_TOKEN is not set — chat disabled. Set it in Coolify → Storefront env vars.");
+        (window as unknown as { __sericiaDifyWarned?: boolean }).__sericiaDifyWarned = true;
+      }
+      return;
+    }
     if (document.getElementById(DIFY_TOKEN)) return;
 
     (window as unknown as { difyChatbotConfig: { token: string } }).difyChatbotConfig = {
@@ -61,6 +75,7 @@ export default function DifyChat() {
     };
   }, []);
 
+  if (!DIFY_TOKEN) return null;
   if (!fallbackMode) return null;
 
   return (

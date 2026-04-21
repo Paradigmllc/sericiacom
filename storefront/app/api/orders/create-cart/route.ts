@@ -3,6 +3,26 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { supabaseServer } from "@/lib/supabase-server";
 import { sendEmail, orderConfirmationEmail } from "@/lib/email";
+import { getProductsByIds } from "@/lib/products";
+
+/**
+ * Cart checkout → sericia_orders creation.
+ *
+ * M4a-2 (2026-04-21): rewired prices & stock to Medusa Store API as the source
+ * of truth. `sericia_orders` remains the transactional ledger (Crossmint reads
+ * `amount_usd` from this row to build the Stripe session), but the legacy
+ * `sericia_products` table is no longer consulted.
+ *
+ * Inventory decrement: NOT done here. Per Medusa's model, inventory is
+ * decremented on payment success via `medusa-backend/src/subscribers/order-placed.ts`
+ * (see M4a-4). The small race window (two buyers hitting "Continue to payment"
+ * at the same time on low-stock items) is acceptable at launch traffic and is
+ * gated by the current inventory_quantity check below.
+ *
+ * Notifications: emits `order_created` event to sericia_events AND fires a
+ * Slack webhook (Rule N: DB bell + Slack both-channel). Slack failure is soft —
+ * checkout must not block on Slack outages.
+ */
 
 const ItemSchema = z.object({
   product_id: z.string().min(1).max(100),
@@ -25,6 +45,62 @@ const Schema = z.object({
   utm_campaign: z.string().max(100).optional().nullable(),
 });
 
+async function notifySlackOrderCreated(payload: {
+  order_id: string;
+  email: string;
+  full_name: string;
+  amount_usd: number;
+  country_code: string;
+  item_names: string[];
+}) {
+  const webhook = process.env.SLACK_WEBHOOK_URL;
+  if (!webhook) {
+    console.warn("[orders/create-cart] SLACK_WEBHOOK_URL not set — skipping Slack notify");
+    return;
+  }
+  try {
+    const body = {
+      text: `🛍️ New Sericia order · $${payload.amount_usd} · ${payload.country_code}`,
+      blocks: [
+        {
+          type: "header",
+          text: { type: "plain_text", text: `🛍️ Sericia order reserved — $${payload.amount_usd}` },
+        },
+        {
+          type: "section",
+          fields: [
+            { type: "mrkdwn", text: `*Buyer:*\n${payload.full_name}` },
+            { type: "mrkdwn", text: `*Email:*\n${payload.email}` },
+            { type: "mrkdwn", text: `*Country:*\n${payload.country_code}` },
+            { type: "mrkdwn", text: `*Order ID:*\n\`${payload.order_id.slice(0, 8)}\`` },
+          ],
+        },
+        {
+          type: "section",
+          text: { type: "mrkdwn", text: `*Items:*\n• ${payload.item_names.join("\n• ")}` },
+        },
+        {
+          type: "context",
+          elements: [
+            {
+              type: "mrkdwn",
+              text: `_Status: pending payment. Crossmint will mark paid when Stripe confirms._`,
+            },
+          ],
+        },
+      ],
+    };
+    await fetch(webhook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(5_000),
+    });
+  } catch (err) {
+    console.error("[orders/create-cart] slack failed (non-fatal)", err);
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const json = await req.json().catch(() => null);
@@ -34,18 +110,14 @@ export async function POST(req: NextRequest) {
     }
     const input = parsed.data;
 
-    // Fetch products from DB (authoritative prices and stock)
+    // Fetch products from Medusa (authoritative prices + stock). Product IDs
+    // in the cart store are now Medusa prod_* IDs via the facade cutover.
     const productIds = input.items.map((i) => i.product_id);
-    const { data: products, error: prodErr } = await supabaseAdmin
-      .from("sericia_products")
-      .select("*")
-      .in("id", productIds);
-    if (prodErr) {
-      console.error("[orders/create-cart] fetch products failed", prodErr);
-      return NextResponse.json({ error: "products_fetch_failed", detail: prodErr.message }, { status: 500 });
-    }
-    if (!products || products.length !== productIds.length) {
-      return NextResponse.json({ error: "product_not_found" }, { status: 404 });
+    const products = await getProductsByIds(productIds);
+    if (products.length !== productIds.length) {
+      const found = new Set(products.map((p) => p.id));
+      const missing = productIds.find((id) => !found.has(id));
+      return NextResponse.json({ error: "product_not_found", product_id: missing ?? null }, { status: 404 });
     }
 
     // Validate stock and compute total
@@ -152,17 +224,7 @@ export async function POST(req: NextRequest) {
       }, { status: 500 });
     }
 
-    // Decrement stock
-    for (const line of input.items) {
-      const product = products.find((p) => p.id === line.product_id);
-      if (!product) continue;
-      await supabaseAdmin
-        .from("sericia_products")
-        .update({ stock: Math.max(0, product.stock - line.quantity), updated_at: new Date().toISOString() })
-        .eq("id", product.id);
-    }
-
-    // Event
+    // Event log (Rule N half #1: DB bell)
     await supabaseAdmin.from("sericia_events").insert({
       event_name: "order_created",
       distinct_id: input.email.toLowerCase().trim(),
@@ -173,6 +235,19 @@ export async function POST(req: NextRequest) {
       utm_campaign: input.utm_campaign ?? null,
       properties: { amount_usd: totalUsd, quantity: totalQty, type: "cart", user_id: userId },
     });
+
+    // Rule N half #2: Slack — fire-and-forget, non-blocking
+    notifySlackOrderCreated({
+      order_id: order.id,
+      email: input.email.toLowerCase().trim(),
+      full_name: input.full_name.trim(),
+      amount_usd: totalUsd,
+      country_code: input.country_code.toUpperCase(),
+      item_names: itemsPayload.map((it) => {
+        const snap = it.product_snapshot as { name: string };
+        return `${snap.name} × ${it.quantity}`;
+      }),
+    }).catch((e) => console.error("[orders/create-cart] slack notify exception", e));
 
     // Send order confirmation email (best-effort)
     try {

@@ -18,7 +18,7 @@
 | ★★☆☆☆ | 12 | [🌐 ドメイン・商標](#s12) | sericia.com取得予定 |
 | ★☆☆☆☆ | 13 | [📚 リソース一覧](#s13) | 未整備 |
 | ★★★★☆ | 14 | [🧠 壁打ち詳細メモ](#s14) | 仕入れTier/EMS最適化/非採用/Phase戦略 |
-| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3/M4a-1完了・i18nホットフィックス済み / M4a-2以降待機（2026-04-21〜） |
+| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3/M4a-1/M4a-2 + Dify hotfix完了 / M4a-3以降実装中（2026-04-21〜） |
 
 ⚠️ **要強化**: 6(法的) / 10(運用) / 13(リソース)
 
@@ -596,7 +596,11 @@ Ships within 14 days from Japan.
 | **M2** | PayloadCMS v3 インストール（7 collections + 2 globals + 6 blocks） | ✅ 完了 | `db83336b` | ビルド成功・要Coolify env 設定 + migrate + bootstrap |
 | **M3** | Medusa v2 起動（9 regions + 4 products + Coolifyデプロイ） | ✅ 完了 | `46384141`, `6737fd61` | `api.sericia.com/health` 200 / `/store/regions` 9件 / `/store/products` 4件 / `/admin` JWT 200 |
 | **M4a-1** | storefront products facade → Medusa（listing/PDP/search-index の data source 切替 + Strategy B カテゴリ紐付け 4 products） | ✅ 完了 | `40d7b9e6`, `f858ac5c` | `/store/products` 4件にカテゴリ付き（tea/miso/mushroom/seasoning）/ Coolify storefront の env vars 待ち |
-| **M4a-2** | checkout rewrite（`/api/orders/create-cart` を Medusa cart API 経由に移行 + admin UI 廃止誘導） | ⏸️ 待機 | — | — |
+| **M4a-2** | checkout rewrite（`/api/orders/create-cart` を Medusa 価格・在庫ソースに切替 / Crossmint 保持） | ✅ 完了 | (this commit) | `getProductsByIds()` 経由で Medusa が prices + stock の source of truth / sericia_orders は受注台帳として残し Crossmint は無変更 / Slack webhook on order_created 追加（Rule N 準拠） |
+| **M4a-Dify hotfix** | 本番 sericia.com に表示されていた "App with code WnX69... not found" トーストを除去（DifyChat.tsx のハードコード fallback token を削除） | ✅ 完了 | (this commit) | `NEXT_PUBLIC_DIFY_TOKEN` 未設定時は何もレンダーしない graceful degradation（Rule V 準拠） |
+| **M4a-3** | Medusa subscriber `order-placed.ts` → Resend + Slack + Supabase `sericia_orders` status 同期 + 在庫 decrement | 🚧 実装中 | — | — |
+| **M4a-4** | n8n ワークフロー JSON コミット（abandoned-cart / low-stock / welcome / post-purchase review 要請）| 🚧 実装中 | — | — |
+| **M4a-5** | Dify knowledge base 初期シード（shipping / ingredients / ingredients / FAQ / refund policy）| 🚧 実装中 | — | — |
 | **M4b-f** | Payload 配線 / 共通サイドバー / Aesopヒーロー・桜・赤ハート・マーケ / アラビア語RTL / PWA・SEO | ⏸️ 待機 | — | — |
 | **M5** | pSEO 量産基盤（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル） | ⏸️ 待機 | — | — |
 
