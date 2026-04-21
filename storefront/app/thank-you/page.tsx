@@ -1,5 +1,7 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import SiteHeader from "../../components/SiteHeader";
+import SiteFooter from "../../components/SiteFooter";
+import { Container, Eyebrow, Button, Rule } from "../../components/ui";
 
 export const metadata: Metadata = {
   title: "Thank you",
@@ -9,21 +11,59 @@ export const metadata: Metadata = {
 export default async function ThankYouPage({ searchParams }: { searchParams: Promise<{ order?: string }> }) {
   const { order } = await searchParams;
   return (
-    <main className="min-h-screen bg-sericia-paper text-sericia-ink flex items-center justify-center p-6">
-      <div className="max-w-lg bg-white rounded-2xl border border-sericia-ink/10 p-10 text-center">
-        <p className="text-sericia-accent uppercase tracking-[0.2em] text-xs mb-4">Order confirmed</p>
-        <h1 className="text-3xl font-serif mb-4">Thank you for rescuing Japan&apos;s craft food.</h1>
-        <p className="text-sericia-ink/70 mb-2">
-          We&apos;ve sent a confirmation to your email. Your drop ships from Japan within 48 hours with EMS tracking.
-        </p>
-        {order && <p className="text-xs text-sericia-ink/50 font-mono mb-6">Order {order}</p>}
-        <p className="text-sm text-sericia-ink/70 mb-8">
-          Next drop arrives in ~2 weeks. Watch your inbox for the early-access email.
-        </p>
-        <Link href="/guides" className="inline-block underline text-sericia-accent">
-          Browse country shipping guides →
-        </Link>
-      </div>
-    </main>
+    <>
+      <SiteHeader />
+      <section className="border-b border-sericia-line bg-sericia-paper-card">
+        <Container size="wide" className="py-20 md:py-28 text-center">
+          <Eyebrow>Order confirmed</Eyebrow>
+          <h1 className="text-[40px] md:text-[56px] leading-[1.08] font-normal tracking-tight max-w-3xl mx-auto">
+            Thank you for rescuing Japan&apos;s craft food.
+          </h1>
+          <p className="text-[17px] text-sericia-ink-soft mt-8 max-w-prose mx-auto leading-relaxed">
+            A confirmation has been sent to your email. Your drop ships from Kyoto within forty-eight hours
+            with EMS worldwide tracking.
+          </p>
+          {order && (
+            <p className="text-[12px] text-sericia-ink-mute mt-6 tracking-wider uppercase">
+              Order reference — {order}
+            </p>
+          )}
+        </Container>
+      </section>
+
+      <Container size="narrow" className="py-20 md:py-28">
+        <div className="grid md:grid-cols-3 gap-10 md:gap-16 text-center">
+          <div>
+            <p className="label mb-3">One</p>
+            <h3 className="text-[18px] font-normal mb-3">Confirmation</h3>
+            <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
+              Check your inbox for the order summary and receipt.
+            </p>
+          </div>
+          <div>
+            <p className="label mb-3">Two</p>
+            <h3 className="text-[18px] font-normal mb-3">Tracking</h3>
+            <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
+              EMS tracking is emailed within forty-eight hours of dispatch.
+            </p>
+          </div>
+          <div>
+            <p className="label mb-3">Three</p>
+            <h3 className="text-[18px] font-normal mb-3">Next drop</h3>
+            <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
+              Early access to the next curation arrives in your inbox in about two weeks.
+            </p>
+          </div>
+        </div>
+        <Rule className="mt-20 mb-12" />
+        <div className="text-center">
+          <Button href="/guides" variant="link">Browse country shipping guides</Button>
+          <div className="mt-10">
+            <Button href="/" variant="outline">Return to Sericia</Button>
+          </div>
+        </div>
+      </Container>
+      <SiteFooter />
+    </>
   );
 }

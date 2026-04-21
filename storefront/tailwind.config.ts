@@ -4,11 +4,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        sericia: { ink: "#1a1a1a", paper: "#faf7f2", accent: "#8b5a2b" },
+        sericia: {
+          paper: "#f5f0e8",
+          "paper-deep": "#ebe4d4",
+          "paper-card": "#faf6ee",
+          ink: "#21231d",
+          "ink-soft": "#4a4c44",
+          "ink-mute": "#7b7d73",
+          line: "#d4cfc4",
+          accent: "#5c5d45",
+        },
       },
       fontFamily: {
-        serif: ['"Noto Serif JP"', "Georgia", "serif"],
-        sans: ['"Inter"', "system-ui", "sans-serif"],
+        sans: ['"Noto Sans"', '"Noto Sans JP"', "system-ui", "sans-serif"],
+        serif: ['"Noto Sans"', '"Noto Sans JP"', "system-ui", "sans-serif"],
+      },
+      letterSpacing: {
+        label: "0.18em",
+        wider2: "0.22em",
+      },
+      maxWidth: {
+        prose: "62ch",
       },
     },
   },

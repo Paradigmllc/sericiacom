@@ -1,5 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import SiteHeader from "../../components/SiteHeader";
+import SiteFooter from "../../components/SiteFooter";
+import { Container, PageHero } from "../../components/ui";
 
 export const metadata: Metadata = {
   title: "Japanese Food Tools — EMS Calculator, Matcha Grader, Miso Finder | Sericia",
@@ -8,26 +11,62 @@ export const metadata: Metadata = {
 };
 
 const TOOLS = [
-  { href: "/tools/ems-calculator", title: "EMS Shipping Calculator", desc: "Estimate Japan Post EMS cost + transit to 23+ countries", icon: "📦" },
-  { href: "/tools/matcha-grade", title: "Matcha Grade Decoder", desc: "Ceremonial vs premium vs culinary — which matcha do you actually need?", icon: "🍵" },
-  { href: "/tools/miso-finder", title: "Miso Type Finder", desc: "White / red / awase — match the right miso to your dish", icon: "🥣" },
-  { href: "/tools/shelf-life", title: "Shelf-Life Checker", desc: "How long does miso / sencha / dried shiitake actually keep?", icon: "📅" },
+  {
+    href: "/tools/ems-calculator",
+    number: "One",
+    title: "EMS shipping calculator",
+    desc: "Estimate Japan Post EMS cost and transit times to twenty-three destinations worldwide.",
+  },
+  {
+    href: "/tools/matcha-grade",
+    number: "Two",
+    title: "Matcha grade decoder",
+    desc: "Ceremonial, premium, or culinary — understand which matcha grade you actually need.",
+  },
+  {
+    href: "/tools/miso-finder",
+    number: "Three",
+    title: "Miso type finder",
+    desc: "White, red, or awase — match the right miso to the dish you are cooking.",
+  },
+  {
+    href: "/tools/shelf-life",
+    number: "Four",
+    title: "Shelf-life checker",
+    desc: "How long miso, sencha, and dried shiitake actually keep once they arrive at your door.",
+  },
 ];
 
 export default function ToolsIndex() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16 font-serif">
-      <h1 className="mb-4 text-4xl font-bold">Sericia Tools</h1>
-      <p className="mb-10 text-lg text-sericia-ink/80">Free utilities for anyone buying authentic Japanese craft food.</p>
-      <div className="grid gap-5 md:grid-cols-2">
-        {TOOLS.map((t) => (
-          <Link key={t.href} href={t.href} className="rounded-xl border border-sericia-ink/10 bg-sericia-paper p-6 transition hover:border-sericia-accent hover:shadow-md">
-            <div className="mb-2 text-3xl">{t.icon}</div>
-            <h2 className="mb-1 text-xl font-semibold">{t.title}</h2>
-            <p className="text-sm text-sericia-ink/70">{t.desc}</p>
-          </Link>
-        ))}
-      </div>
-    </main>
+    <>
+      <SiteHeader />
+      <PageHero
+        eyebrow="Tools"
+        title="Small utilities for serious buyers."
+        lede="Free, focused calculators and guides. Each tool exists because we needed it ourselves and could not find a plain, honest version online."
+      />
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="grid md:grid-cols-2 gap-px bg-sericia-line">
+          {TOOLS.map((t) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              className="bg-sericia-paper-card p-10 md:p-12 hover:bg-sericia-paper transition-colors group"
+            >
+              <p className="label mb-6">{t.number}</p>
+              <h2 className="text-[24px] md:text-[28px] font-normal leading-snug mb-4 group-hover:text-sericia-accent transition-colors">
+                {t.title}
+              </h2>
+              <p className="text-[15px] text-sericia-ink-soft leading-relaxed max-w-prose">{t.desc}</p>
+              <p className="mt-8 text-[12px] tracking-wider uppercase text-sericia-ink-mute">
+                Open tool →
+              </p>
+            </Link>
+          ))}
+        </div>
+      </Container>
+      <SiteFooter />
+    </>
   );
 }

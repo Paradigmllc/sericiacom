@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { COUNTRIES } from "@/lib/pseo-matrix";
+import SiteHeader from "../../components/SiteHeader";
+import SiteFooter from "../../components/SiteFooter";
+import { Container, PageHero, SectionHeading, Rule } from "../../components/ui";
 
 export const metadata: Metadata = {
   title: "Shipping Information",
@@ -9,46 +12,116 @@ export const metadata: Metadata = {
 
 export default function ShippingPage() {
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16 font-serif text-sericia-ink prose prose-lg">
-      <h1>Shipping</h1>
-      <p><em>Last updated: April 2026</em></p>
+    <>
+      <SiteHeader />
+      <PageHero
+        eyebrow="Shipping"
+        title="From Japan to your door, within forty-eight hours of payment."
+        lede="Every Sericia drop is packed and dispatched from Japan Post within forty-eight hours of payment confirmation. We ship exclusively via EMS — Japan Post International Express — the fastest and most tracked option available from Japan."
+      />
 
-      <h2>From Japan, to your door — within 48 hours of payment</h2>
-      <p>Every Sericia drop is packed and dispatched from Japan Post within 48 hours of payment confirmation. We ship exclusively via <strong>EMS (Japan Post International Express)</strong> — the fastest and most tracked option available from Japan.</p>
+      <Container size="wide" className="py-20 md:py-28">
+        <SectionHeading eyebrow="Transit" title="How long it takes." />
+        <div className="grid md:grid-cols-2 gap-x-16 gap-y-10">
+          <div>
+            <p className="label mb-3">Fastest lanes — two to four business days</p>
+            <p className="text-[15px] text-sericia-ink-soft leading-relaxed">
+              United States, Canada, Singapore, Hong Kong.
+            </p>
+          </div>
+          <div>
+            <p className="label mb-3">Europe — three to five business days</p>
+            <p className="text-[15px] text-sericia-ink-soft leading-relaxed">
+              United Kingdom, Germany, France, Netherlands, and the wider EU.
+            </p>
+          </div>
+          <div>
+            <p className="label mb-3">Oceania — three to five business days</p>
+            <p className="text-[15px] text-sericia-ink-soft leading-relaxed">
+              Australia and New Zealand.
+            </p>
+          </div>
+          <div>
+            <p className="label mb-3">Elsewhere — four to seven business days</p>
+            <p className="text-[15px] text-sericia-ink-soft leading-relaxed">
+              All other EMS-serviced destinations.
+            </p>
+          </div>
+        </div>
+        <p className="text-[13px] text-sericia-ink-mute mt-12 max-w-prose">
+          Transit times are EMS published estimates. Customs delays can add one to five days.
+        </p>
+      </Container>
 
-      <h2>Transit times</h2>
-      <ul>
-        <li><strong>US, Canada, Singapore, Hong Kong</strong>: 2–4 business days</li>
-        <li><strong>UK, Germany, France, Netherlands</strong>: 3–5 business days</li>
-        <li><strong>Australia, New Zealand</strong>: 3–5 business days</li>
-        <li><strong>Other countries</strong>: 4–7 business days</li>
-      </ul>
-      <p>Transit times are EMS published estimates. Customs delays can add 1–5 days.</p>
+      <section className="border-t border-sericia-line bg-sericia-paper-card">
+        <Container size="wide" className="py-20 md:py-28">
+          <SectionHeading
+            eyebrow="Cost"
+            title="Shipping is included in the drop price."
+            lede="Ninety-five United States dollars, flat. No surprise fees at checkout."
+          />
+        </Container>
+      </section>
 
-      <h2>Shipping cost</h2>
-      <p>EMS shipping is <strong>included in the drop price</strong> ($95 USD flat). No surprise fees at checkout.</p>
+      <Container size="wide" className="py-20 md:py-28">
+        <SectionHeading
+          eyebrow="Customs"
+          title="Duties and import taxes."
+          lede="Your country may charge import duties, VAT, or food-import fees. These are paid by the recipient and are not included in the drop price."
+        />
+        <div className="grid md:grid-cols-2 gap-x-16 gap-y-8">
+          <div>
+            <p className="label mb-2">United States</p>
+            <p className="text-[15px] text-sericia-ink-soft">Typically no duty below $800 — de minimis threshold.</p>
+          </div>
+          <div>
+            <p className="label mb-2">United Kingdom</p>
+            <p className="text-[15px] text-sericia-ink-soft">Twenty percent VAT plus potential duty above £135.</p>
+          </div>
+          <div>
+            <p className="label mb-2">European Union</p>
+            <p className="text-[15px] text-sericia-ink-soft">Import VAT plus potential duty above €150.</p>
+          </div>
+          <div>
+            <p className="label mb-2">Australia</p>
+            <p className="text-[15px] text-sericia-ink-soft">Ten percent GST.</p>
+          </div>
+        </div>
+      </Container>
 
-      <h2>Customs & duties</h2>
-      <p>Your country may charge import duties, VAT, or food-import fees. These are paid by the recipient and are not included in the drop price. Thresholds vary:</p>
-      <ul>
-        <li>US: typically no duty under $800 (de minimis).</li>
-        <li>UK: 20% VAT + potential duty above £135.</li>
-        <li>EU: import VAT + potential duty above €150.</li>
-        <li>Australia: 10% GST.</li>
-      </ul>
+      <section className="border-t border-sericia-line bg-sericia-paper-card">
+        <Container size="wide" className="py-20 md:py-28">
+          <SectionHeading
+            eyebrow="Tracking"
+            title="Your EMS tracking number arrives by email."
+            lede="Within forty-eight hours of payment. Track at trackingmore.com or your national postal service."
+          />
+          <p>
+            <a href="https://global.trackingmore.com/" target="_blank" rel="noopener noreferrer" className="underline-link">
+              global.trackingmore.com
+            </a>
+          </p>
+        </Container>
+      </section>
 
-      <h2>Tracking</h2>
-      <p>You will receive an EMS tracking number by email within 48 hours of payment. Track at <a href="https://global.trackingmore.com/" target="_blank" rel="noopener noreferrer">trackingmore.com</a> or your national postal service.</p>
-
-      <h2>Per-country shipping guides</h2>
-      <p>Detailed guides with transit times, allowed items, and producer notes for each country:</p>
-      <ul>
-        {COUNTRIES.slice(0, 9).map((c) => (
-          <li key={c.code}>
-            <Link href={`/guides/${c.code}/sencha`}>Shipping to {c.name}</Link>
-          </li>
-        ))}
-      </ul>
-    </main>
+      <Container size="wide" className="py-20 md:py-28">
+        <SectionHeading
+          eyebrow="By country"
+          title="Per-country shipping guides."
+          lede="Detailed guides with transit times, allowed items, and producer notes for each destination we serve."
+        />
+        <ul className="grid md:grid-cols-3 gap-x-10 gap-y-4 max-w-3xl">
+          {COUNTRIES.slice(0, 9).map((c) => (
+            <li key={c.code}>
+              <Link href={`/guides/${c.code}/sencha`} className="underline-link text-[15px]">
+                Shipping to {c.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <Rule className="mt-16" />
+      </Container>
+      <SiteFooter />
+    </>
   );
 }

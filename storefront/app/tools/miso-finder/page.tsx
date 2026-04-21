@@ -1,55 +1,58 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import SiteHeader from "../../../components/SiteHeader";
+import SiteFooter from "../../../components/SiteFooter";
+import { Container, Eyebrow, Rule } from "../../../components/ui";
 
 type MisoType = "shiro" | "aka" | "awase" | "hatcho" | "saikyo";
 
 const DISHES = [
-  { val: "soup-light", label: "Light miso soup (breakfast)", pick: "shiro" as MisoType },
-  { val: "soup-hearty", label: "Hearty winter miso soup", pick: "aka" as MisoType },
-  { val: "ramen", label: "Miso ramen broth", pick: "awase" as MisoType },
-  { val: "glaze", label: "Fish / eggplant glaze", pick: "saikyo" as MisoType },
-  { val: "marinade", label: "Meat marinade", pick: "hatcho" as MisoType },
-  { val: "dressing", label: "Salad dressing / dip", pick: "shiro" as MisoType },
-  { val: "pickle", label: "Vegetable pickling (miso-zuke)", pick: "saikyo" as MisoType },
-  { val: "stew", label: "Slow-cooked stew", pick: "hatcho" as MisoType },
+  { val: "soup-light", label: "Light miso soup for breakfast.", pick: "shiro" as MisoType },
+  { val: "soup-hearty", label: "Hearty winter miso soup.", pick: "aka" as MisoType },
+  { val: "ramen", label: "Miso ramen broth.", pick: "awase" as MisoType },
+  { val: "glaze", label: "Fish or eggplant glaze.", pick: "saikyo" as MisoType },
+  { val: "marinade", label: "Meat marinade.", pick: "hatcho" as MisoType },
+  { val: "dressing", label: "Salad dressing or dip.", pick: "shiro" as MisoType },
+  { val: "pickle", label: "Vegetable pickling — miso-zuke.", pick: "saikyo" as MisoType },
+  { val: "stew", label: "Slow-cooked stew.", pick: "hatcho" as MisoType },
 ];
 
 const MISO_INFO: Record<MisoType, { name: string; region: string; age: string; flavor: string; tip: string }> = {
   shiro: {
-    name: "Shiro Miso (白味噌 / White Miso)",
-    region: "Kyoto, Kansai region",
-    age: "2 weeks – 3 months",
-    flavor: "Sweet, mild, low salt. High rice-koji ratio.",
-    tip: "Don't boil — add after heat is off to preserve aroma & probiotics.",
+    name: "Shiro miso — 白味噌",
+    region: "Kyoto, Kansai region.",
+    age: "Two weeks to three months.",
+    flavor: "Sweet, mild, low salt. A high rice-koji ratio.",
+    tip: "Do not boil — add after the heat is off to preserve aroma and probiotics.",
   },
   aka: {
-    name: "Aka Miso (赤味噌 / Red Miso)",
-    region: "Northern / Eastern Japan",
-    age: "1 – 3 years",
-    flavor: "Deep umami, salty, robust. Longer fermentation = darker, stronger.",
-    tip: "Great for cold-weather dishes and rich broths.",
+    name: "Aka miso — 赤味噌",
+    region: "Northern and eastern Japan.",
+    age: "One to three years.",
+    flavor: "Deep umami, salty, robust. Longer fermentation — darker and stronger.",
+    tip: "At its best in cold-weather dishes and rich broths.",
   },
   awase: {
-    name: "Awase Miso (合わせ味噌 / Blended)",
-    region: "Nationwide household standard",
-    age: "Variable",
-    flavor: "Balanced — the safe all-purpose choice. Blend of shiro + aka.",
+    name: "Awase miso — 合わせ味噌",
+    region: "The nationwide household standard.",
+    age: "Variable.",
+    flavor: "Balanced — the safe all-purpose choice. A blend of shiro and aka.",
     tip: "If you only buy one miso, buy this.",
   },
   hatcho: {
-    name: "Hatcho Miso (八丁味噌)",
-    region: "Okazaki, Aichi (3 producers only)",
-    age: "2 – 3 years, soy-only (no rice)",
+    name: "Hatcho miso — 八丁味噌",
+    region: "Okazaki, Aichi — three producers only.",
+    age: "Two to three years, soy-only — no rice koji.",
     flavor: "Intensely dark, rich, slightly bitter. Protein-dense.",
-    tip: "Stew-friendly — holds up to long cooking where lighter miso breaks down.",
+    tip: "Stew-friendly — it holds up to long cooking where lighter miso breaks down.",
   },
   saikyo: {
-    name: "Saikyo Miso (西京味噌)",
-    region: "Kyoto",
-    age: "~1 month",
-    flavor: "Very sweet, creamy, pale yellow. Aka white miso's refined cousin.",
-    tip: "Classic fish marinade — coat silver cod for 2 days, grill.",
+    name: "Saikyo miso — 西京味噌",
+    region: "Kyoto.",
+    age: "About one month.",
+    flavor: "Very sweet, creamy, pale yellow. Aka white miso&apos;s refined cousin.",
+    tip: "The classic fish marinade — coat silver cod for two days, then grill.",
   },
 };
 
@@ -58,44 +61,70 @@ export default function MisoFinder() {
   const pick = DISHES.find((d) => d.val === dish)?.pick;
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-16 font-serif">
-      <nav className="mb-8 text-sm text-sericia-ink/60">
-        <Link href="/" className="hover:underline">Sericia</Link> / <Link href="/tools" className="hover:underline">Tools</Link> / Miso Finder
-      </nav>
+    <>
+      <SiteHeader />
+      <section className="border-b border-sericia-line bg-sericia-paper-card">
+        <Container size="wide" className="py-20 md:py-28">
+          <nav className="text-[12px] tracking-[0.18em] uppercase text-sericia-ink-mute mb-6">
+            <Link href="/" className="hover:text-sericia-ink">Sericia</Link>
+            <span className="mx-3">·</span>
+            <Link href="/tools" className="hover:text-sericia-ink">Tools</Link>
+            <span className="mx-3">·</span>
+            <span>Miso Finder</span>
+          </nav>
+          <Eyebrow>Tool three</Eyebrow>
+          <h1 className="text-[40px] md:text-[56px] leading-[1.08] font-normal tracking-tight max-w-4xl">
+            Miso type finder.
+          </h1>
+          <p className="mt-8 text-[18px] text-sericia-ink-soft max-w-prose leading-relaxed">
+            Japan has dozens of miso varieties. Pick the dish you are making and we will match the right one.
+          </p>
+        </Container>
+      </section>
 
-      <h1 className="mb-4 text-4xl font-bold">Miso Type Finder</h1>
-      <p className="mb-10 text-lg text-sericia-ink/80">
-        Japan has dozens of miso varieties. Pick the dish you're making and we'll match the right one.
-      </p>
-
-      <div className="rounded-xl border border-sericia-ink/10 bg-sericia-paper p-6">
-        <div className="mb-3 font-semibold">What are you making?</div>
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-          {DISHES.map((d) => (
-            <button key={d.val} onClick={() => setDish(d.val)}
-              className={`rounded-lg border p-3 text-left text-sm transition ${
-                dish === d.val
-                  ? "border-sericia-accent bg-sericia-accent/10"
-                  : "border-sericia-ink/10 bg-white hover:border-sericia-accent/30"
-              }`}>
-              {d.label}
-            </button>
-          ))}
+      <Container size="narrow" className="py-20 md:py-28">
+        <p className="label mb-6">What are you making?</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-sericia-line">
+          {DISHES.map((d) => {
+            const selected = dish === d.val;
+            return (
+              <button
+                key={d.val}
+                onClick={() => setDish(d.val)}
+                className={`text-left px-6 py-5 text-[15px] transition-colors ${
+                  selected ? "bg-sericia-ink text-sericia-paper" : "bg-sericia-paper-card hover:bg-sericia-paper"
+                }`}
+              >
+                {d.label}
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      {pick && (
-        <div className="mt-10 rounded-xl bg-sericia-accent/10 p-8">
-          <div className="mb-2 text-sm uppercase tracking-wider text-sericia-ink/60">Recommended</div>
-          <h2 className="mb-4 text-2xl font-bold text-sericia-accent">{MISO_INFO[pick].name}</h2>
-          <dl className="space-y-3 text-sm">
-            <div><dt className="font-semibold">Region:</dt><dd>{MISO_INFO[pick].region}</dd></div>
-            <div><dt className="font-semibold">Fermentation:</dt><dd>{MISO_INFO[pick].age}</dd></div>
-            <div><dt className="font-semibold">Flavor:</dt><dd>{MISO_INFO[pick].flavor}</dd></div>
-            <div><dt className="font-semibold">Pro tip:</dt><dd>{MISO_INFO[pick].tip}</dd></div>
-          </dl>
-        </div>
-      )}
-    </main>
+        {pick && (
+          <>
+            <Rule className="my-16" />
+            <Eyebrow>Recommended</Eyebrow>
+            <h2 className="text-[32px] md:text-[40px] font-normal tracking-tight leading-[1.15] mb-10">
+              {MISO_INFO[pick].name}
+            </h2>
+            <dl className="space-y-8">
+              {[
+                ["Region", MISO_INFO[pick].region],
+                ["Fermentation", MISO_INFO[pick].age],
+                ["Flavour", MISO_INFO[pick].flavor],
+                ["Pro tip", MISO_INFO[pick].tip],
+              ].map(([k, v]) => (
+                <div key={k} className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-6 border-b border-sericia-line pb-6">
+                  <dt className="label">{k}</dt>
+                  <dd className="text-[15px] text-sericia-ink-soft leading-relaxed">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </>
+        )}
+      </Container>
+      <SiteFooter />
+    </>
   );
 }

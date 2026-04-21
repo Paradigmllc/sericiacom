@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Noto_Sans, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import Analytics from "@/components/Analytics";
+import Analytics from "../components/Analytics";
+
+const notoSans = Noto_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-noto-sans",
+  display: "swap",
+});
+const notoSansJp = Noto_Sans_JP({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-noto-sans-jp",
+  display: "swap",
+});
 
 const DIFY_TOKEN = process.env.NEXT_PUBLIC_DIFY_TOKEN || "WnX69EkeJYork2rTBtbB3wnY";
 const SITE_URL = "https://sericia.com";
@@ -105,12 +119,12 @@ const websiteJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${notoSans.variable} ${notoSansJp.variable}`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       </head>
-      <body>
+      <body className="font-sans antialiased">
         {children}
         <Toaster position="top-right" richColors />
         <Analytics />
@@ -124,7 +138,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           defer
         />
         <style>{`
-          #dify-chatbot-bubble-button { background-color: #8b5a2b !important; }
+          #dify-chatbot-bubble-button { background-color: #5c5d45 !important; }
           #dify-chatbot-bubble-window { width: 24rem !important; height: 40rem !important; }
         `}</style>
       </body>

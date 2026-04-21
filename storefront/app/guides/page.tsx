@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { COUNTRIES, PRODUCTS } from "@/lib/pseo-matrix";
+import SiteHeader from "../../components/SiteHeader";
+import SiteFooter from "../../components/SiteFooter";
+import { Container, PageHero, Rule } from "../../components/ui";
 
 export const metadata: Metadata = {
   title: "Japanese Craft Food Guides by Country — Sericia",
@@ -11,30 +14,48 @@ export const metadata: Metadata = {
 
 export default function GuidesIndex() {
   return (
-    <main className="mx-auto max-w-5xl px-6 py-16 font-serif text-sericia-ink">
-      <h1 className="mb-4 text-4xl font-bold">Japanese Craft Food Guides</h1>
-      <p className="mb-12 text-lg text-sericia-ink/80">
-        Curated guides for buying authentic Japanese craft food, shipped directly from Japan.
-      </p>
-
-      {COUNTRIES.map((c) => (
-        <section key={c.code} className="mb-12">
-          <h2 className="mb-4 text-2xl font-semibold">
-            {c.flag} {c.name}
-          </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {PRODUCTS.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/guides/${c.code}/${p.slug}`}
-                className="rounded-lg border border-sericia-ink/10 bg-sericia-paper p-4 text-sm hover:border-sericia-accent hover:bg-sericia-accent/5"
-              >
-                {p.name}
-              </Link>
-            ))}
-          </div>
-        </section>
-      ))}
-    </main>
+    <>
+      <SiteHeader />
+      <PageHero
+        eyebrow="Guides"
+        title="Japanese craft food, country by country."
+        lede="Curated guides for buying authentic sencha, matcha, miso, shiitake, and yuzu — shipped directly from Japan. Read the destination notes before you order."
+      />
+      <Container size="wide" className="py-20 md:py-28">
+        {COUNTRIES.map((c, idx) => (
+          <section key={c.code} className={idx > 0 ? "mt-20" : ""}>
+            <div className="flex items-baseline justify-between mb-8">
+              <div>
+                <p className="label mb-3">Destination</p>
+                <h2 className="text-[28px] md:text-[32px] font-normal tracking-tight">
+                  <span className="mr-3">{c.flag}</span>{c.name}
+                </h2>
+              </div>
+              <p className="text-[12px] text-sericia-ink-mute tracking-wider uppercase hidden md:block">
+                {PRODUCTS.length} guides
+              </p>
+            </div>
+            <Rule className="mb-8" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px bg-sericia-line">
+              {PRODUCTS.map((p) => (
+                <Link
+                  key={p.slug}
+                  href={`/guides/${c.code}/${p.slug}`}
+                  className="bg-sericia-paper-card p-6 hover:bg-sericia-paper transition-colors group"
+                >
+                  <p className="text-[11px] tracking-[0.22em] uppercase text-sericia-ink-mute mb-3">
+                    {c.code.toUpperCase()} · {p.slug}
+                  </p>
+                  <p className="text-[17px] leading-snug group-hover:text-sericia-accent transition-colors">
+                    {p.name}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
+      </Container>
+      <SiteFooter />
+    </>
   );
 }

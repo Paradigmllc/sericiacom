@@ -76,7 +76,11 @@ export default function CheckoutForm({ dropId, amountUSD, title, defaultCountry 
       });
       const data = await res.json();
       if (!res.ok) {
-        toast.error(data?.error === "insufficient_inventory" ? "Sold out — this drop just sold its last unit" : "Could not create order. Please try again.");
+        toast.error(
+          data?.error === "insufficient_inventory"
+            ? "Sold out — this drop just sold its last unit"
+            : "Could not create order. Please try again.",
+        );
         console.error("[checkout] order create failed", data);
         setLoading(false);
         return;
@@ -90,62 +94,134 @@ export default function CheckoutForm({ dropId, amountUSD, title, defaultCountry 
     }
   }
 
-  const inputCls = "w-full px-4 py-3 rounded-lg border border-sericia-ink/20 bg-white focus:outline-none focus:ring-2 focus:ring-sericia-accent";
+  const inputCls =
+    "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[15px] placeholder-sericia-ink-mute transition-colors";
+  const labelCls = "label block mb-2";
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-7">
       <div>
-        <label className="block text-sm text-sericia-ink/70 mb-1">Email *</label>
-        <input type="email" required value={form.email} onChange={update("email")} className={inputCls} placeholder="you@example.com" autoComplete="email" />
+        <label className={labelCls}>Email address</label>
+        <input
+          type="email"
+          required
+          value={form.email}
+          onChange={update("email")}
+          className={inputCls}
+          placeholder="you@example.com"
+          autoComplete="email"
+        />
       </div>
       <div>
-        <label className="block text-sm text-sericia-ink/70 mb-1">Full name *</label>
-        <input type="text" required value={form.full_name} onChange={update("full_name")} className={inputCls} autoComplete="name" />
+        <label className={labelCls}>Full name</label>
+        <input
+          type="text"
+          required
+          value={form.full_name}
+          onChange={update("full_name")}
+          className={inputCls}
+          placeholder="First and last"
+          autoComplete="name"
+        />
       </div>
       <div>
-        <label className="block text-sm text-sericia-ink/70 mb-1">Address line 1 *</label>
-        <input type="text" required value={form.address_line1} onChange={update("address_line1")} className={inputCls} autoComplete="address-line1" />
+        <label className={labelCls}>Address line 1</label>
+        <input
+          type="text"
+          required
+          value={form.address_line1}
+          onChange={update("address_line1")}
+          className={inputCls}
+          placeholder="Street, number"
+          autoComplete="address-line1"
+        />
       </div>
       <div>
-        <label className="block text-sm text-sericia-ink/70 mb-1">Address line 2</label>
-        <input type="text" value={form.address_line2} onChange={update("address_line2")} className={inputCls} autoComplete="address-line2" />
+        <label className={labelCls}>Address line 2 <span className="text-sericia-ink-mute normal-case tracking-normal">— optional</span></label>
+        <input
+          type="text"
+          value={form.address_line2}
+          onChange={update("address_line2")}
+          className={inputCls}
+          placeholder="Apartment, suite, unit"
+          autoComplete="address-line2"
+        />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-8">
         <div>
-          <label className="block text-sm text-sericia-ink/70 mb-1">City *</label>
-          <input type="text" required value={form.city} onChange={update("city")} className={inputCls} autoComplete="address-level2" />
+          <label className={labelCls}>City</label>
+          <input
+            type="text"
+            required
+            value={form.city}
+            onChange={update("city")}
+            className={inputCls}
+            autoComplete="address-level2"
+          />
         </div>
         <div>
-          <label className="block text-sm text-sericia-ink/70 mb-1">State / Region</label>
-          <input type="text" value={form.region} onChange={update("region")} className={inputCls} autoComplete="address-level1" />
+          <label className={labelCls}>State / Region</label>
+          <input
+            type="text"
+            value={form.region}
+            onChange={update("region")}
+            className={inputCls}
+            autoComplete="address-level1"
+          />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-8">
         <div>
-          <label className="block text-sm text-sericia-ink/70 mb-1">Postal code *</label>
-          <input type="text" required value={form.postal_code} onChange={update("postal_code")} className={inputCls} autoComplete="postal-code" />
+          <label className={labelCls}>Postal code</label>
+          <input
+            type="text"
+            required
+            value={form.postal_code}
+            onChange={update("postal_code")}
+            className={inputCls}
+            autoComplete="postal-code"
+          />
         </div>
         <div>
-          <label className="block text-sm text-sericia-ink/70 mb-1">Country *</label>
-          <select required value={form.country_code} onChange={update("country_code")} className={inputCls}>
+          <label className={labelCls}>Country</label>
+          <select
+            required
+            value={form.country_code}
+            onChange={update("country_code")}
+            className={`${inputCls} cursor-pointer`}
+          >
             {COUNTRIES.map(([code, name]) => (
-              <option key={code} value={code}>{name}</option>
+              <option key={code} value={code}>
+                {name}
+              </option>
             ))}
           </select>
         </div>
       </div>
       <div>
-        <label className="block text-sm text-sericia-ink/70 mb-1">Phone (optional, for customs)</label>
-        <input type="tel" value={form.phone} onChange={update("phone")} className={inputCls} autoComplete="tel" />
+        <label className={labelCls}>Phone <span className="text-sericia-ink-mute normal-case tracking-normal">— for customs</span></label>
+        <input
+          type="tel"
+          value={form.phone}
+          onChange={update("phone")}
+          className={inputCls}
+          autoComplete="tel"
+        />
       </div>
-      <button type="submit" disabled={loading} className="w-full bg-sericia-ink text-sericia-paper py-4 rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50">
-        {loading ? "Reserving…" : `Continue to payment — $${amountUSD}`}
-      </button>
-      <p className="text-xs text-sericia-ink/50 text-center">
-        {title} · EMS worldwide · By continuing you agree to our{" "}
-        <a href="/terms" className="underline">Terms</a> and{" "}
-        <a href="/privacy" className="underline">Privacy Policy</a>.
-      </p>
+      <div className="pt-6">
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-sericia-ink text-sericia-paper py-5 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40"
+        >
+          {loading ? "Reserving…" : `Continue to payment — $${amountUSD}`}
+        </button>
+        <p className="text-[12px] text-sericia-ink-mute text-center mt-5 leading-relaxed">
+          {title} · EMS worldwide · By continuing you agree to our{" "}
+          <a href="/terms" className="underline-link">Terms</a> and{" "}
+          <a href="/privacy" className="underline-link">Privacy Policy</a>.
+        </p>
+      </div>
     </form>
   );
 }

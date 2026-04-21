@@ -3,14 +3,85 @@
 @tailwind utilities;
 
 :root {
-  --background: #faf7f2;
-  --foreground: #1a1a1a;
+  --background: #f5f0e8;
+  --foreground: #21231d;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "Noto Sans", "Noto Sans JP", system-ui, sans-serif;
+  font-weight: 300;
+  font-feature-settings: "ss01", "cv11", "kern";
+  line-height: 1.6;
+  letter-spacing: 0.005em;
 }
 
-h1, h2, h3 { font-family: "Noto Serif JP", Georgia, serif; }
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Noto Sans", "Noto Sans JP", system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  font-weight: 400;
+}
+
+.label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 500;
+  color: #4a4c44;
+}
+
+.rule {
+  border-top: 1px solid #d4cfc4;
+}
+
+.underline-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: #7b7d73;
+  transition: text-decoration-color 0.2s;
+}
+.underline-link:hover {
+  text-decoration-color: #21231d;
+}
+
+.prose-aesop p {
+  margin-bottom: 1.25em;
+  max-width: 62ch;
+}
+.prose-aesop h2 {
+  font-size: 1.75rem;
+  font-weight: 400;
+  margin-top: 2.5em;
+  margin-bottom: 0.8em;
+}
+.prose-aesop h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+.prose-aesop ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin-bottom: 1.25em;
+}
+.prose-aesop li { margin-bottom: 0.3em; }

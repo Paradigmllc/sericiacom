@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import SiteHeader from "../../components/SiteHeader";
+import SiteFooter from "../../components/SiteFooter";
+import { Container, PageHero } from "../../components/ui";
 
 export const metadata: Metadata = {
   title: "Refund & Returns",
@@ -7,41 +10,51 @@ export const metadata: Metadata = {
 
 export default function RefundPage() {
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16 font-serif text-sericia-ink prose prose-lg">
-      <h1>Refund & Returns</h1>
-      <p><em>Last updated: April 2026</em></p>
+    <>
+      <SiteHeader />
+      <PageHero
+        eyebrow="Legal"
+        title="Refund & Returns"
+        lede="Sericia drops are rescued, limited-quantity food products. Our policy is designed to be fair to both customers and producers. Last updated April 2026."
+      />
+      <Container size="narrow" className="py-20 md:py-28 prose-aesop">
+        <h2>Eligible for a full refund</h2>
+        <ul>
+          <li>Package damaged in transit, with a photograph sent within forty-eight hours of delivery.</li>
+          <li>Product spoiled on arrival.</li>
+          <li>Wrong item shipped.</li>
+          <li>Package lost by EMS, confirmed by Japan Post tracking.</li>
+        </ul>
 
-      <p>Sericia drops are rescued, limited-quantity food products. Our refund policy is designed to be fair to both customers and producers.</p>
+        <h2>Eligible for store credit</h2>
+        <ul>
+          <li>Not delivered within thirty days of dispatch due to customs delays, at our discretion.</li>
+        </ul>
 
-      <h2>✓ Full refund</h2>
-      <ul>
-        <li>Package damaged in transit (photo within 48h of delivery).</li>
-        <li>Product spoiled on arrival.</li>
-        <li>Wrong item shipped.</li>
-        <li>Package lost by EMS (confirmed by Japan Post tracking).</li>
-      </ul>
+        <h2>Not eligible for refund</h2>
+        <ul>
+          <li>Change of mind after dispatch.</li>
+          <li>Flavour preferences — products are described in detail on the drop page.</li>
+          <li>Customs duties or import fees charged by your country.</li>
+          <li>Incorrect address provided at checkout.</li>
+        </ul>
 
-      <h2>✓ Store credit</h2>
-      <ul>
-        <li>Not delivered within 30 days of dispatch due to customs delays (at our discretion).</li>
-      </ul>
+        <h2>How to request</h2>
+        <ol>
+          <li>
+            Write to{" "}
+            <a href="mailto:contact@sericia.com" className="underline-link">contact@sericia.com</a>{" "}
+            within seven days of delivery.
+          </li>
+          <li>Include your order reference and clear photographs.</li>
+          <li>We respond within forty-eight hours and process approved refunds within seven business days to the original payment method.</li>
+        </ol>
 
-      <h2>✗ Not eligible for refund</h2>
-      <ul>
-        <li>Change of mind after dispatch.</li>
-        <li>Flavor preferences (products are described in detail on the drop page).</li>
-        <li>Customs duties or import fees charged by your country.</li>
-        <li>Incorrect address provided at checkout.</li>
-      </ul>
-
-      <h2>How to request</h2>
-      <ol>
-        <li>Email <a href="mailto:contact@sericia.com">contact@sericia.com</a> within 7 days of delivery.</li>
-        <li>Include your order ID and clear photos.</li>
-        <li>We respond within 48 hours and process approved refunds within 7 business days to the original payment method.</li>
-      </ol>
-
-      <p className="text-sm text-sericia-ink/60">Refunds are issued in USD. Currency conversion differences are not refundable.</p>
-    </main>
+        <p className="text-[13px] text-sericia-ink-mute mt-8">
+          Refunds are issued in United States dollars. Currency conversion differences are not refundable.
+        </p>
+      </Container>
+      <SiteFooter />
+    </>
   );
 }

@@ -4,8 +4,11 @@ import Link from "next/link";
 import { supabase, type PseoArticle } from "@/lib/supabase";
 import { COUNTRIES, PRODUCTS } from "@/lib/pseo-matrix";
 import { formatPricePPP } from "@/lib/ppp";
+import SiteHeader from "../../../../components/SiteHeader";
+import SiteFooter from "../../../../components/SiteFooter";
+import { Container, Eyebrow, Rule, Button } from "../../../../components/ui";
 
-export const revalidate = 86400; // 24h ISR
+export const revalidate = 86400;
 export const dynamicParams = true;
 
 type Params = { country: string; product: string };
@@ -59,7 +62,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 }
 
 function mdToHtml(md: string): string {
-  // Minimal paragraph splitter — content is plain prose from DeepSeek, no complex MD
   return md
     .split(/\n{2,}/)
     .map((p) => `<p>${p.trim().replace(/\n/g, "<br/>")}</p>`)
@@ -102,57 +104,82 @@ export default async function GuidePage({ params }: { params: Promise<Params> })
   };
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16 font-serif text-sericia-ink">
+    <>
+      <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
 
-      <nav className="mb-8 text-sm text-sericia-ink/60">
-        <Link href="/" className="hover:underline">Sericia</Link>
-        <span className="mx-2">/</span>
-        <Link href="/guides" className="hover:underline">Guides</Link>
-        <span className="mx-2">/</span>
-        <span>{article.country_name}</span>
-        <span className="mx-2">/</span>
-        <span>{article.product_name}</span>
-      </nav>
+      <section className="border-b border-sericia-line bg-sericia-paper-card">
+        <Container size="wide" className="py-20 md:py-28">
+          <nav className="text-[12px] tracking-[0.18em] uppercase text-sericia-ink-mute mb-6">
+            <Link href="/" className="hover:text-sericia-ink">Sericia</Link>
+            <span className="mx-3">·</span>
+            <Link href="/guides" className="hover:text-sericia-ink">Guides</Link>
+            <span className="mx-3">·</span>
+            <span>{article.country_name}</span>
+            <span className="mx-3">·</span>
+            <span>{article.product_name}</span>
+          </nav>
+          <Eyebrow>{article.country_name} — {article.product_name}</Eyebrow>
+          <h1 className="text-[40px] md:text-[56px] leading-[1.08] font-normal tracking-tight max-w-4xl">
+            {article.title}
+          </h1>
+          <p className="mt-8 text-[18px] md:text-[19px] text-sericia-ink-soft max-w-prose leading-relaxed">
+            {article.meta_description}
+          </p>
+        </Container>
+      </section>
 
-      <h1 className="mb-6 text-4xl font-bold leading-tight">{article.title}</h1>
-      <p className="mb-10 text-lg text-sericia-ink/80">{article.meta_description}</p>
+      <Container size="narrow" className="py-20 md:py-28 prose-aesop">
+        <div dangerouslySetInnerHTML={{ __html: mdToHtml(article.intro_md) }} />
 
-      <section className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: mdToHtml(article.intro_md) }} />
+        <Rule className="my-16" />
+        <p className="label mb-4">Why Japanese</p>
+        <h2>Why Japanese {article.product_name}?</h2>
+        <div dangerouslySetInnerHTML={{ __html: mdToHtml(article.why_japanese_md) }} />
 
-      <h2 className="mt-12 mb-4 text-2xl font-semibold">Why Japanese {article.product_name}?</h2>
-      <section className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: mdToHtml(article.why_japanese_md) }} />
+        <Rule className="my-16" />
+        <p className="label mb-4">Shipping</p>
+        <h2>Shipping to {article.country_name}</h2>
+        <div dangerouslySetInnerHTML={{ __html: mdToHtml(article.shipping_info_md) }} />
 
-      <h2 className="mt-12 mb-4 text-2xl font-semibold">Shipping to {article.country_name}</h2>
-      <section className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: mdToHtml(article.shipping_info_md) }} />
+        <Rule className="my-16" />
+        <p className="label mb-4">Frequently asked</p>
+        <h2>Frequently asked questions.</h2>
+        <div className="not-prose space-y-px bg-sericia-line mt-6">
+          {article.faq.map((f, i) => (
+            <details key={i} className="bg-sericia-paper group">
+              <summary className="cursor-pointer py-6 flex items-baseline justify-between gap-6 list-none">
+                <span className="text-[17px] font-normal">{f.q}</span>
+                <span className="text-[24px] text-sericia-ink-mute group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p className="text-[15px] text-sericia-ink-soft pb-6 leading-relaxed max-w-prose">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </Container>
 
-      <h2 className="mt-12 mb-6 text-2xl font-semibold">Frequently Asked Questions</h2>
-      <div className="space-y-6">
-        {article.faq.map((f, i) => (
-          <details key={i} className="rounded-lg border border-sericia-ink/10 bg-sericia-paper p-4">
-            <summary className="cursor-pointer font-semibold">{f.q}</summary>
-            <p className="mt-3 text-sericia-ink/80">{f.a}</p>
-          </details>
-        ))}
-      </div>
-
-      <div className="mt-16 rounded-lg bg-sericia-accent/10 p-6 text-center">
-        <p className="mb-2 text-lg">Next drop arrives every 2 weeks — limited quantities, one-time releases.</p>
-        <p className="mb-4 text-sm text-sericia-ink/70">
-          Current drop: {formatPricePPP(95, country)} <span className="text-sericia-ink/50">(≈ $95 billed in USD · EMS worldwide)</span>
-        </p>
-        {article.related_drop_handle ? (
-          <Link href={`/drops/${article.related_drop_handle}`} className="inline-block rounded bg-sericia-accent px-6 py-3 text-white hover:bg-sericia-accent/90">
-            See Current Drop →
-          </Link>
-        ) : (
-          <Link href="/" className="inline-block rounded bg-sericia-accent px-6 py-3 text-white hover:bg-sericia-accent/90">
-            See Current Drop →
-          </Link>
-        )}
-      </div>
-    </main>
+      <section className="border-t border-sericia-line bg-sericia-paper-card">
+        <Container size="narrow" className="py-20 md:py-28 text-center">
+          <Eyebrow>Current drop</Eyebrow>
+          <h2 className="text-[28px] md:text-[36px] font-normal tracking-tight leading-tight mb-6">
+            Next drop every two weeks. Limited, one-time releases.
+          </h2>
+          <p className="text-[15px] text-sericia-ink-soft mb-10">
+            {formatPricePPP(95, country)}
+            <span className="text-sericia-ink-mute ml-3">— approximately $95, billed in USD, EMS worldwide included.</span>
+          </p>
+          <Button
+            href={article.related_drop_handle ? `/drops/${article.related_drop_handle}` : "/"}
+            variant="solid"
+            size="large"
+          >
+            See the current drop
+          </Button>
+        </Container>
+      </section>
+      <SiteFooter />
+    </>
   );
 }
