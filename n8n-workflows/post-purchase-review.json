@@ -1,0 +1,101 @@
+{
+  "name": "Sericia — Post-Purchase Review Request (T+3d after paid)",
+  "notes": "Runs daily; finds sericia_orders.status='paid' with paid_at between T-3d and T-4d and review_requested=false, sends a review-request email. Drives social proof UGC for landing pages and Google Merchant reviews.",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 24 }] } },
+      "id": "cron",
+      "name": "Every 24h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{$env.SUPABASE_HOST}}/rest/v1/rpc/list_review_targets",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Authorization", "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={ \"paid_days_ago\": 3, \"not_yet_requested\": true }",
+        "options": { "timeout": 15000 }
+      },
+      "id": "list-targets",
+      "name": "List T+3d paid orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "return $input.first().json.map(row => ({ json: {\n  email: row.email,\n  first_name: (row.full_name || '').split(' ')[0] || 'there',\n  order_id: row.id,\n  review_url: `https://sericia.com/review/${row.id}`\n}}));"
+      },
+      "id": "prep",
+      "name": "Prepare payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{$env.RESEND_API_KEY}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={\n  \"from\": \"Sericia <contact@sericia.com>\",\n  \"to\": $json.email,\n  \"subject\": \"How was your Sericia drop, \" + $json.first_name + \"?\",\n  \"html\": `<div style=\\\"font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2b221c\\\"><h1 style=\\\"font-weight:normal\\\">A small favour, ${$json.first_name}.</h1><p>Your Sericia drop arrived a few days ago. If it matched the story we told — the producer, the season, the flavour — would you share a line or two so other buyers can find us?</p><p style=\\\"margin:28px 0\\\"><a href=\\\"${$json.review_url}\\\" style=\\\"background:#b8860b;color:white;padding:12px 28px;text-decoration:none;border-radius:4px\\\">Leave a 30-second review →</a></p><p>If something fell short instead, tell us — we read every reply.</p><p style=\\\"color:#6b5e4f;font-size:13px;margin-top:32px\\\">— Sericia · <a href=\\\"mailto:contact@sericia.com\\\">contact@sericia.com</a></p></div>`\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "send",
+      "name": "Send review email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://{{$env.SUPABASE_HOST}}/rest/v1/sericia_orders?id=eq.{{$json.order_id}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Authorization", "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={ \"review_requested\": true, \"review_requested_at\": new Date().toISOString() }",
+        "options": { "timeout": 10000 }
+      },
+      "id": "mark",
+      "name": "Mark requested (idempotency)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300],
+      "notes": "Requires columns `review_requested bool default false, review_requested_at timestamptz` on sericia_orders."
+    }
+  ],
+  "connections": {
+    "Every 24h": { "main": [[{ "node": "List T+3d paid orders", "type": "main", "index": 0 }]] },
+    "List T+3d paid orders": { "main": [[{ "node": "Prepare payload", "type": "main", "index": 0 }]] },
+    "Prepare payload": { "main": [[{ "node": "Send review email", "type": "main", "index": 0 }]] },
+    "Send review email": { "main": [[{ "node": "Mark requested (idempotency)", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

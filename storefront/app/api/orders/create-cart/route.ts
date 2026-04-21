@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 import { supabaseServer } from "@/lib/supabase-server";
 import { sendEmail, orderConfirmationEmail } from "@/lib/email";
 import { getProductsByIds } from "@/lib/products";
+import { notifySlackOrderCreated } from "@/lib/slack";
 
 /**
  * Cart checkout → sericia_orders creation.
@@ -44,62 +45,6 @@ const Schema = z.object({
   utm_medium: z.string().max(100).optional().nullable(),
   utm_campaign: z.string().max(100).optional().nullable(),
 });
-
-async function notifySlackOrderCreated(payload: {
-  order_id: string;
-  email: string;
-  full_name: string;
-  amount_usd: number;
-  country_code: string;
-  item_names: string[];
-}) {
-  const webhook = process.env.SLACK_WEBHOOK_URL;
-  if (!webhook) {
-    console.warn("[orders/create-cart] SLACK_WEBHOOK_URL not set — skipping Slack notify");
-    return;
-  }
-  try {
-    const body = {
-      text: `🛍️ New Sericia order · $${payload.amount_usd} · ${payload.country_code}`,
-      blocks: [
-        {
-          type: "header",
-          text: { type: "plain_text", text: `🛍️ Sericia order reserved — $${payload.amount_usd}` },
-        },
-        {
-          type: "section",
-          fields: [
-            { type: "mrkdwn", text: `*Buyer:*\n${payload.full_name}` },
-            { type: "mrkdwn", text: `*Email:*\n${payload.email}` },
-            { type: "mrkdwn", text: `*Country:*\n${payload.country_code}` },
-            { type: "mrkdwn", text: `*Order ID:*\n\`${payload.order_id.slice(0, 8)}\`` },
-          ],
-        },
-        {
-          type: "section",
-          text: { type: "mrkdwn", text: `*Items:*\n• ${payload.item_names.join("\n• ")}` },
-        },
-        {
-          type: "context",
-          elements: [
-            {
-              type: "mrkdwn",
-              text: `_Status: pending payment. Crossmint will mark paid when Stripe confirms._`,
-            },
-          ],
-        },
-      ],
-    };
-    await fetch(webhook, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(5_000),
-    });
-  } catch (err) {
-    console.error("[orders/create-cart] slack failed (non-fatal)", err);
-  }
-}
 
 export async function POST(req: NextRequest) {
   try {

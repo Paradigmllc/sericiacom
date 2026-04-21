@@ -1,0 +1,90 @@
+{
+  "name": "Sericia — Low Stock Alert (hourly Medusa scan)",
+  "notes": "Cron every 1h: logs into Medusa admin, lists products, filters variants with inventory_quantity < 5, fires Slack to #all-paradigm. Rule N compliance — stockout surprises must surface before a buyer sees 'out of stock' on a PDP.",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 1 }] } },
+      "id": "cron",
+      "name": "Every 1h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.sericia.com/auth/user/emailpass",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={ \"email\": $env.MEDUSA_ADMIN_EMAIL, \"password\": $env.MEDUSA_ADMIN_PASSWORD }",
+        "options": { "timeout": 10000 }
+      },
+      "id": "medusa-login",
+      "name": "Medusa admin login",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.sericia.com/admin/products?fields=id,title,variants.id,variants.title,variants.inventory_quantity&limit=100",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{$json.token}}" }
+          ]
+        },
+        "options": { "timeout": 20000 }
+      },
+      "id": "list-products",
+      "name": "List products",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Flatten variants, filter inventory_quantity < 5\nconst threshold = 5;\nconst low = [];\nfor (const p of ($input.first().json.products || [])) {\n  for (const v of (p.variants || [])) {\n    if ((v.inventory_quantity ?? 0) < threshold) {\n      low.push({ product: p.title, variant: v.title, qty: v.inventory_quantity });\n    }\n  }\n}\nif (low.length === 0) return [];\nreturn [{ json: { low, count: low.length } }];"
+      },
+      "id": "filter-low",
+      "name": "Filter < 5 in stock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SLACK_WEBHOOK_URL}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={\n  \"text\": `⚠️ Sericia low stock — ${$json.count} variants under 5`,\n  \"blocks\": [\n    { \"type\": \"header\", \"text\": { \"type\": \"plain_text\", \"text\": `⚠️ Low stock alert — ${$json.count} variants` } },\n    { \"type\": \"section\", \"text\": { \"type\": \"mrkdwn\", \"text\": $json.low.map(l => `• *${l.product}* (${l.variant}) — ${l.qty} left`).join(\"\\n\") } },\n    { \"type\": \"context\", \"elements\": [{ \"type\": \"mrkdwn\", \"text\": \"_Restock / pull listing / bump price — buyers hit stock walls fast on small drops._\" }] }\n  ]\n}",
+        "options": { "timeout": 5000 }
+      },
+      "id": "slack-notify",
+      "name": "Slack #all-paradigm",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Every 1h": { "main": [[{ "node": "Medusa admin login", "type": "main", "index": 0 }]] },
+    "Medusa admin login": { "main": [[{ "node": "List products", "type": "main", "index": 0 }]] },
+    "List products": { "main": [[{ "node": "Filter < 5 in stock", "type": "main", "index": 0 }]] },
+    "Filter < 5 in stock": { "main": [[{ "node": "Slack #all-paradigm", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

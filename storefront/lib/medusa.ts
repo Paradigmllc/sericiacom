@@ -57,10 +57,14 @@ export async function getRegionId(slug: string): Promise<string | null> {
   if (!_regionCache) {
     _regionCache = new Map();
     try {
-      const { regions } = await medusa.store.region.list(
-        { fields: "id,name,currency_code,metadata" },
-        { next: { revalidate: 3600 } }, // cache 1h at Next fetch layer
-      );
+      // Note: module-level _regionCache (above) gives us per-process caching.
+      // We previously passed `{ next: { revalidate: 3600 } }` here, but the
+      // Medusa v2 SDK second arg is typed `{ tags: string[] }` and was
+      // discarding the Next hint anyway. The Map cache is enough — regions
+      // only change on a redeploy.
+      const { regions } = await medusa.store.region.list({
+        fields: "id,name,currency_code,metadata",
+      });
       for (const r of regions) {
         // Seed writes metadata.slug; fall back to lowercased name match.
         const key =

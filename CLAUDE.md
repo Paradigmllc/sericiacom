@@ -18,7 +18,7 @@
 | ★★☆☆☆ | 12 | [🌐 ドメイン・商標](#s12) | sericia.com取得予定 |
 | ★☆☆☆☆ | 13 | [📚 リソース一覧](#s13) | 未整備 |
 | ★★★★☆ | 14 | [🧠 壁打ち詳細メモ](#s14) | 仕入れTier/EMS最適化/非採用/Phase戦略 |
-| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3/M4a-1/M4a-2 + Dify hotfix完了 / M4a-3以降実装中（2026-04-21〜） |
+| ★★★★☆ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1/M2/M3/M4a-1〜5 + Dify hotfix完了 / ストアオープン可（2026-04-21〜） |
 
 ⚠️ **要強化**: 6(法的) / 10(運用) / 13(リソース)
 
@@ -598,9 +598,10 @@ Ships within 14 days from Japan.
 | **M4a-1** | storefront products facade → Medusa（listing/PDP/search-index の data source 切替 + Strategy B カテゴリ紐付け 4 products） | ✅ 完了 | `40d7b9e6`, `f858ac5c` | `/store/products` 4件にカテゴリ付き（tea/miso/mushroom/seasoning）/ Coolify storefront の env vars 待ち |
 | **M4a-2** | checkout rewrite（`/api/orders/create-cart` を Medusa 価格・在庫ソースに切替 / Crossmint 保持） | ✅ 完了 | (this commit) | `getProductsByIds()` 経由で Medusa が prices + stock の source of truth / sericia_orders は受注台帳として残し Crossmint は無変更 / Slack webhook on order_created 追加（Rule N 準拠） |
 | **M4a-Dify hotfix** | 本番 sericia.com に表示されていた "App with code WnX69... not found" トーストを除去（DifyChat.tsx のハードコード fallback token を削除） | ✅ 完了 | (this commit) | `NEXT_PUBLIC_DIFY_TOKEN` 未設定時は何もレンダーしない graceful degradation（Rule V 準拠） |
-| **M4a-3** | Medusa subscriber `order-placed.ts` → Resend + Slack + Supabase `sericia_orders` status 同期 + 在庫 decrement | 🚧 実装中 | — | — |
-| **M4a-4** | n8n ワークフロー JSON コミット（abandoned-cart / low-stock / welcome / post-purchase review 要請）| 🚧 実装中 | — | — |
-| **M4a-5** | Dify knowledge base 初期シード（shipping / ingredients / ingredients / FAQ / refund policy）| 🚧 実装中 | — | — |
+| **M4a-3** | payment-success 副作用一括（storefront `/api/crossmint-webhook` に Medusa admin 在庫 decrement + Slack paid bell 追加・Crossmint webhook は storefront 直行のためこの経路が単一情報源） | ✅ 完了 | (this commit) | `storefront/lib/medusa-admin.ts`（admin JWT 50分キャッシュ）/ `storefront/lib/slack.ts`（Block Kit DRY）/ webhook 側で `sericia_order_items` から variant を走査し `decrementVariantInventory()` を `Promise.allSettled` で並列実行・失敗時は Slack bell に ⚠️ マーク |
+| **M4a-3b** | Medusa subscriber `order-placed.ts` 拡張（admin UI 経由オーダー用セーフティネット）| ⏸️ 待機 | — | post-open 対応。現状 Crossmint → storefront webhook が全オーダー経路 |
+| **M4a-4** | n8n ワークフロー JSON コミット（abandoned-cart / low-stock-alert / welcome-email / post-purchase-review）| ✅ 完了 | (this commit) | `n8n-workflows/*.json` × 4 / Supabase RPC `list_abandoned_carts` + `list_review_targets` と schema columns `cart_abandoned_notified` / `review_requested` が未整備（post-open で追加）|
+| **M4a-5** | Dify knowledge base 初期シード（shipping / ingredients / refund-policy / faq）| ✅ 完了 | (this commit) | `docs/knowledge-base/*.md` × 4 / Dify の `knowledge_bases:` 配下で `dify/customer-support.yml` から参照 |
 | **M4b-f** | Payload 配線 / 共通サイドバー / Aesopヒーロー・桜・赤ハート・マーケ / アラビア語RTL / PWA・SEO | ⏸️ 待機 | — | — |
 | **M5** | pSEO 量産基盤（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル） | ⏸️ 待機 | — | — |
 

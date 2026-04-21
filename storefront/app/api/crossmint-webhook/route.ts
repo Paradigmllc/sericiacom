@@ -1,11 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { supabaseAdmin } from "../../../lib/supabase-admin";
+import { decrementVariantInventory } from "../../../lib/medusa-admin";
+import { notifySlackOrderPaid } from "../../../lib/slack";
 
 /**
  * Crossmint webhook receiver.
- * On payment success: mark order paid, decrement drop inventory,
- * send Resend confirmation, notify n8n.
+ *
+ * On payment success (type=order.succeeded / event=*.paid):
+ *   1. Mark sericia_orders.status = "paid"          (Supabase ledger)
+ *   2. Drop orders → decrement sericia_drops.sold_units
+ *   3. Cart orders → decrement Medusa inventory via admin API (M4a-4)
+ *      so PDP stock reflects reality on next page-load
+ *   4. Insert sericia_events row  (Rule N half #1: DB bell)
+ *   5. Fire Slack "paid" Block Kit message  (Rule N half #2: both-channel)
+ *   6. Send Resend confirmation email        (best-effort)
+ *   7. POST to n8n escalation-router         (best-effort)
+ *
+ * Steps 3/5/6/7 are non-blocking (Promise.allSettled / fire-and-forget) —
+ * a Resend outage must NEVER cause Crossmint to retry the webhook and
+ * double-mark an order as paid.
+ *
  * Docs: https://docs.crossmint.com/payments/advanced/webhooks
  */
 export async function POST(req: NextRequest) {
@@ -87,6 +102,48 @@ export async function POST(req: NextRequest) {
       order_id: order.id,
       properties: { amount_usd: order.amount_usd },
     });
+
+    // M4a-4: Decrement Medusa inventory for cart orders so PDPs show accurate
+    // stock on the next fetch. Drop orders use sericia_drops.sold_units above
+    // (the drop is the atomic unit, not a per-product Medusa variant).
+    // Best-effort: a Medusa admin-auth failure logs a warning but does not
+    // block the paid flow — Crossmint already has our money.
+    let inventoryDecremented = 0;
+    let inventoryTotal = 0;
+    if (order.order_type === "cart") {
+      const { data: orderItems } = await supabaseAdmin
+        .from("sericia_order_items")
+        .select("product_id, quantity")
+        .eq("order_id", order.id);
+      if (orderItems?.length) {
+        inventoryTotal = orderItems.length;
+        const results = await Promise.allSettled(
+          orderItems.map((it) =>
+            decrementVariantInventory(it.product_id, it.quantity),
+          ),
+        );
+        inventoryDecremented = results.filter(
+          (r) =>
+            r.status === "fulfilled" &&
+            r.value.ok &&
+            r.value.decremented > 0,
+        ).length;
+      }
+    }
+
+    // Rule N half #2: Slack paid bell (fire-and-forget)
+    notifySlackOrderPaid({
+      order_id: order.id,
+      email: order.email,
+      full_name: order.full_name,
+      amount_usd: order.amount_usd,
+      tx_hash: txHash,
+      crossmint_order_id: crossmintOrderId,
+      inventory_decremented: inventoryDecremented,
+      inventory_total: inventoryTotal,
+    }).catch((e) =>
+      console.error("[crossmint-webhook] slack notify exception", e),
+    );
 
     const resendKey = process.env.RESEND_API_KEY;
     if (resendKey) {

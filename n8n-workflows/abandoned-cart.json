@@ -1,0 +1,106 @@
+{
+  "name": "Sericia — Abandoned Cart Rescue (1h delay)",
+  "notes": "Fires when a sericia_orders row has status='pending' for > 1h. Fetches the items, sends a Resend email with a one-click 'Continue to checkout' link. Idempotent: marks cart_abandoned_notified=true so reruns skip.",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 1 }] } },
+      "id": "cron",
+      "name": "Every 1h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{$env.SUPABASE_HOST}}/rest/v1/rpc/list_abandoned_carts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Authorization", "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={ \"older_than_minutes\": 60, \"not_yet_notified\": true }",
+        "options": { "timeout": 15000 }
+      },
+      "id": "fetch-carts",
+      "name": "List abandoned carts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "notes": "Supabase RPC: returns orders with status='pending', created_at < now-1h, cart_abandoned_notified=false. Requires an RPC defined in supabase/migrations."
+    },
+    {
+      "parameters": {
+        "functionCode": "// Split into one item per iteration + build the resume URL\nreturn $input.first().json.map(row => ({\n  json: {\n    email: row.email,\n    full_name: row.full_name,\n    first_name: (row.full_name || '').split(' ')[0] || 'there',\n    order_id: row.id,\n    amount_usd: row.amount_usd,\n    resume_url: `https://sericia.com/cart?recover=${row.id}`,\n    item_names: (row.items || []).map(i => i.product_snapshot?.name || 'your selection').join(', ')\n  }\n}));"
+      },
+      "id": "prep-payload",
+      "name": "Prepare email payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{$env.RESEND_API_KEY}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={\n  \"from\": \"Sericia <contact@sericia.com>\",\n  \"to\": $json.email,\n  \"subject\": \"Your Sericia drop is still reserved — $\" + $json.amount_usd,\n  \"html\": `<div style=\\\"font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2b221c\\\"><h1 style=\\\"font-weight:normal\\\">A quick nudge, ${$json.first_name}.</h1><p>Your items (${$json.item_names}) are still on hold — but craft-food drops are small-batch and other buyers are browsing the same SKUs.</p><p style=\\\"margin-top:28px\\\"><a href=\\\"${$json.resume_url}\\\" style=\\\"background:#b8860b;color:white;padding:12px 28px;text-decoration:none;border-radius:4px\\\">Continue to payment →</a></p><p style=\\\"color:#6b5e4f;font-size:13px;margin-top:32px\\\">Questions? Reply or write <a href=\\\"mailto:contact@sericia.com\\\">contact@sericia.com</a>.</p></div>`\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "send-resend",
+      "name": "Resend email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://{{$env.SUPABASE_HOST}}/rest/v1/sericia_orders?id=eq.{{$json.order_id}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Authorization", "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={ \"cart_abandoned_notified\": true, \"cart_abandoned_notified_at\": new Date().toISOString() }",
+        "options": { "timeout": 10000 }
+      },
+      "id": "mark-notified",
+      "name": "Mark notified (idempotency)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300],
+      "notes": "Requires adding columns `cart_abandoned_notified bool default false, cart_abandoned_notified_at timestamptz` to sericia_orders."
+    }
+  ],
+  "connections": {
+    "Every 1h": { "main": [[{ "node": "List abandoned carts", "type": "main", "index": 0 }]] },
+    "List abandoned carts": { "main": [[{ "node": "Prepare email payload", "type": "main", "index": 0 }]] },
+    "Prepare email payload": { "main": [[{ "node": "Resend email", "type": "main", "index": 0 }]] },
+    "Resend email": { "main": [[{ "node": "Mark notified (idempotency)", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}
