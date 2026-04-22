@@ -115,5 +115,13 @@
   },
   "locale_switcher": {
     "label": "Sprache"
+  },
+  "tokushoho": {
+    "eyebrow": "Rechtliches · Gesetzlich vorgeschriebene Angaben",
+    "title": "Gesetz über spezifische Handelsgeschäfte — Pflichtangaben",
+    "lede": "Angaben gemäß Japans Gesetz über spezifische Handelsgeschäfte (特定商取引法 Art. 11). Zuletzt aktualisiert: April 2026.",
+    "bilingual_notice_title": "Zu dieser Seite",
+    "bilingual_notice_body": "Japans Gesetz über spezifische Handelsgeschäfte (特定商取引法 第11条) verpflichtet uns gesetzlich, diese Angaben für Kunden in Japan auf Japanisch zu veröffentlichen. Wir fügen unter jedem Feld eine englische Übersetzung für internationale Besucher hinzu, rechtlich verbindlich bleibt jedoch die japanische Fassung.",
+    "also_on_sericia": "Verwandte Seiten"
   }
 }

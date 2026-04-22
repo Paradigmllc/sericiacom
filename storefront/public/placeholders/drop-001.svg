@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Sericia Drop No. 01 bundle placeholder">
+  <defs>
+    <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5c5d45" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#5c5d45" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#5c5d45" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    Drop-001 placeholder carries the "flagship" variant — on darker paper-deep
+    (#ebe4d4) with inverted emphasis so the bundle card reads as a hero tile
+    distinct from the three component products, same way collection cards on
+    Aesop / Le Labo sit visually one tier above single-product cards.
+  -->
+  <rect width="1200" height="1200" fill="#ebe4d4"/>
+
+  <g opacity="0.55" fill="none" stroke="url(#silk)" stroke-width="0.6">
+    <path d="M -100 140 Q 300 110, 700 145 T 1300 130"/>
+    <path d="M -100 240 Q 300 210, 700 245 T 1300 230"/>
+    <path d="M -100 340 Q 300 310, 700 345 T 1300 330"/>
+    <path d="M -100 440 Q 300 410, 700 445 T 1300 430"/>
+    <path d="M -100 540 Q 300 510, 700 545 T 1300 530"/>
+    <path d="M -100 640 Q 300 610, 700 645 T 1300 630"/>
+    <path d="M -100 740 Q 300 710, 700 745 T 1300 730"/>
+    <path d="M -100 840 Q 300 810, 700 845 T 1300 830"/>
+    <path d="M -100 940 Q 300 910, 700 945 T 1300 930"/>
+    <path d="M -100 1040 Q 300 1010, 700 1045 T 1300 1030"/>
+  </g>
+
+  <rect x="60" y="60" width="1080" height="1080" fill="none" stroke="#21231d" stroke-width="1"/>
+  <rect x="72" y="72" width="1056" height="1056" fill="none" stroke="#21231d" stroke-width="0.5"/>
+
+  <text x="600" y="180" text-anchor="middle" fill="#21231d"
+        font-family="Helvetica, 'Helvetica Neue', Arial, sans-serif"
+        font-size="28" font-weight="300" letter-spacing="14">SERICIA</text>
+  <line x1="540" y1="215" x2="660" y2="215" stroke="#21231d" stroke-width="0.8"/>
+
+  <g transform="translate(1020, 160)">
+    <circle r="52" fill="#b84a3e"/>
+    <circle r="46" fill="none" stroke="#f5efe6" stroke-width="1"/>
+    <text x="0" y="18" text-anchor="middle"
+          font-family="'Noto Serif JP', 'Yu Mincho', serif"
+          font-weight="700" font-size="52" fill="#f5efe6">鮮</text>
+  </g>
+
+  <!-- Drop eyebrow -->
+  <text x="600" y="310" text-anchor="middle" fill="#5c5d45"
+        font-family="Helvetica, 'Helvetica Neue', Arial, sans-serif"
+        font-size="22" letter-spacing="10">DROP NO. 01</text>
+
+  <!-- Dominant kanji (collection / gathering) -->
+  <text x="600" y="760" text-anchor="middle" fill="#21231d"
+        font-family="'Noto Serif JP', 'Yu Mincho', 'Hiragino Mincho ProN', serif"
+        font-size="440" font-weight="300">集</text>
+
+  <text x="600" y="900" text-anchor="middle" fill="#21231d"
+        font-family="'Cormorant Garamond', 'Playfair Display', Georgia, serif"
+        font-size="68" font-weight="300" font-style="italic">Tea · Miso · Shiitake</text>
+
+  <text x="600" y="960" text-anchor="middle" fill="#7b7d73"
+        font-family="Helvetica, 'Helvetica Neue', Arial, sans-serif"
+        font-size="20" letter-spacing="8">CURATED BUNDLE · 303 UNITS</text>
+
+  <line x1="450" y1="1040" x2="750" y2="1040" stroke="#a8a297" stroke-width="0.5"/>
+  <text x="600" y="1090" text-anchor="middle" fill="#7b7d73"
+        font-family="Helvetica, 'Helvetica Neue', Arial, sans-serif"
+        font-size="14" letter-spacing="6">RESCUED JAPANESE CRAFT FOOD</text>
+</svg>

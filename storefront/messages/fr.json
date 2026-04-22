@@ -115,5 +115,13 @@
   },
   "locale_switcher": {
     "label": "Langue"
+  },
+  "tokushoho": {
+    "eyebrow": "Mentions légales · Divulgation obligatoire",
+    "title": "Loi sur les transactions commerciales spécifiées — Mentions",
+    "lede": "Mentions requises par la loi japonaise sur les transactions commerciales spécifiées (特定商取引法 Art. 11). Dernière mise à jour : avril 2026.",
+    "bilingual_notice_title": "À propos de cette page",
+    "bilingual_notice_body": "La loi japonaise sur les transactions commerciales spécifiées (特定商取引法 第11条) nous oblige à publier ces mentions en japonais pour les consommateurs au Japon. Une traduction anglaise est fournie sous chaque ligne pour les visiteurs internationaux, mais la version japonaise reste juridiquement contraignante.",
+    "also_on_sericia": "Pages associées"
   }
 }

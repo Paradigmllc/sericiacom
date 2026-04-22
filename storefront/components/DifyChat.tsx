@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { toast } from "sonner";
 
 /**
@@ -57,6 +59,144 @@ const EMPTY_ANSWER_FALLBACK =
   "I'm not sure how to answer that — could you rephrase?";
 
 /**
+ * Context-aware quick-reply chips. The 4 most-likely follow-up questions
+ * depend on *where* the visitor is on the site (their "situation") and
+ * *what language* they're browsing in (their "tendency"). This trims the
+ * "blank textarea paralysis" and shows the assistant understands the page.
+ *
+ *   - Route-specific sets: product pages get allergen/storage chips,
+ *     drop pages get scarcity/restock chips, cart gets shipping/payment,
+ *     tokushoho gets returns/legal, account gets tracking/history.
+ *   - Locale-aware: EN vs JA copy (the two primary markets). Other locales
+ *     fall back to EN for now; promote to messages/*.json if demand grows.
+ *   - Chips auto-collapse once the visitor sends their first real message
+ *     (they've engaged — they don't need the training wheels anymore).
+ */
+function getQuickReplies(pathname: string, locale: string): string[] {
+  const isJa = locale === "ja";
+  // Strip locale prefix so "/ja/products/sencha" and "/products/sencha" match the same branch.
+  const path =
+    pathname.replace(/^\/(?:en|ja|de|fr|es|it|ko|zh-TW|ru)(?=\/|$)/, "") || "/";
+
+  // Product detail (/products/<slug>) — but not the index page itself
+  if (/^\/products\/[^/]+/.test(path)) {
+    return isJa
+      ? [
+          "アレルゲンは何？",
+          "保存方法を教えて",
+          "おすすめの食べ方は？",
+          "どこで作られてる？",
+        ]
+      : [
+          "Any allergens?",
+          "How should I store it?",
+          "How do you recommend using it?",
+          "Where is it from?",
+        ];
+  }
+
+  // Product index (/products or /products/)
+  if (path === "/products" || path === "/products/") {
+    return isJa
+      ? [
+          "Dropって何？",
+          "今買えるのはどれ？",
+          "新作はいつ入荷？",
+          "送料はいくら？",
+        ]
+      : [
+          "What's a drop?",
+          "What's available now?",
+          "When does new stock land?",
+          "How much is shipping?",
+        ];
+  }
+
+  // Drops (/drops or /drops/<slug>)
+  if (path.startsWith("/drops")) {
+    return isJa
+      ? [
+          "このDropは何個限定？",
+          "次のDropはいつ？",
+          "完売後の再販はある？",
+          "Dropに何が含まれる？",
+        ]
+      : [
+          "How limited is this drop?",
+          "When's the next drop?",
+          "Will sold-out items restock?",
+          "What's inside the drop?",
+        ];
+  }
+
+  // Legal / commercial disclosure (特商法)
+  if (path === "/tokushoho") {
+    return isJa
+      ? [
+          "返品・交換はできる？",
+          "支払い方法を教えて",
+          "販売者情報は？",
+          "配送業者はどこ？",
+        ]
+      : [
+          "Can I return or exchange?",
+          "What payment methods?",
+          "Who's the seller?",
+          "Which shipping carrier?",
+        ];
+  }
+
+  // Cart / checkout funnel
+  if (path.startsWith("/cart") || path.startsWith("/checkout")) {
+    return isJa
+      ? [
+          "送料はいくら？",
+          "配達まで何日かかる？",
+          "ギフトラッピングある？",
+          "支払い方法は？",
+        ]
+      : [
+          "How much is shipping?",
+          "How long until delivery?",
+          "Gift wrapping available?",
+          "What payment methods?",
+        ];
+  }
+
+  // Customer account area
+  if (path.startsWith("/account") || path.startsWith("/orders")) {
+    return isJa
+      ? [
+          "注文を追跡したい",
+          "荷物が届かない時は？",
+          "購入履歴はどこ？",
+          "アカウント削除は？",
+        ]
+      : [
+          "Track my order",
+          "My order hasn't arrived",
+          "Where's my purchase history?",
+          "How do I delete my account?",
+        ];
+  }
+
+  // Homepage / everything else
+  return isJa
+    ? [
+        "Dropって何？",
+        "発送できる国は？",
+        "送料はいくら？",
+        "連絡方法を教えて",
+      ]
+    : [
+        "What's a drop?",
+        "Which countries do you ship to?",
+        "How much is shipping?",
+        "How do I reach you?",
+      ];
+}
+
+/**
  * Stable, anonymous visitor id persisted in localStorage so Dify can thread
  * conversations per device. Not PII — pure opaque identifier. Shape:
  * `u-<uuid>` on browsers that support `crypto.randomUUID()`, otherwise a
@@ -86,6 +226,23 @@ export default function DifyChat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Context-aware quick-replies — recomputed when the visitor navigates
+  // to a different page or toggles language.
+  const pathname = usePathname();
+  const locale = useLocale();
+  const quickReplies = useMemo(
+    () => getQuickReplies(pathname ?? "/", locale),
+    [pathname, locale],
+  );
+  // Chips only render before the visitor has sent any real message —
+  // i.e. only the seeded welcome exists.
+  const showChips =
+    open &&
+    !loading &&
+    !offline &&
+    messages.length === 1 &&
+    messages[0]?.role === "assistant";
+
   // Seed welcome on first open + focus input so user can start typing immediately
   useEffect(() => {
     if (!open) return;
@@ -106,12 +263,15 @@ export default function DifyChat() {
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
-  async function sendMessage() {
-    const query = input.trim();
+  async function sendMessage(directText?: string) {
+    // `directText` is supplied when a quick-reply chip is clicked —
+    // lets us send the canned question without first plumbing it
+    // through the textarea's controlled state (which would race).
+    const query = (directText ?? input).trim();
     if (!query || loading || offline) return;
 
     setMessages((m) => [...m, { role: "user", content: query }]);
-    setInput("");
+    if (!directText) setInput("");
     setLoading(true);
 
     try {
@@ -276,6 +436,20 @@ export default function DifyChat() {
                 </div>
               </div>
             ))}
+            {showChips && (
+              <div className="flex flex-wrap gap-1.5 pt-0.5">
+                {quickReplies.map((chip, i) => (
+                  <button
+                    key={`${locale}-${i}-${chip}`}
+                    type="button"
+                    onClick={() => sendMessage(chip)}
+                    className="border border-sericia-line bg-sericia-paper px-3 py-1.5 text-[12px] leading-tight text-sericia-ink-soft transition hover:border-sericia-ink hover:text-sericia-ink"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            )}
             {loading && (
               <div className="flex justify-start">
                 <div className="flex gap-1 border border-sericia-line bg-sericia-paper-card px-3 py-3">
@@ -307,7 +481,7 @@ export default function DifyChat() {
               />
               <button
                 type="button"
-                onClick={sendMessage}
+                onClick={() => sendMessage()}
                 disabled={loading || offline || !input.trim()}
                 aria-label="Send message"
                 className="h-[36px] bg-sericia-accent px-3 text-[12px] uppercase tracking-[0.18em] text-sericia-paper transition hover:bg-sericia-ink disabled:cursor-not-allowed disabled:opacity-40"

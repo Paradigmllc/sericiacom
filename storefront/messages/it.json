@@ -115,5 +115,13 @@
   },
   "locale_switcher": {
     "label": "Lingua"
+  },
+  "tokushoho": {
+    "eyebrow": "Legale · Informativa obbligatoria",
+    "title": "Legge sulle transazioni commerciali specificate — Informativa",
+    "lede": "Informativa richiesta dalla Legge giapponese sulle transazioni commerciali specificate (特定商取引法 Art. 11). Ultimo aggiornamento: aprile 2026.",
+    "bilingual_notice_title": "Informazioni su questa pagina",
+    "bilingual_notice_body": "La Legge giapponese sulle transazioni commerciali specificate (特定商取引法 第11条) richiede legalmente la pubblicazione di queste informazioni in giapponese per i consumatori in Giappone. Forniamo una traduzione inglese sotto ciascuna voce per i visitatori internazionali, ma il testo giapponese resta l unico giuridicamente vincolante.",
+    "also_on_sericia": "Pagine correlate"
   }
 }

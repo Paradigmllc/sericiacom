@@ -115,5 +115,13 @@
   },
   "locale_switcher": {
     "label": "Language"
+  },
+  "tokushoho": {
+    "eyebrow": "Legal · Statutory disclosure",
+    "title": "Specified Commercial Transactions Act — disclosure",
+    "lede": "Notation required by Japan's Act on Specified Commercial Transactions (特定商取引法 Article 11). Last updated April 2026.",
+    "bilingual_notice_title": "About this page",
+    "bilingual_notice_body": "Japan's Act on Specified Commercial Transactions (特定商取引法 第11条) legally requires this disclosure to be published in Japanese for customers in Japan. We provide an English rendering under each row for international visitors, but the Japanese text remains the binding version.",
+    "also_on_sericia": "Also on Sericia"
   }
 }

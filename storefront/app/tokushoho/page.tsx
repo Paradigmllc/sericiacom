@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
 import { Container, PageHero, Rule } from "../../components/ui";
@@ -12,16 +13,26 @@ import { Container, PageHero, Rule } from "../../components/ui";
  * Japan. The 12 fields below are the minimum disclosure mandated by the
  * Consumer Affairs Agency (消費者庁).
  *
+ * Locale behavior — the legally binding text is Japanese. We never translate
+ * the row *values* away from Japanese for that reason. What we DO localize:
+ *
+ *   1. Hero eyebrow / title / lede (surrounding page chrome the switcher
+ *      needs to visibly respond to — prior version was fully hardcoded,
+ *      which made the locale switcher appear broken on this page).
+ *   2. A banner at the top explaining *why* the disclosure is bilingual,
+ *      translated into every supported locale.
+ *   3. The visual hierarchy inside each Row — for JA visitors the Japanese
+ *      label stays primary; for every other locale we promote the English
+ *      label to primary and demote Japanese to the small "en"-style line.
+ *      The text content itself is identical either way — only which side
+ *      gets the 14px vs 11px weight changes.
+ *
  * Privacy pattern — for "所在地 (address)" and "電話番号 (phone)" we use the
  * agency-sanctioned "請求があれば遅滞なく開示します" (disclosed upon request
  * without delay) formulation. This is explicitly permitted for small
  * operators and is the pattern used by note / BASE / STORES. It satisfies
  * the legal requirement while keeping a home/small-office address off a
  * globally-crawled page.
- *
- * Bilingual layout — Japanese primary (regulators + JP customers read this
- * for legal compliance) with English subheadings (international customers
- * landing via SEO).
  */
 
 export const metadata: Metadata = {
@@ -32,25 +43,35 @@ export const metadata: Metadata = {
 };
 
 /**
- * Single row of the 特商法 table — label in Japanese, value can be a string
- * or JSX for multi-line / linked content.
+ * Single row of the 特商法 table. When `japaneseFirst` is true (locale=ja) the
+ * Japanese label is the primary 14px line and the English gloss sits below in
+ * 11px uppercase — the original design. When false (every other locale) the
+ * two lines swap: English becomes the primary label, Japanese becomes the
+ * small reference line. The row body is identical in both modes because it
+ * already carries bilingual content inline.
  */
 function Row({
   label,
   en,
+  japaneseFirst,
   children,
 }: {
   label: string;
   en: string;
+  japaneseFirst: boolean;
   children: React.ReactNode;
 }) {
+  const primary = japaneseFirst ? label : en;
+  const secondary = japaneseFirst ? en : label;
+  const secondaryClass = japaneseFirst
+    ? "text-[11px] text-sericia-ink-mute tracking-wider uppercase mt-1"
+    : "text-[12px] text-sericia-ink-mute mt-1";
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-2 md:gap-8 py-6 border-b border-sericia-line last:border-b-0">
       <div>
-        <p className="text-[14px] font-normal text-sericia-ink">{label}</p>
-        <p className="text-[11px] text-sericia-ink-mute tracking-wider uppercase mt-1">
-          {en}
-        </p>
+        <p className="text-[14px] font-normal text-sericia-ink">{primary}</p>
+        <p className={secondaryClass}>{secondary}</p>
       </div>
       <div className="text-[15px] text-sericia-ink-soft leading-[1.75]">
         {children}
@@ -59,18 +80,41 @@ function Row({
   );
 }
 
-export default function TokushohoPage() {
+export default async function TokushohoPage() {
+  const locale = await getLocale();
+  const t = await getTranslations("tokushoho");
+  const japaneseFirst = locale === "ja";
+
   return (
     <>
       <SiteHeader />
       <PageHero
-        eyebrow="Legal · 法令表記"
-        title="特定商取引法に基づく表記"
-        lede="Notation based on Japan's Act on Specified Commercial Transactions (特定商取引法 第11条). Last updated April 2026."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        lede={t("lede")}
       />
       <Container size="narrow" className="py-20 md:py-28">
+        {/*
+          Bilingual notice — always shown in the *current* locale so the user
+          immediately sees that the switcher is working. For JA visitors it
+          explains the law; for non-JA visitors it pre-empts the "why is
+          half of this page Japanese" question that would otherwise confuse
+          an English/European shopper.
+        */}
+        <aside
+          aria-label={t("bilingual_notice_title")}
+          className="not-prose mb-12 border border-sericia-line bg-sericia-paper-card px-6 py-5"
+        >
+          <p className="label mb-2 text-[11px] tracking-[0.22em]">
+            {t("bilingual_notice_title")}
+          </p>
+          <p className="text-[13px] text-sericia-ink-soft leading-relaxed">
+            {t("bilingual_notice_body")}
+          </p>
+        </aside>
+
         <div className="not-prose">
-          <Row label="販売事業者" en="Seller">
+          <Row label="販売事業者" en="Seller" japaneseFirst={japaneseFirst}>
             Paradigm LLC
             <br />
             <span className="text-[13px] text-sericia-ink-mute">
@@ -80,11 +124,11 @@ export default function TokushohoPage() {
             </span>
           </Row>
 
-          <Row label="運営統括責任者" en="Operations manager">
+          <Row label="運営統括責任者" en="Operations manager" japaneseFirst={japaneseFirst}>
             Sato
           </Row>
 
-          <Row label="所在地" en="Address">
+          <Row label="所在地" en="Address" japaneseFirst={japaneseFirst}>
             東京都港区南青山
             <br />
             <span className="text-[13px] text-sericia-ink-mute">
@@ -96,7 +140,7 @@ export default function TokushohoPage() {
             </span>
           </Row>
 
-          <Row label="電話番号" en="Telephone">
+          <Row label="電話番号" en="Telephone" japaneseFirst={japaneseFirst}>
             050-3120-3706
             <br />
             <span className="text-[13px] text-sericia-ink-mute">
@@ -108,7 +152,7 @@ export default function TokushohoPage() {
             </span>
           </Row>
 
-          <Row label="メールアドレス" en="Email">
+          <Row label="メールアドレス" en="Email" japaneseFirst={japaneseFirst}>
             <a
               href="mailto:contact@sericia.com"
               className="underline-link"
@@ -117,7 +161,7 @@ export default function TokushohoPage() {
             </a>
           </Row>
 
-          <Row label="販売URL" en="Sales URL">
+          <Row label="販売URL" en="Sales URL" japaneseFirst={japaneseFirst}>
             <a
               href="https://sericia.com"
               target="_blank"
@@ -128,7 +172,7 @@ export default function TokushohoPage() {
             </a>
           </Row>
 
-          <Row label="販売価格" en="Sale price">
+          <Row label="販売価格" en="Sale price" japaneseFirst={japaneseFirst}>
             各商品ページに表示された金額(税込・USD建て)。
             <br />
             <span className="text-[13px] text-sericia-ink-mute">
@@ -140,6 +184,7 @@ export default function TokushohoPage() {
           <Row
             label="商品代金以外の必要料金"
             en="Charges besides product price"
+            japaneseFirst={japaneseFirst}
           >
             <ul className="list-none space-y-1">
               <li>・ 送料(EMS・配送先地域により変動 — 注文確定時に表示)</li>
@@ -153,7 +198,7 @@ export default function TokushohoPage() {
             </p>
           </Row>
 
-          <Row label="お支払い方法" en="Payment methods">
+          <Row label="お支払い方法" en="Payment methods" japaneseFirst={japaneseFirst}>
             クレジットカード(Visa / Mastercard / American Express / JCB)、
             および米ドルステーブルコイン(USDC)。
             <br />
@@ -163,7 +208,7 @@ export default function TokushohoPage() {
             </span>
           </Row>
 
-          <Row label="お支払い時期" en="Payment timing">
+          <Row label="お支払い時期" en="Payment timing" japaneseFirst={japaneseFirst}>
             ご注文確定時に即時決済。
             <br />
             <span className="text-[13px] text-sericia-ink-mute">
@@ -171,7 +216,7 @@ export default function TokushohoPage() {
             </span>
           </Row>
 
-          <Row label="商品の引渡時期" en="Delivery timing">
+          <Row label="商品の引渡時期" en="Delivery timing" japaneseFirst={japaneseFirst}>
             ご注文確定後48時間以内に京都より発送。
             お届けまでの所要日数は配送先により2〜7営業日。
             <br />
@@ -182,7 +227,7 @@ export default function TokushohoPage() {
             </span>
           </Row>
 
-          <Row label="返品・交換について" en="Returns and exchanges">
+          <Row label="返品・交換について" en="Returns and exchanges" japaneseFirst={japaneseFirst}>
             商品に不備(破損・品違い・賞味期限切れ等)があった場合のみ、
             商品到着後7日以内にメールにてご連絡ください。
             送料当社負担にて交換もしくは返金いたします。
@@ -201,7 +246,7 @@ export default function TokushohoPage() {
             </p>
           </Row>
 
-          <Row label="不良品の場合" en="Defective goods">
+          <Row label="不良品の場合" en="Defective goods" japaneseFirst={japaneseFirst}>
             商品到着時に不備が確認された場合、
             <a
               href="mailto:contact@sericia.com"
@@ -216,7 +261,7 @@ export default function TokushohoPage() {
 
         <Rule className="my-14" />
 
-        <p className="label mb-4">関連ページ / Also on Sericia</p>
+        <p className="label mb-4">{t("also_on_sericia")}</p>
         <ul className="not-prose grid grid-cols-1 md:grid-cols-2 gap-3 text-[14px]">
           <li>
             <Link
