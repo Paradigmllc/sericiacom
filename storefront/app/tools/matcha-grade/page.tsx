@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import SiteHeader from "../../../components/SiteHeader";
 import SiteFooter from "../../../components/SiteFooter";
+import ContentSidebar from "../../../components/ContentSidebar";
 import { Container, Eyebrow, Rule } from "../../../components/ui";
 
 type Grade = "ceremonial" | "premium" | "culinary";
@@ -92,7 +93,9 @@ export default function MatchaGrader() {
         </Container>
       </section>
 
-      <Container size="narrow" className="py-20 md:py-28">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[720px]">
         <div className="space-y-12">
           {QUESTIONS.map((q, idx) => (
             <div key={q.key}>
@@ -149,6 +152,22 @@ export default function MatchaGrader() {
             </div>
           </>
         )}
+          </div>
+          <ContentSidebar
+            relatedTools={[
+              { href: "/tools/tea-brewer", label: "Japanese tea brewer" },
+              { href: "/tools/miso-finder", label: "Miso type finder" },
+              { href: "/tools/shelf-life", label: "Shelf-life checker" },
+              { href: "/tools/ems-calculator", label: "EMS shipping calculator" },
+            ]}
+            relatedGuides={[
+              { href: "/guides/us/matcha", label: "Buying matcha — US guide" },
+              { href: "/guides/de/matcha", label: "Buying matcha — Germany" },
+              { href: "/guides/au/matcha", label: "Buying matcha — Australia" },
+              { href: "/guides/uk/matcha", label: "Buying matcha — UK" },
+            ]}
+          />
+        </div>
       </Container>
       <SiteFooter />
     </>

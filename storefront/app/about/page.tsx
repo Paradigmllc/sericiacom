@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
+import ContentSidebar from "../../components/ContentSidebar";
 import { Container, PageHero, Rule, StatBlock } from "../../components/ui";
 
 /**
@@ -34,7 +35,9 @@ export default function AboutPage() {
         lede="Sericia is a limited-drop storefront for near-expiry surplus from small Japanese producers — tea, miso, shiitake, and other craft foods that would otherwise be discarded despite being in peak condition."
       />
 
-      <Container size="narrow" className="py-20 md:py-28 prose-aesop">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[680px] prose-aesop">
         <h2>One — Why this exists</h2>
         <p>
           Japan&apos;s craft food makers produce exceptional goods on small
@@ -178,6 +181,9 @@ export default function AboutPage() {
             </Link>
           </li>
         </ul>
+          </div>
+          <ContentSidebar />
+        </div>
       </Container>
       <SiteFooter />
     </>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import SiteHeader from "../../../components/SiteHeader";
 import SiteFooter from "../../../components/SiteFooter";
+import ContentSidebar from "../../../components/ContentSidebar";
 import { Container, Eyebrow, Rule } from "../../../components/ui";
 
 const ITEMS = [
@@ -51,7 +52,9 @@ export default function ShelfLife() {
         </Container>
       </section>
 
-      <Container size="narrow" className="py-20 md:py-28">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[720px]">
         <div className="border border-sericia-line bg-sericia-paper-card p-10 md:p-12">
           <label className="block mb-10">
             <span className="label block mb-4">What do you have?</span>
@@ -91,6 +94,16 @@ export default function ShelfLife() {
           Estimates based on Japan Agricultural Standards (JAS) and producer-declared best-by windows.
           Sensory check always wins — mould, off-odour, or drastic colour change means discard regardless of date.
         </p>
+          </div>
+          <ContentSidebar
+            relatedTools={[
+              { href: "/tools/ems-calculator", label: "EMS shipping calculator" },
+              { href: "/tools/matcha-grade", label: "Matcha grade decoder" },
+              { href: "/tools/miso-finder", label: "Miso type finder" },
+              { href: "/tools/tea-brewer", label: "Japanese tea brewer" },
+            ]}
+          />
+        </div>
       </Container>
       <SiteFooter />
     </>

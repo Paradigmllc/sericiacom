@@ -9,6 +9,25 @@ const LOCALES = ["en", "ja", "de", "fr", "es", "it", "ko", "zh-TW", "ru"] as con
 const DEFAULT_LOCALE = "en";
 const LOCALE_COOKIE = "NEXT_LOCALE";
 
+// Country-code → locale compatibility map.
+// Users (and bots) frequently type country codes expecting them to work
+// as locale prefixes: /jp/products → 404 was breaking the "I'm in Japan"
+// mental model. Next-intl uses ISO 639-1 language codes (ja, en, de...)
+// but we map common country codes so /jp/... → /ja/..., /us/... → /...,
+// etc. 308 (Permanent Redirect) preserves the request method and signals
+// to search engines that the locale-prefixed form is canonical.
+const COUNTRY_TO_LOCALE: Record<string, string> = {
+  jp: "ja", jpn: "ja", japan: "ja",
+  us: "en", usa: "en", gb: "en", uk: "en",
+  ger: "de", deu: "de",
+  fra: "fr",
+  esp: "es",
+  ita: "it",
+  kr: "ko", kor: "ko",
+  cn: "zh-TW", tw: "zh-TW", hk: "zh-TW", zh: "zh-TW", "zh-cn": "zh-TW",
+  rus: "ru",
+};
+
 // Paths that are NOT covered by i18n (flat, always English).
 // Admin + API + legal + utility pages do not get locale prefixes.
 // `/cms` is Payload admin + REST/GraphQL — Payload handles its own routing.
@@ -54,6 +73,26 @@ export async function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.pathname = path === "/en" ? "/" : path.slice(3);
     return NextResponse.redirect(url);
+  }
+
+  // --- Country-code → locale compatibility redirect ---
+  // /jp/products → /ja/products, /us/products → /products, etc.
+  // Only the first path segment is inspected; case-insensitive.
+  // Skip non-i18n paths (/api, /admin, /cms, /auth) — those are already
+  // handled above or further down.
+  const firstSeg = path.slice(1).split("/")[0]?.toLowerCase();
+  if (firstSeg && firstSeg in COUNTRY_TO_LOCALE) {
+    const mappedLocale = COUNTRY_TO_LOCALE[firstSeg];
+    const rest = path.slice(firstSeg.length + 1); // keep leading slash or ""
+    const url = req.nextUrl.clone();
+    if (mappedLocale === DEFAULT_LOCALE) {
+      // /us/products → /products (default locale, no prefix)
+      url.pathname = rest || "/";
+    } else {
+      // /jp/products → /ja/products
+      url.pathname = `/${mappedLocale}${rest}`;
+    }
+    return NextResponse.redirect(url, 308);
   }
 
   // --- Admin gate (runs before everything else) ---

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import SiteHeader from "../../../components/SiteHeader";
 import SiteFooter from "../../../components/SiteFooter";
+import ContentSidebar from "../../../components/ContentSidebar";
 import { Container, Eyebrow, Rule } from "../../../components/ui";
 
 type MisoType = "shiro" | "aka" | "awase" | "hatcho" | "saikyo";
@@ -82,7 +83,9 @@ export default function MisoFinder() {
         </Container>
       </section>
 
-      <Container size="narrow" className="py-20 md:py-28">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[720px]">
         <p className="label mb-6">What are you making?</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-sericia-line">
           {DISHES.map((d) => {
@@ -123,6 +126,22 @@ export default function MisoFinder() {
             </dl>
           </>
         )}
+          </div>
+          <ContentSidebar
+            relatedTools={[
+              { href: "/tools/shelf-life", label: "Shelf-life checker" },
+              { href: "/tools/matcha-grade", label: "Matcha grade decoder" },
+              { href: "/tools/tea-brewer", label: "Japanese tea brewer" },
+              { href: "/tools/ems-calculator", label: "EMS shipping calculator" },
+            ]}
+            relatedGuides={[
+              { href: "/guides/us/miso", label: "Buying miso — US guide" },
+              { href: "/guides/uk/miso", label: "Buying miso — UK guide" },
+              { href: "/guides/de/miso", label: "Buying miso — Germany" },
+              { href: "/guides/au/miso", label: "Buying miso — Australia" },
+            ]}
+          />
+        </div>
       </Container>
       <SiteFooter />
     </>

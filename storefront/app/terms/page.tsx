@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
+import ContentSidebar from "../../components/ContentSidebar";
 import { Container, PageHero, Rule } from "../../components/ui";
 
 export const metadata: Metadata = {
@@ -19,7 +20,9 @@ export default function TermsPage() {
         title="Terms of Service"
         lede="The terms that govern your use of sericia.com and every drop we release. Last updated April 2026."
       />
-      <Container size="narrow" className="py-20 md:py-28 prose-aesop">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[680px] prose-aesop">
         <h2>One — Who we are</h2>
         <p>
           Sericia is operated by Paradigm LLC, a company registered in the United States
@@ -108,6 +111,9 @@ export default function TermsPage() {
           <li><Link href="/tools" className="text-sericia-ink-soft hover:text-sericia-ink">Tools</Link></li>
           <li><Link href="/guides" className="text-sericia-ink-soft hover:text-sericia-ink">Country guides</Link></li>
         </ul>
+          </div>
+          <ContentSidebar />
+        </div>
       </Container>
       <SiteFooter />
     </>

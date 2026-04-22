@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
+import ContentSidebar from "../../components/ContentSidebar";
 import { Container, PageHero, Rule } from "../../components/ui";
 
 export const metadata: Metadata = {
@@ -19,7 +20,9 @@ export default function PrivacyPage() {
         title="Privacy Policy"
         lede="How Sericia collects, uses, and protects your personal data. Last updated April 2026."
       />
-      <Container size="narrow" className="py-20 md:py-28 prose-aesop">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[680px] prose-aesop">
         <h2>One — Data we collect</h2>
         <ul>
           <li><strong>Order data.</strong> Name, email, shipping address, phone (optional), order contents.</li>
@@ -78,6 +81,9 @@ export default function PrivacyPage() {
           <li><Link href="/tools" className="text-sericia-ink-soft hover:text-sericia-ink">Tools</Link></li>
           <li><Link href="/guides" className="text-sericia-ink-soft hover:text-sericia-ink">Country guides</Link></li>
         </ul>
+          </div>
+          <ContentSidebar />
+        </div>
       </Container>
       <SiteFooter />
     </>

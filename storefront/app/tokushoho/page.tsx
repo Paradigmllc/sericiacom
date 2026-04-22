@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
+import ContentSidebar from "../../components/ContentSidebar";
 import { Container, PageHero, Rule } from "../../components/ui";
 
 /**
@@ -93,7 +94,9 @@ export default async function TokushohoPage() {
         title={t("title")}
         lede={t("lede")}
       />
-      <Container size="narrow" className="py-20 md:py-28">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[720px]">
         {/*
           Bilingual notice — always shown in the *current* locale so the user
           immediately sees that the switcher is working. For JA visitors it
@@ -304,6 +307,9 @@ export default async function TokushohoPage() {
             </Link>
           </li>
         </ul>
+          </div>
+          <ContentSidebar languageNote="Available in 9 languages — switch in the header. 特商法表記は日本語が正本です。" />
+        </div>
       </Container>
       <SiteFooter />
     </>

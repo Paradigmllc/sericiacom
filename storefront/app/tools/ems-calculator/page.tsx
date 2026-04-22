@@ -4,6 +4,7 @@ import Link from "next/link";
 import { calcEms } from "../../../lib/ems";
 import SiteHeader from "../../../components/SiteHeader";
 import SiteFooter from "../../../components/SiteFooter";
+import ContentSidebar from "../../../components/ContentSidebar";
 import { Container, Eyebrow, Rule } from "../../../components/ui";
 
 const COUNTRY_LIST = [
@@ -45,7 +46,9 @@ export default function EmsCalculator() {
         </Container>
       </section>
 
-      <Container size="narrow" className="py-20 md:py-28">
+      <Container size="wide" className="py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0 max-w-[720px]">
         <div className="border border-sericia-line bg-sericia-paper-card p-10 md:p-12">
           <label className="block mb-10">
             <span className="label block mb-4">Destination</span>
@@ -112,7 +115,7 @@ export default function EmsCalculator() {
 
         <div className="prose-aesop">
           <p className="label mb-4">About EMS</p>
-          <h2>Why we ship EMS, only EMS.</h2>
+          <h2 id="about-ems">Why we ship EMS, only EMS.</h2>
           <p>
             EMS — Express Mail Service — is Japan Post&apos;s premium international shipping. Tracked end-to-end,
             customs-cleared, and delivered with signature confirmation. Sericia ships every drop via EMS by
@@ -124,6 +127,18 @@ export default function EmsCalculator() {
             <strong>Zone 3</strong> — United States, European Union, Middle East — is the standard.{" "}
             <strong>Zone 4</strong> — South America and Africa — has the longest transit.
           </p>
+        </div>
+          </div>
+          <ContentSidebar
+            sectionTitle="In this tool"
+            sections={[{ href: "#about-ems", label: "About EMS" }]}
+            relatedTools={[
+              { href: "/tools/shelf-life", label: "Shelf-life checker" },
+              { href: "/tools/matcha-grade", label: "Matcha grade decoder" },
+              { href: "/tools/miso-finder", label: "Miso type finder" },
+              { href: "/tools/tea-brewer", label: "Japanese tea brewer" },
+            ]}
+          />
         </div>
       </Container>
       <SiteFooter />

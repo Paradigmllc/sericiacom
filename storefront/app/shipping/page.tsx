@@ -3,6 +3,7 @@ import Link from "next/link";
 import { COUNTRIES } from "@/lib/pseo-matrix";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
+import ContentSidebar from "../../components/ContentSidebar";
 import { Container, PageHero, SectionHeading, Rule } from "../../components/ui";
 
 export const metadata: Metadata = {
@@ -106,21 +107,33 @@ export default function ShippingPage() {
       </section>
 
       <Container size="wide" className="py-20 md:py-28">
-        <SectionHeading
-          eyebrow="By country"
-          title="Per-country shipping guides."
-          lede="Detailed guides with transit times, allowed items, and producer notes for each destination we serve."
-        />
-        <ul className="grid md:grid-cols-3 gap-x-10 gap-y-4 max-w-3xl">
-          {COUNTRIES.slice(0, 9).map((c) => (
-            <li key={c.code}>
-              <Link href={`/guides/${c.code}/sencha`} className="underline-link text-[15px]">
-                Shipping to {c.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <Rule className="mt-16" />
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex-1 min-w-0">
+            <SectionHeading
+              eyebrow="By country"
+              title="Per-country shipping guides."
+              lede="Detailed guides with transit times, allowed items, and producer notes for each destination we serve."
+            />
+            <ul className="grid md:grid-cols-3 gap-x-10 gap-y-4 max-w-3xl">
+              {COUNTRIES.slice(0, 9).map((c) => (
+                <li key={c.code}>
+                  <Link href={`/guides/${c.code}/sencha`} className="underline-link text-[15px]">
+                    Shipping to {c.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Rule className="mt-16" />
+          </div>
+          <ContentSidebar
+            relatedTools={[
+              { href: "/tools/ems-calculator", label: "EMS shipping calculator" },
+              { href: "/tools/shelf-life", label: "Shelf-life checker" },
+              { href: "/tools/matcha-grade", label: "Matcha grade decoder" },
+              { href: "/tools/miso-finder", label: "Miso type finder" },
+            ]}
+          />
+        </div>
       </Container>
       <SiteFooter />
     </>
