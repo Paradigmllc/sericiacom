@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Offline — Sericia</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <!--
+    Inlined CSS so this page renders with zero network. Token values are
+    copied from tailwind.config (sericia-paper / sericia-ink / sericia-line)
+    because tailwind's generated stylesheet itself may not be in the cache
+    when this page is served from a cold offline state.
+  -->
+  <style>
+    :root {
+      --paper: #f5f1e8;
+      --ink: #21231d;
+      --line: rgba(33, 35, 29, 0.15);
+      --muted: rgba(33, 35, 29, 0.6);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Noto Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      max-width: 32rem;
+      margin: 0 auto;
+      padding: 6rem 1.5rem 4rem;
+      text-align: center;
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin: 0 0 1.5rem;
+      line-height: 1.2;
+    }
+    p {
+      line-height: 1.65;
+      color: rgba(33, 35, 29, 0.78);
+      margin: 0 0 1.25rem;
+      font-size: 0.95rem;
+    }
+    .rule {
+      width: 2rem;
+      height: 1px;
+      background: var(--line);
+      margin: 2.5rem auto;
+      border: 0;
+    }
+    button {
+      appearance: none;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: 0.875rem 2rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 180ms ease;
+    }
+    button:hover, button:focus-visible { opacity: 0.86; outline: none; }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Connection lost</div>
+    <h1>You're offline.</h1>
+    <p>Sericia needs a network to browse live drops and process checkout.</p>
+    <p>Your cart is saved locally in this browser — it'll still be here when you're back online.</p>
+    <hr class="rule">
+    <button type="button" onclick="location.reload()">Try again</button>
+    <footer>Kyoto · EMS worldwide</footer>
+  </main>
+</body>
+</html>

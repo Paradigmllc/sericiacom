@@ -14,7 +14,12 @@
     "payload:migrate": "payload migrate",
     "payload:migrate:create": "payload migrate:create",
     "payload:bootstrap": "tsx scripts/payload-bootstrap.ts",
-    "products:upload-thumbnails": "tsx scripts/upload-product-thumbnails.ts"
+    "products:upload-thumbnails": "tsx scripts/upload-product-thumbnails.ts",
+    "seed:testimonials": "tsx scripts/seed-testimonials.ts",
+    "seed:articles": "tsx scripts/seed-articles.ts",
+    "seed:pseo-briefs": "tsx scripts/seed-pseo-briefs.ts",
+    "uat:magic-link": "tsx scripts/uat-magic-link.ts",
+    "uat:purchase-flow": "tsx scripts/uat-purchase-flow.ts"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
@@ -57,10 +62,12 @@
     "typescript": "^5.7.2",
     "typewriter-effect": "^2.21.0",
     "vaul": "^1.1.1",
+    "web-push": "^3.6.7",
     "zod": "^3.24.1",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@types/web-push": "^3.6.4",
     "eslint": "^9",
     "eslint-config-next": "15.1.3"
   },
