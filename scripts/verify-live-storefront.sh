@@ -12,6 +12,7 @@
 #   6. Crossmint webhook endpoint: MUST reject unsigned POSTs (401 ok, 503 = secret unset launch-blocker, 200 = regression)
 #   7. i18n hotfix live — flag-icons CSS active + 'English' label (not '>EN<' + '🇬🇧')
 #   8. Google OAuth button present on /login and /signup (post-M4a-7 rollout)
+#   9. Brand assets are kanji-free on live (project rule: 漢字NG on logos/images)
 #
 # Usage:  bash scripts/verify-live-storefront.sh
 # Exits 0 if all pass, 1 if any critical check fails.
@@ -102,6 +103,33 @@ if [ "${login_magic:-0}" -ge "1" ] && [ "${signup_magic:-0}" -ge "1" ] && [ "${l
   check "Magic Link form live (no OAuth regression)" 1 "(login=$login_magic signup=$signup_magic oauth=$login_oauth_regression)"
 else
   check "Magic Link form live (no OAuth regression)" 0 "(login=$login_magic signup=$signup_magic oauth=$login_oauth_regression)"
+fi
+
+
+# 9. Brand assets are kanji-free on live (project rule: 漢字NG on all brand SVG/PNG)
+#    Fetches the 7 canonical brand assets from https://sericia.com and greps
+#    each for CJK Unified Ideographs (U+4E00–U+9FFF). Any match = regression.
+brand_assets=(
+  "placeholders/sencha.svg"
+  "placeholders/miso.svg"
+  "placeholders/shiitake.svg"
+  "placeholders/drop-001.svg"
+  "logo.svg"
+  "logo-mark.svg"
+  "og-default.svg"
+)
+kanji_hits=0
+for asset in "${brand_assets[@]}"; do
+  body=$(curl -s --max-time 15 "https://sericia.com/${asset}")
+  if printf '%s' "$body" | grep -qP '[\x{4e00}-\x{9fff}]' 2>/dev/null; then
+    kanji_hits=$((kanji_hits+1))
+    echo "    ⚠ kanji detected in /${asset}"
+  fi
+done
+if [ "$kanji_hits" = "0" ]; then
+  check "Brand assets kanji-free (project rule)" 1 "(7 assets clean)"
+else
+  check "Brand assets kanji-free (project rule)" 0 "($kanji_hits assets still contain kanji — regression)"
 fi
 
 echo
