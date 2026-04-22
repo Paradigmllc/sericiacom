@@ -87,15 +87,21 @@ else
   check "i18n hotfix: flag-icons CSS + English label" 0 "(stale i18n — flags may have reverted to text)"
 fi
 
-# 8. Google OAuth button present (post-M4a-7)
+# 8. Magic Link form present on /login and /signup (post-M4a-7 revert)
+#    Google OAuth was intentionally removed — the consent screen exposed the
+#    raw {project-ref}.supabase.co domain which looked phishy for a premium
+#    D2C brand. Until a custom auth domain (auth.sericia.com) is provisioned
+#    on Supabase Pro+, Magic Link is the only auth path. Assert that the
+#    Magic Link form is live and the OAuth button is NOT accidentally restored.
 curl -s --max-time 15 -o /tmp/sericia_login.html https://sericia.com/login
 curl -s --max-time 15 -o /tmp/sericia_signup.html https://sericia.com/signup
-login_oauth=$(grep -cE "Continue with Google|Sign in with Google" /tmp/sericia_login.html 2>/dev/null | head -1)
-signup_oauth=$(grep -cE "Sign up with Google|Continue with Google" /tmp/sericia_signup.html 2>/dev/null | head -1)
-if [ "${login_oauth:-0}" -ge "1" ] && [ "${signup_oauth:-0}" -ge "1" ]; then
-  check "Google OAuth buttons: /login + /signup" 1 "(login=$login_oauth signup=$signup_oauth)"
+login_magic=$(grep -cE "Send sign-in link|Email address" /tmp/sericia_login.html 2>/dev/null | head -1)
+signup_magic=$(grep -cE "Send sign-in link|Email address" /tmp/sericia_signup.html 2>/dev/null | head -1)
+login_oauth_regression=$(grep -cE "Continue with Google|Sign in with Google" /tmp/sericia_login.html 2>/dev/null | head -1)
+if [ "${login_magic:-0}" -ge "1" ] && [ "${signup_magic:-0}" -ge "1" ] && [ "${login_oauth_regression:-0}" = "0" ]; then
+  check "Magic Link form live (no OAuth regression)" 1 "(login=$login_magic signup=$signup_magic oauth=$login_oauth_regression)"
 else
-  check "Google OAuth buttons: /login + /signup" 0 "(login=$login_oauth signup=$signup_oauth — M4a-7 not yet live)"
+  check "Magic Link form live (no OAuth regression)" 0 "(login=$login_magic signup=$signup_magic oauth=$login_oauth_regression)"
 fi
 
 echo
