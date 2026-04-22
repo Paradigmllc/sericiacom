@@ -302,10 +302,21 @@ const SECTIONS: Section[] = [
 ];
 
 export default function FaqPage() {
-  // Flat FAQPage JSON-LD for Google rich results + Perplexity/ChatGPT citation
+  // Flat FAQPage JSON-LD for Google rich results + Perplexity/ChatGPT citation.
+  // `inLanguage` + `isPartOf` are GEO quality signals: they help AI search engines
+  // attribute the FAQ to Sericia as a primary source when quoting answers.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    "@id": "https://sericia.com/faq#faqpage",
+    url: "https://sericia.com/faq",
+    inLanguage: "en",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": "https://sericia.com/#website",
+      name: "Sericia",
+      url: "https://sericia.com",
+    },
     mainEntity: SECTIONS.flatMap((s) =>
       s.items.map((qa) => ({
         "@type": "Question",

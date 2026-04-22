@@ -100,8 +100,8 @@ export interface Config {
     | ('false' | 'none' | 'null')
     | false
     | null
-    | ('en' | 'ja' | 'de' | 'fr' | 'es' | 'it' | 'ko' | 'zh-TW' | 'ar')
-    | ('en' | 'ja' | 'de' | 'fr' | 'es' | 'it' | 'ko' | 'zh-TW' | 'ar')[];
+    | ('en' | 'ja' | 'de' | 'fr' | 'es' | 'it' | 'ko' | 'zh-TW' | 'ru' | 'ar')
+    | ('en' | 'ja' | 'de' | 'fr' | 'es' | 'it' | 'ko' | 'zh-TW' | 'ru' | 'ar')[];
   globals: {
     siteSettings: SiteSetting;
     homepage: Homepage;
@@ -110,7 +110,7 @@ export interface Config {
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
   };
-  locale: 'en' | 'ja' | 'de' | 'fr' | 'es' | 'it' | 'ko' | 'zh-TW' | 'ar';
+  locale: 'en' | 'ja' | 'de' | 'fr' | 'es' | 'it' | 'ko' | 'zh-TW' | 'ru' | 'ar';
   widgets: {
     collections: CollectionsWidget;
   };

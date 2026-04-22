@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { useCart } from "@/lib/cart-store";
 import { useUi } from "@/lib/ui-store";
 import { useWishlist } from "@/lib/wishlist-store";
-import { HeartIcon, MinusIcon, PlusIcon } from "@/components/Icons";
+import { MinusIcon, PlusIcon } from "@/components/Icons";
+import AnimatedHeart from "@/components/AnimatedHeart";
 
 export default function AddToCartButton({
   productId,
@@ -69,7 +70,7 @@ export default function AddToCartButton({
           aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
           className="w-full flex items-center justify-center gap-2 text-[12px] tracking-[0.18em] uppercase text-sericia-ink-mute hover:text-sericia-ink transition"
         >
-          <HeartIcon filled={wished} className={`h-4 w-4 ${wished ? "text-sericia-accent" : ""}`} />
+          <AnimatedHeart filled={wished} className="h-4 w-4" />
           {wished ? "Saved" : "Save to wishlist"}
         </button>
       </div>
@@ -113,9 +114,9 @@ export default function AddToCartButton({
           type="button"
           onClick={handleWish}
           aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
-          className={`px-5 border transition-colors ${wished ? "border-sericia-accent text-sericia-accent" : "border-sericia-line text-sericia-ink-mute hover:border-sericia-ink hover:text-sericia-ink"}`}
+          className={`px-5 border transition-colors ${wished ? "border-sericia-heart" : "border-sericia-line text-sericia-ink-mute hover:border-sericia-ink hover:text-sericia-ink"}`}
         >
-          <HeartIcon filled={wished} className="h-5 w-5" />
+          <AnimatedHeart filled={wished} className="h-5 w-5" />
         </button>
       </div>
     </div>

@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import { buildHomepageMetadata } from "../lib/payload-homepage";
 import WaitlistForm from "../components/WaitlistForm";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
@@ -10,9 +12,21 @@ import FadeIn from "../components/FadeIn";
 import { listActiveProducts } from "../lib/products";
 import ProductCard from "../components/ProductCard";
 import StatCountUp from "../components/StatCountUp";
+import DropCountdown from "../components/DropCountdown";
+import TestimonialsWall from "../components/TestimonialsWall";
+import PressStrip from "../components/PressStrip";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
+
+/**
+ * generateMetadata — overlays editor-controlled Payload homepage SEO on top of
+ * the layout.tsx defaults. If Payload is empty or unavailable, the layout
+ * defaults win (silent fallback by design).
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  return buildHomepageMetadata();
+}
 
 export default async function Home() {
   const country = (await cookies()).get("country")?.value ?? "us";
@@ -31,6 +45,9 @@ export default async function Home() {
     ships_within_hours: 48,
     story:
       "Three small Japanese producers had 480g of surplus between them: a single-origin sencha picked at peak, a barrel-aged miso from a 120-year-old shed, and shiitake hand-dried on bamboo racks. Rescued before disposal — the same craft, half the waste.",
+    // Fallback has no close_at — DropCountdown null-safe degrades to hidden state.
+    // The Supabase row supplies the real closes_at when the drop is provisioned.
+    closes_at: null as string | null,
   };
   const remaining = dropData.total_units - dropData.sold_units;
   const soldOut = remaining <= 0;
@@ -71,6 +88,10 @@ export default async function Home() {
       <SiteHeader />
       <CinematicHero />
 
+      {/* Press strip — "As mentioned in" row. Silent-fails to null when the
+          Payload collection is empty, so the layout stays clean pre-seed. */}
+      <PressStrip />
+
       {/* Current drop featured products */}
       {currentDropProducts.length > 0 && (
         <section className="border-b border-sericia-line">
@@ -96,6 +117,13 @@ export default async function Home() {
       {/* Drop detail */}
       <section id="drop" className="border-b border-sericia-line bg-sericia-paper-card">
         <Container size="wide" className="py-24 md:py-32">
+          {dropData.closes_at && !soldOut && (
+            <FadeIn>
+              <div className="mb-16 md:mb-20 pb-12 border-b border-sericia-line">
+                <DropCountdown closesAt={dropData.closes_at} label="Drop closes in" />
+              </div>
+            </FadeIn>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
             <FadeIn as="div" className="md:col-span-5">
               <Eyebrow>The featured bundle</Eyebrow>
@@ -267,6 +295,10 @@ export default async function Home() {
           </div>
         </Container>
       </section>
+
+      {/* Testimonials — between philosophy (belief) and waitlist (invitation).
+          Quiet social proof after we've told our story. */}
+      <TestimonialsWall />
 
       {/* Waitlist */}
       <section id="waitlist" className="border-b border-sericia-line bg-sericia-paper-deep">

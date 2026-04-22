@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LOCALE_LABELS, type Locale } from "@/i18n/routing";
 
-const LOCALES: Locale[] = ["en", "ja", "de", "fr", "es", "it", "ko", "zh-TW", "ru"];
+const LOCALES: Locale[] = ["en", "ja", "de", "fr", "es", "it", "ko", "zh-TW", "ru", "ar"];
 
 // Flag rationale: `en` is a single locale serving US + UK + CA + AU + SG + HK
 // via hreflang country-specific guides (see app/layout.tsx alternates.languages).
@@ -27,6 +27,11 @@ const FLAG_CODES: Record<Locale, string> = {
   ko: "kr",
   "zh-TW": "tw",
   ru: "ru",
+  // Arabic is a cross-border language; picking one country flag for a lang
+  // imposes a political framing. UAE is chosen because it's the priority
+  // GCC market for Sericia's Japan-origin D2C and has the clearest Japan
+  // food import channel — aligned with our EMS routing economics.
+  ar: "ae",
 };
 
 function stripLocalePrefix(path: string): string {

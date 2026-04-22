@@ -5,9 +5,13 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, Rule } from "@/components/ui";
 import { getProductBySlug, listActiveProducts, categoryLabel } from "@/lib/products";
+import { getCurrentDrop } from "@/lib/drops";
 import ProductCard from "@/components/ProductCard";
 import FadeIn from "@/components/FadeIn";
+import DropCountdown from "@/components/DropCountdown";
 import ProductDetailShell from "./ProductDetailShell";
+
+const SITE_URL = "https://sericia.com";
 
 export const dynamic = "force-dynamic";
 
@@ -26,10 +30,12 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function ProductDetailPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const p = await getProductBySlug(slug);
+  const [p, all, drop] = await Promise.all([
+    getProductBySlug(slug),
+    listActiveProducts(),
+    getCurrentDrop(),
+  ]);
   if (!p) notFound();
-
-  const all = await listActiveProducts();
 
   // Related: same category first (up to 3), then fall back to random siblings if short
   const sameCategory = all.filter((x) => x.id !== p.id && x.category === p.category);
@@ -38,16 +44,68 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
 
   const outOfStock = p.stock <= 0 || p.status === "sold_out";
 
+  // Product JSON-LD (T1-E) — one Product entity per PDP with Offer availability.
+  // Google uses `availability` to decide whether to surface the product in shopping rich results.
+  const productUrl = `${SITE_URL}/products/${p.slug}`;
+  const productImages = (p.images ?? []).map((img) =>
+    img.startsWith("http") ? img : `${SITE_URL}${img.startsWith("/") ? "" : "/"}${img}`,
+  );
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.name,
+    description: p.description,
+    image: productImages.length > 0 ? productImages : undefined,
+    sku: p.id,
+    category: categoryLabel(p.category),
+    brand: { "@type": "Brand", name: "Sericia" },
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency: "USD",
+      price: p.price_usd,
+      availability: outOfStock
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/InStock",
+      seller: { "@type": "Organization", name: "Sericia" },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: { "@type": "MonetaryAmount", value: "0", currency: "USD" },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: ["US", "GB", "DE", "FR", "AU", "SG", "CA", "HK", "JP"],
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          transitTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 7, unitCode: "DAY" },
+        },
+      },
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <SiteHeader />
       <Container size="wide" className="py-16 md:py-24 pb-28 md:pb-24">
-        <Link
-          href="/products"
-          className="text-[12px] tracking-[0.18em] uppercase text-sericia-ink-mute hover:text-sericia-ink transition"
-        >
-          ← All products
-        </Link>
+        <div className="flex items-center justify-between gap-6 flex-wrap mb-6">
+          <Link
+            href="/products"
+            className="text-[12px] tracking-[0.18em] uppercase text-sericia-ink-mute hover:text-sericia-ink transition"
+          >
+            ← All products
+          </Link>
+          {drop?.closes_at && !outOfStock && (
+            <DropCountdown
+              closesAt={drop.closes_at}
+              label="Drop closes in"
+              variant="compact"
+            />
+          )}
+        </div>
 
         <ProductDetailShell
           product={{
@@ -63,6 +121,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
             origin_region: p.origin_region,
             producer_name: p.producer_name,
             outOfStock,
+            // Medusa variant.inventory_quantity, fetched live per request
+            // (page has `export const dynamic = "force-dynamic"`).
+            stockRemaining: typeof p.stock === "number" ? p.stock : null,
           }}
           relatedCategoryLabel={categoryLabel(p.category)}
         />

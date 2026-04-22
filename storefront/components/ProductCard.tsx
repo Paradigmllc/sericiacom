@@ -3,7 +3,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useWishlist } from "@/lib/wishlist-store";
-import { HeartIcon } from "./Icons";
+import AnimatedHeart from "./AnimatedHeart";
 
 type Product = {
   id: string;
@@ -14,7 +14,12 @@ type Product = {
   weight_g: number;
   category: string;
   origin_region: string | null;
+  /** Optional — if passed and low, shows "Only X left" pill on the card */
+  stock?: number | null;
 };
+
+// Matches ProductDetailShell threshold so listing + PDP stay in sync
+const LOW_STOCK_THRESHOLD = 10;
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   tea: "from-[#c8d4b0] to-[#6a7d4c]",
@@ -63,6 +68,10 @@ export default function ProductCard({
 
   const primary = CATEGORY_GRADIENTS[product.category] ?? "from-sericia-line to-sericia-ink-mute";
   const secondary = CATEGORY_GRADIENTS_ALT[product.category] ?? "from-sericia-ink-mute to-sericia-ink";
+  const showLowStock =
+    typeof product.stock === "number" &&
+    product.stock > 0 &&
+    product.stock <= LOW_STOCK_THRESHOLD;
 
   return (
     <Link
@@ -76,9 +85,15 @@ export default function ProductCard({
         aria-label={has ? "Remove from wishlist" : "Add to wishlist"}
         className="absolute top-4 right-4 z-10 p-2 text-sericia-ink-mute hover:text-sericia-ink transition"
       >
-        <HeartIcon filled={has} className={`h-5 w-5 ${has ? "text-sericia-accent" : ""}`} />
+        <AnimatedHeart filled={has} className="h-5 w-5" />
       </button>
       <div className="relative aspect-[4/5] mb-6 overflow-hidden">
+        {showLowStock && (
+          <div className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 bg-sericia-paper/90 backdrop-blur-sm border border-sericia-line px-2.5 py-1 text-[9px] tracking-[0.18em] uppercase text-sericia-accent">
+            <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-sericia-accent" />
+            Only {product.stock} left
+          </div>
+        )}
         <motion.div
           className={`absolute inset-0 bg-gradient-to-br ${primary}`}
           initial={{ opacity: 1 }}

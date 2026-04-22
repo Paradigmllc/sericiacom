@@ -13,6 +13,9 @@ export default {
           "ink-mute": "#7b7d73",
           line: "#d4cfc4",
           accent: "#5c5d45",
+          // Wishlist / "loved" state. Aged crimson — warm but restrained,
+          // harmonizes with earth-tone brand palette. Used by AnimatedHeart.
+          heart: "#BF3649",
         },
       },
       fontFamily: {

@@ -21,7 +21,18 @@ type ProductShape = {
   origin_region: string | null;
   producer_name: string | null;
   outOfStock: boolean;
+  /**
+   * Live inventory from Medusa (variant.inventory_quantity).
+   * null → inventory untracked (don't show scarcity signal).
+   * Scarcity messaging renders when 0 < stockRemaining <= LOW_STOCK_THRESHOLD.
+   */
+  stockRemaining: number | null;
 };
+
+// Threshold chosen carefully: high enough that the badge appears on genuinely
+// low-stock items (building FOMO), low enough to avoid false-alarming on
+// medium-stock items (which would feel manipulative and break brand trust).
+const LOW_STOCK_THRESHOLD = 10;
 
 const SHIPPING_COPY =
   "Hand-packed in Kyoto and shipped via EMS with tracking. Japan & Asia arrive in 3–5 business days; North America, Europe & Oceania in 5–9. Every parcel is temperature-considered, double-sealed, and includes a handwritten tasting card.";
@@ -145,6 +156,25 @@ export default function ProductDetailShell({
               USD · {product.weight_g}g
             </span>
           </div>
+          {!product.outOfStock &&
+            product.stockRemaining !== null &&
+            product.stockRemaining > 0 &&
+            product.stockRemaining <= LOW_STOCK_THRESHOLD && (
+              <div
+                role="status"
+                aria-live="polite"
+                className="flex items-center gap-2.5 mb-5 text-[12px] tracking-[0.12em] uppercase text-sericia-accent"
+              >
+                <span
+                  aria-hidden="true"
+                  className="relative inline-flex w-2 h-2 rounded-full bg-sericia-accent"
+                >
+                  <span className="absolute inset-0 rounded-full bg-sericia-accent animate-ping opacity-60" />
+                </span>
+                Only {product.stockRemaining}{" "}
+                {product.stockRemaining === 1 ? "piece" : "pieces"} left
+              </div>
+            )}
           <div ref={mainCtaRef}>
             <AddToCartButton
               productId={product.id}
