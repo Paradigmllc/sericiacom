@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Eyebrow, Rule } from "@/components/ui";
+import PushOptIn from "@/components/PushOptIn";
 import { supabaseServer } from "@/lib/supabase-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
@@ -76,6 +77,17 @@ export default async function AccountOverviewPage() {
           <p className="text-[13px] text-sericia-ink-soft">Change credentials or delete your account.</p>
         </Link>
       </div>
+
+      {/*
+        Push opt-in slot on the account overview. Silently self-hides when
+        the user has already subscribed / denied / dismissed in the last 60
+        days, so returning visitors don't see repeated asks. See PushOptIn.
+      */}
+      <Rule className="my-12" />
+      <PushOptIn
+        variant="account"
+        topics={["drops", "orders"]}
+      />
     </div>
   );
 }

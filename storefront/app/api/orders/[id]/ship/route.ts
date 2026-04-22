@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { sendEmail, shippingNotificationEmail } from "@/lib/email";
+import { flipReferralRewardOnShipped } from "@/lib/referrals";
 
 const Schema = z.object({
   tracking_number: z.string().min(1).max(60),
@@ -60,6 +61,20 @@ export async function POST(
     });
     if (!result.ok) {
       console.error("[orders/ship] email send failed (non-fatal)", result.error);
+    }
+
+    // Flip the referrer's reward from pending → issued. Non-blocking:
+    // a reward-ledger failure must NOT reverse the physical ship event.
+    // If this throws, we log and return ok=true — ops can reconcile.
+    try {
+      const flip = await flipReferralRewardOnShipped(id);
+      if (flip.flipped) {
+        console.log(
+          `[orders/ship] referral reward issued — order=${id} redemption=${flip.redemption_id} amount_usd=${flip.reward_issued_usd}`,
+        );
+      }
+    } catch (referralErr) {
+      console.error("[orders/ship] referral flip failed (non-fatal)", referralErr);
     }
 
     return NextResponse.json({ ok: true });

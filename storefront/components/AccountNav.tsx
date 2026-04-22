@@ -9,6 +9,7 @@ const NAV: Array<{ href: string; label: string }> = [
   { href: "/account", label: "Overview" },
   { href: "/account/orders", label: "Orders" },
   { href: "/account/wishlist", label: "Wishlist" },
+  { href: "/account/referrals", label: "Referrals" },
   { href: "/account/addresses", label: "Addresses" },
   { href: "/account/settings", label: "Settings" },
 ];

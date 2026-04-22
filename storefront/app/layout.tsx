@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { isRtlLocale, type Locale } from "../i18n/routing";
 import Analytics from "../components/Analytics";
 import DifyChat from "../components/DifyChat";
 import GlobalOverlay from "../components/GlobalOverlay";
@@ -11,6 +12,10 @@ import RouteProgress from "../components/RouteProgress";
 import LuxuryLoader from "../components/LuxuryLoader";
 import RegionModal from "../components/RegionModal";
 import CookieConsent from "../components/CookieConsent";
+import CouponBanner from "../components/CouponBanner";
+import SocialProofToastGate from "../components/SocialProofToastGate";
+import ReferralCookieSetter from "../components/ReferralCookieSetter";
+import ServiceWorkerRegister from "../components/ServiceWorkerRegister";
 import { Suspense } from "react";
 
 const notoSans = Noto_Sans({
@@ -68,6 +73,10 @@ export const metadata: Metadata = {
       "es-ES": `${SITE_URL}/es`,
       "it-IT": `${SITE_URL}/it`,
       "ru-RU": `${SITE_URL}/ru`,
+      // Arabic is emitted without a country tag so a single page serves the
+      // whole MSA-reading MENA region. When/if we add market-specific shipping
+      // pages, switch to `ar-AE`, `ar-SA`, etc. with distinct URLs.
+      "ar": `${SITE_URL}/ar`,
       "x-default": SITE_URL,
     },
   },
@@ -145,10 +154,18 @@ const websiteJsonLd = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await getLocale();
+  const locale = (await getLocale()) as Locale;
   const messages = await getMessages();
+  // `dir` on <html> is the idiomatic way to flip document directionality. The
+  // browser then mirrors scroll gutters, form UI, and most positional CSS
+  // automatically. Tailwind classes that use physical axes (ml-/mr-/left-/right-)
+  // are NOT flipped — a full pass to logical counterparts (ms-/me-/start-/end-)
+  // is tracked as a follow-up (T3-A-RTL-audit). Until then, Arabic renders
+  // functionally readable; minor asymmetries in margins are acceptable for
+  // launch against the MENA market.
+  const dir = isRtlLocale(locale) ? "rtl" : "ltr";
   return (
-    <html lang={locale} className={`${notoSans.variable} ${notoSansJp.variable}`}>
+    <html lang={locale} dir={dir} className={`${notoSans.variable} ${notoSansJp.variable}`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
@@ -159,13 +176,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Suspense fallback={null}>
             <RouteProgress />
           </Suspense>
+          <Suspense fallback={null}>
+            <ReferralCookieSetter />
+          </Suspense>
+          <CouponBanner />
           {children}
           <GlobalOverlay />
           <RegionModal />
           <CookieConsent />
+          <SocialProofToastGate />
           <Toaster position="top-right" richColors />
           <Analytics />
           <DifyChat />
+          <ServiceWorkerRegister />
         </NextIntlClientProvider>
       </body>
     </html>

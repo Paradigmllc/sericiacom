@@ -5,7 +5,7 @@ import { PPP } from "@/lib/ppp";
 const ADMIN_COOKIE = "sericia_admin";
 
 // Locales supported. Keep in sync with i18n/routing.ts.
-const LOCALES = ["en", "ja", "de", "fr", "es", "it", "ko", "zh-TW", "ru"] as const;
+const LOCALES = ["en", "ja", "de", "fr", "es", "it", "ko", "zh-TW", "ru", "ar"] as const;
 const DEFAULT_LOCALE = "en";
 const LOCALE_COOKIE = "NEXT_LOCALE";
 
@@ -16,6 +16,10 @@ const LOCALE_COOKIE = "NEXT_LOCALE";
 // but we map common country codes so /jp/... → /ja/..., /us/... → /...,
 // etc. 308 (Permanent Redirect) preserves the request method and signals
 // to search engines that the locale-prefixed form is canonical.
+//
+// Arabic coverage (ar): GCC + Levant + North Africa. UAE/SA are the priority
+// markets for Sericia (high-income Japan-food demand); the rest are included
+// so a pasted `/eg/...` or `/ma/...` URL doesn't 404.
 const COUNTRY_TO_LOCALE: Record<string, string> = {
   jp: "ja", jpn: "ja", japan: "ja",
   us: "en", usa: "en", gb: "en", uk: "en",
@@ -26,6 +30,9 @@ const COUNTRY_TO_LOCALE: Record<string, string> = {
   kr: "ko", kor: "ko",
   cn: "zh-TW", tw: "zh-TW", hk: "zh-TW", zh: "zh-TW", "zh-cn": "zh-TW",
   rus: "ru",
+  sa: "ar", ae: "ar", eg: "ar", ma: "ar", qa: "ar", kw: "ar",
+  bh: "ar", om: "ar", jo: "ar", lb: "ar",
+  arab: "ar", ara: "ar",
 };
 
 // Paths that are NOT covered by i18n (flat, always English).
@@ -191,7 +198,7 @@ export async function middleware(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   // Guard /account/* (and localized /<locale>/account/*)
-  const accountGuard = /^\/(en|ja|de|fr|es|it|ko|zh-TW|ru)?\/?account(\/|$)/;
+  const accountGuard = /^\/(en|ja|de|fr|es|it|ko|zh-TW|ru|ar)?\/?account(\/|$)/;
   if (accountGuard.test(path) && !user) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = "/login";

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { useCart } from "@/lib/cart-store";
 import { Rule } from "@/components/ui";
+import ReferralCodeField, { type ReferralApplied } from "@/components/ReferralCodeField";
 
 const Schema = z.object({
   email: z.string().email("Valid email required"),
@@ -54,6 +55,7 @@ export default function CartCheckoutForm({
   const clear = useCart((s) => s.clear);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [referral, setReferral] = useState<ReferralApplied | null>(null);
   const [form, setForm] = useState({
     email: profileDefaults.email ?? "",
     full_name: profileDefaults.full_name ?? "",
@@ -75,6 +77,8 @@ export default function CartCheckoutForm({
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const subtotal = items.reduce((s, i) => s + i.price_usd * i.quantity, 0);
+  const referralDiscount = referral?.discountAmountUsd ?? 0;
+  const total = Math.max(0, subtotal - referralDiscount);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -100,6 +104,12 @@ export default function CartCheckoutForm({
           utm_source: params.get("utm_source"),
           utm_medium: params.get("utm_medium"),
           utm_campaign: params.get("utm_campaign"),
+          // Referral attribution — the create-cart API re-validates the code
+          // (never trusts the client's discount value), applies the discount
+          // to amount_usd, and writes a sericia_referral_redemptions row with
+          // reward_status=pending. The Medusa order-placed subscriber flips
+          // pending→issued when the order ships (see T3-D).
+          referral_code: referral?.code ?? null,
         }),
       });
       const data = await res.json();
@@ -189,9 +199,12 @@ export default function CartCheckoutForm({
             <label className={labelCls}>Phone <span className="text-sericia-ink-mute normal-case tracking-normal">— for customs</span></label>
             <input type="tel" value={form.phone} onChange={update("phone")} className={inputCls} autoComplete="tel" />
           </div>
+          <div className="pt-2">
+            <ReferralCodeField onApplied={setReferral} />
+          </div>
           <div className="pt-6">
             <button type="submit" disabled={loading} className="w-full bg-sericia-ink text-sericia-paper py-5 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40">
-              {loading ? "Reserving…" : `Continue to payment — $${subtotal}`}
+              {loading ? "Reserving…" : `Continue to payment — $${total}`}
             </button>
             <p className="text-[12px] text-sericia-ink-mute text-center mt-5 leading-relaxed">
               EMS worldwide · By continuing you agree to our{" "}
@@ -226,10 +239,22 @@ export default function CartCheckoutForm({
             <span className="text-sericia-ink-soft">Shipping (EMS worldwide)</span>
             <span>Included</span>
           </div>
+          {referral && (
+            <>
+              <Rule />
+              <div className="flex justify-between py-4 text-[14px]">
+                <span className="text-sericia-ink-soft">
+                  Referral
+                  {referral.referrerFirstName ? ` — ${referral.referrerFirstName}` : ""}
+                </span>
+                <span className="text-sericia-accent">−${referral.discountAmountUsd}</span>
+              </div>
+            </>
+          )}
           <Rule />
           <div className="flex justify-between py-5 text-[16px] font-medium">
             <span>Total</span>
-            <span>${subtotal} USD</span>
+            <span>${total} USD</span>
           </div>
           <Rule />
           <p className="text-[12px] text-sericia-ink-mute mt-5 leading-relaxed">

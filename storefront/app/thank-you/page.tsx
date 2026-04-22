@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
+import PushOptIn from "../../components/PushOptIn";
 import { Container, Eyebrow, Button, Rule } from "../../components/ui";
 
 export const metadata: Metadata = {
@@ -56,6 +57,17 @@ export default async function ThankYouPage({ searchParams }: { searchParams: Pro
           </div>
         </div>
         <Rule className="mt-20 mb-12" />
+
+        {/*
+          Push opt-in offered at the highest-intent moment we have: directly
+          after checkout. Renders nothing if the browser doesn't support push,
+          the user has already granted/denied, or has dismissed this card in
+          the last 60 days. See components/PushOptIn.tsx for the state machine.
+        */}
+        <div className="mx-auto max-w-lg mb-16">
+          <PushOptIn variant="thank-you" topics={["drops", "orders"]} />
+        </div>
+
         <div className="text-center">
           <Button href="/guides" variant="link">Browse country shipping guides</Button>
           <div className="mt-10">

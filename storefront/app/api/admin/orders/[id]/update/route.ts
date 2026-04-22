@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { sendEmail, shippingNotificationEmail } from "@/lib/email";
+import { flipReferralRewardOnShipped } from "@/lib/referrals";
 
 const Schema = z.object({
   status: z.enum(["pending", "paid", "shipped", "delivered", "refunded", "cancelled"]).optional(),
@@ -97,6 +98,25 @@ export async function POST(
       emailSent = result.ok;
       if (!result.ok) {
         console.error("[admin/orders/update] shipping email send failed", result.error);
+      }
+    }
+
+    // Flip the referrer's reward from pending → issued on the status
+    // transition into `shipped`. Gated on `existing.status !== "shipped"`
+    // so idempotent re-saves (e.g. tracking number corrections) don't
+    // re-fire — combined with the helper's own concurrency guard this is
+    // double-safe. Non-blocking: referral-ledger failures must not reverse
+    // the status change.
+    if (input.status === "shipped" && existing.status !== "shipped") {
+      try {
+        const flip = await flipReferralRewardOnShipped(id);
+        if (flip.flipped) {
+          console.log(
+            `[admin/orders/update] referral reward issued — order=${id} redemption=${flip.redemption_id} amount_usd=${flip.reward_issued_usd}`,
+          );
+        }
+      } catch (referralErr) {
+        console.error("[admin/orders/update] referral flip failed (non-fatal)", referralErr);
       }
     }
 
