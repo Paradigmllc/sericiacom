@@ -15,6 +15,7 @@ import StatCountUp from "../components/StatCountUp";
 import DropCountdown from "../components/DropCountdown";
 import TestimonialsWall from "../components/TestimonialsWall";
 import PressStrip from "../components/PressStrip";
+import HomepageBlocks from "../components/HomepageBlocks";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
@@ -295,6 +296,11 @@ export default async function Home() {
           </div>
         </Container>
       </section>
+
+      {/* Editor-controlled middle (Payload-driven blocks). Slots between
+          Philosophy (belief, coded) and TestimonialsWall (proof, Payload-driven
+          from testimonials collection). Empty/failed fetch → silently no-ops. */}
+      <HomepageBlocks country={country} />
 
       {/* Testimonials — between philosophy (belief) and waitlist (invitation).
           Quiet social proof after we've told our story. */}

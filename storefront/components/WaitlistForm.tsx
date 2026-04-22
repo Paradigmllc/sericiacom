@@ -2,9 +2,14 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-type Props = { source: string; country: string };
+type Props = {
+  source: string;
+  country: string;
+  /** Optional editor-controlled button label. Defaults to "Join" for coded callers. */
+  ctaLabel?: string;
+};
 
-export default function WaitlistForm({ source, country }: Props) {
+export default function WaitlistForm({ source, country, ctaLabel = "Join" }: Props) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [joined, setJoined] = useState(false);
@@ -67,7 +72,7 @@ export default function WaitlistForm({ source, country }: Props) {
         disabled={loading}
         className="bg-sericia-ink text-sericia-paper px-6 py-3 rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50"
       >
-        {loading ? "…" : "Join"}
+        {loading ? "…" : ctaLabel}
       </button>
     </form>
   );
