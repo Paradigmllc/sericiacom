@@ -24,7 +24,6 @@ const NON_I18N_PREFIXES = [
   "/shipping",
   "/pay",
   "/auth",
-  "/reset",
 ];
 
 function stripLocalePrefix(path: string): { locale: string | null; pathWithoutLocale: string } {

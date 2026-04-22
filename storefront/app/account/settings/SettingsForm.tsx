@@ -4,12 +4,19 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
+/**
+ * Account settings — email change + account deletion.
+ *
+ * Password management was removed with the switch to passwordless Magic Link
+ * auth (see storefront/app/login/LoginForm.tsx). Existing auth.users rows that
+ * still carry a password_hash are harmless — the field is simply never read
+ * again by the UI. If users want to revoke an old password they can delete
+ * and re-create via magic link.
+ */
 export default function SettingsForm({ initialEmail }: { initialEmail: string }) {
   const router = useRouter();
   const [email, setEmail] = useState(initialEmail);
-  const [password, setPassword] = useState("");
   const [loadingEmail, setLoadingEmail] = useState(false);
-  const [loadingPwd, setLoadingPwd] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState("");
 
@@ -29,27 +36,6 @@ export default function SettingsForm({ initialEmail }: { initialEmail: string })
       toast.error(msg);
     } finally {
       setLoadingEmail(false);
-    }
-  }
-
-  async function updatePassword(e: React.FormEvent) {
-    e.preventDefault();
-    if (password.length < 8) {
-      toast.error("Password must be at least 8 characters");
-      return;
-    }
-    setLoadingPwd(true);
-    try {
-      const { error } = await supabaseBrowser().auth.updateUser({ password });
-      if (error) throw error;
-      setPassword("");
-      toast.success("Password updated");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error("[settings] password", err);
-      toast.error(msg);
-    } finally {
-      setLoadingPwd(false);
     }
   }
 
@@ -89,18 +75,6 @@ export default function SettingsForm({ initialEmail }: { initialEmail: string })
         <button type="submit" disabled={loadingEmail}
           className="bg-sericia-ink text-sericia-paper py-4 px-10 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40">
           {loadingEmail ? "Sending…" : "Update email"}
-        </button>
-      </form>
-
-      <form onSubmit={updatePassword} className="space-y-5">
-        <h2 className="text-[22px] font-normal">Password</h2>
-        <div>
-          <label className={label}>New password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={input} autoComplete="new-password" minLength={8} placeholder="Minimum 8 characters" />
-        </div>
-        <button type="submit" disabled={loadingPwd || !password}
-          className="bg-sericia-ink text-sericia-paper py-4 px-10 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40">
-          {loadingPwd ? "Updating…" : "Update password"}
         </button>
       </form>
 

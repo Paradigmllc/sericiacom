@@ -19,7 +19,8 @@ export default async function SettingsPage() {
       <Eyebrow>Settings</Eyebrow>
       <h1 className="text-[36px] md:text-[44px] leading-[1.1] font-normal tracking-tight">Account settings.</h1>
       <p className="text-[15px] text-sericia-ink-soft mt-5 leading-relaxed max-w-prose">
-        Change your email, password or delete the account and all associated data.
+        Change your email or delete the account and all associated data.
+        Sign-in uses passwordless email links — no password to manage.
       </p>
       <Rule className="my-10" />
       <SettingsForm initialEmail={user.email ?? ""} />
