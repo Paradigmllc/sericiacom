@@ -19,9 +19,10 @@
  * it silently skips — never throws.
  */
 
-import { getHomepageBlocks } from "../lib/payload-blocks";
-import StoryBlockRenderer from "./blocks/StoryBlockRenderer";
-import NewsletterBlockRenderer from "./blocks/NewsletterBlockRenderer";
+import { getHomepageBlocks } from "@/lib/payload-blocks";
+import StoryBlockRenderer from "@/components/blocks/StoryBlockRenderer";
+import NewsletterBlockRenderer from "@/components/blocks/NewsletterBlockRenderer";
+import HeroBlockRenderer from "@/components/blocks/HeroBlockRenderer";
 
 type Props = {
   /** Country code for any block that needs it (e.g. newsletter waitlist attribution). */
@@ -45,8 +46,12 @@ export default async function HomepageBlocks({ country }: Props) {
             return (
               <NewsletterBlockRenderer key={key} block={block} country={country} />
             );
-          // Intentional no-ops — data sources live in other components.
           case "hero":
+            // Editor-placed mid-page hero (separate from <CinematicHero />).
+            // Lets editors drop additional cinematic interludes anywhere
+            // in the page — e.g. between testimonials and newsletter.
+            return <HeroBlockRenderer key={key} block={block} />;
+          // Intentional no-ops — data sources live in other components.
           case "drop":
           case "testimonialsStrip":
           case "pressStrip":

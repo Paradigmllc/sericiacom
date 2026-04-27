@@ -39,19 +39,70 @@ import Typewriter from "typewriter-effect";
 import { useRef } from "react";
 import MagneticButton from "./MagneticButton";
 import SakuraFall from "./SakuraFall";
+import { useSettings } from "./SettingsProvider";
 
-// Env-driven — set in Coolify. Missing = gradient-only hero (zero broken state).
-const HERO_VIDEO_URL = process.env.NEXT_PUBLIC_HERO_VIDEO_URL?.trim() || "";
-const HERO_VIDEO_POSTER = process.env.NEXT_PUBLIC_HERO_VIDEO_POSTER?.trim() || "";
+// Env-driven fallback — used only when SiteSettings has no `heroVideoUrl`.
+// Set in Coolify if you want a "factory default" before the editor uploads.
+const ENV_HERO_VIDEO_URL = process.env.NEXT_PUBLIC_HERO_VIDEO_URL?.trim() || "";
+const ENV_HERO_VIDEO_POSTER = process.env.NEXT_PUBLIC_HERO_VIDEO_POSTER?.trim() || "";
 const HERO_VIDEO_TYPE = process.env.NEXT_PUBLIC_HERO_VIDEO_TYPE?.trim() || "video/mp4";
 
 // Seasonal / drop-specific decorative overlay. Opt-in — default off.
 // Set NEXT_PUBLIC_SAKURA_ENABLED=true in Coolify during spring campaigns.
 const SAKURA_ENABLED = process.env.NEXT_PUBLIC_SAKURA_ENABLED === "true";
 
+// Hardcoded brand defaults — used when SiteSettings.heroCopy is null/empty.
+// Each component drilling SiteSettings should keep its own defaults so
+// we never ship "" to the user when Payload is unreachable.
+const DEFAULT_HERO = {
+  eyebrow: "Drop No. 01 — Limited release",
+  headlineLine1: "Rescued Japanese",
+  headlineLine2: "craft food,",
+  typewriter: ["shipped worldwide.", "hand-packed in Kyoto.", "from makers, to your table."],
+  body:
+    "Each drop is a single curated bundle of near-expiry Japanese producers' surplus — tea, miso, shiitake. When it is gone, it is gone.",
+  meta: ["Kyoto, Japan", "EMS worldwide", "50 units"],
+  primaryCtaLabel: "Shop the drop",
+  primaryCtaUrl: "/products",
+  secondaryCtaLabel: "Our story",
+  secondaryCtaUrl: "/#story",
+} as const;
+
 export default function CinematicHero() {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
+  const settings = useSettings();
+  const copy = settings?.heroCopy;
+
+  // Resolve every visible string with CMS-first / env-second / hardcoded-third
+  // precedence. Editor edits in Payload → instant reflect on next request.
+  const heroVideoUrl = (settings?.heroVideoUrl?.trim() || ENV_HERO_VIDEO_URL).trim();
+  const heroPosterUrl = (settings?.heroPosterUrl?.trim() || ENV_HERO_VIDEO_POSTER).trim();
+
+  const eyebrow = copy?.eyebrow?.trim() || DEFAULT_HERO.eyebrow;
+  const headlineLine1 = copy?.headlineLine1?.trim() || DEFAULT_HERO.headlineLine1;
+  const headlineLine2 = copy?.headlineLine2?.trim() || DEFAULT_HERO.headlineLine2;
+  const body = copy?.body?.trim() || DEFAULT_HERO.body;
+
+  const typewriterStrings: string[] =
+    copy?.typewriterStrings && copy.typewriterStrings.length > 0
+      ? copy.typewriterStrings
+          .map((s) => (s as { text?: string | null })?.text?.trim() || "")
+          .filter((s): s is string => s.length > 0)
+      : [...DEFAULT_HERO.typewriter];
+  const safeTypewriter = typewriterStrings.length > 0 ? typewriterStrings : [...DEFAULT_HERO.typewriter];
+
+  const metaLines: string[] =
+    copy?.metaLines && copy.metaLines.length > 0
+      ? copy.metaLines
+          .map((s) => (s as { text?: string | null })?.text?.trim() || "")
+          .filter((s): s is string => s.length > 0)
+      : [...DEFAULT_HERO.meta];
+
+  const primaryCtaLabel = copy?.primaryCtaLabel?.trim() || DEFAULT_HERO.primaryCtaLabel;
+  const primaryCtaUrl = copy?.primaryCtaUrl?.trim() || DEFAULT_HERO.primaryCtaUrl;
+  const secondaryCtaLabel = copy?.secondaryCtaLabel?.trim() || DEFAULT_HERO.secondaryCtaLabel;
+  const secondaryCtaUrl = copy?.secondaryCtaUrl?.trim() || DEFAULT_HERO.secondaryCtaUrl;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -65,7 +116,7 @@ export default function CinematicHero() {
   // Bg: subtle cinematic zoom (1 → 1.08). Reduced motion = no scale.
   const bgScale = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [1, 1] : [1, 1.08]);
 
-  const hasVideo = HERO_VIDEO_URL.length > 0;
+  const hasVideo = heroVideoUrl.length > 0;
 
   return (
     <section
@@ -86,8 +137,8 @@ export default function CinematicHero() {
         {hasVideo && (
           <video
             className="absolute inset-0 h-full w-full object-cover opacity-95 mix-blend-normal"
-            src={HERO_VIDEO_URL}
-            poster={HERO_VIDEO_POSTER || undefined}
+            src={heroVideoUrl}
+            poster={heroPosterUrl || undefined}
             autoPlay
             loop
             muted
@@ -97,7 +148,7 @@ export default function CinematicHero() {
             aria-hidden="true"
           >
             {/* Source fallback for browsers that prefer explicit type sniffing */}
-            <source src={HERO_VIDEO_URL} type={HERO_VIDEO_TYPE} />
+            <source src={heroVideoUrl} type={HERO_VIDEO_TYPE} />
           </video>
         )}
 
@@ -144,19 +195,18 @@ export default function CinematicHero() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-end">
           <div className="md:col-span-8">
             <p className="text-[11px] tracking-[0.3em] uppercase font-medium text-sericia-paper/80 mb-8">
-              Drop No. 01 — Limited release
+              {eyebrow}
             </p>
             <h1 className="text-[46px] md:text-[80px] leading-[1.02] font-light tracking-tight text-sericia-paper drop-shadow-[0_2px_20px_rgba(33,35,29,0.25)]">
-              Rescued Japanese<br />craft food,
+              {headlineLine1}<br />{headlineLine2}
             </h1>
             <div className="mt-3 text-[28px] md:text-[40px] leading-[1.1] text-sericia-paper/95 font-light min-h-[1.2em]">
               <Typewriter
+                // Key forces full re-init when editor changes the typewriter
+                // strings — without this, the component caches the old strings.
+                key={safeTypewriter.join("|")}
                 options={{
-                  strings: [
-                    "shipped worldwide.",
-                    "hand-packed in Kyoto.",
-                    "from makers, to your table.",
-                  ],
+                  strings: safeTypewriter,
                   autoStart: true,
                   loop: true,
                   delay: 60,
@@ -168,32 +218,34 @@ export default function CinematicHero() {
           </div>
           <div className="md:col-span-4">
             <p className="text-[16px] md:text-[17px] text-sericia-paper/90 leading-[1.75] max-w-md">
-              Each drop is a single curated bundle of near-expiry Japanese producers&apos; surplus —
-              tea, miso, shiitake. When it is gone, it is gone.
+              {body}
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-5 text-[11px] tracking-[0.22em] uppercase text-sericia-paper/80">
-              <span>Kyoto, Japan</span>
-              <span className="inline-block h-px w-6 bg-sericia-paper/50" />
-              <span>EMS worldwide</span>
-              <span className="inline-block h-px w-6 bg-sericia-paper/50" />
-              <span>50 units</span>
+              {metaLines.map((line, i) => (
+                <span key={`meta-${i}`} className="inline-flex items-center gap-5">
+                  <span>{line}</span>
+                  {i < metaLines.length - 1 && (
+                    <span className="inline-block h-px w-6 bg-sericia-paper/50" />
+                  )}
+                </span>
+              ))}
             </div>
             <div className="mt-10 flex items-center gap-5">
               <MagneticButton>
                 <Link
-                  href="/products"
+                  href={primaryCtaUrl}
                   data-cursor="link"
                   className="inline-flex items-center justify-center bg-sericia-paper text-sericia-ink px-9 py-4 text-[13px] tracking-[0.18em] uppercase hover:bg-sericia-ink hover:text-sericia-paper transition-colors"
                 >
-                  Shop the drop
+                  {primaryCtaLabel}
                 </Link>
               </MagneticButton>
               <Link
-                href="/#story"
+                href={secondaryCtaUrl}
                 data-cursor="link"
                 className="text-[13px] tracking-[0.18em] uppercase text-sericia-paper border-b border-sericia-paper/70 hover:border-sericia-paper py-1"
               >
-                Our story
+                {secondaryCtaLabel}
               </Link>
             </div>
           </div>
