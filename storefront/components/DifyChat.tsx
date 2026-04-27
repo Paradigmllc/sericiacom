@@ -49,8 +49,13 @@ const MAX_LENGTH = 2000;
 // The Dify knowledge base is seeded with product / shipping / ceremony context
 // so the model will ground its answers in Sericia content once the visitor
 // sends the first real message.
+// Welcome copy must reflect what Sericia actually sells. Previous copy
+// mentioned "ceremony ware" which is not in the catalogue — journey-audit
+// flagged it as generic chatbot boilerplate. Categories below match the
+// live Medusa catalogue (tea / miso / mushroom / seasoning) plus shipping,
+// which is the most common question.
 const WELCOME_MESSAGE =
-  "Hello — I'm the Sericia Assistant. Ask me about our teas, ceremony ware, shipping, or anything else I can help with.";
+  "Hello — I'm the Sericia Assistant. Ask me about our teas, miso, dried mushrooms, seasonings, shipping, or anything else I can help with.";
 const OFFLINE_MESSAGE =
   "The assistant is temporarily offline. Please reach us at hello@sericia.com and we'll respond personally.";
 const ERROR_MESSAGE =

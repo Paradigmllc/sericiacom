@@ -80,7 +80,32 @@ export default function RegionModal() {
     // Don't suggest a locale we don't actually ship copy for.
     if (!LOCALE_LABELS[browser]) return;
     setSuggest(browser);
-    setOpen(true);
+    // Aesop-tier modal sequencing — wait until the cookie consent banner has
+    // been decided OR is past its show-delay window. Two interruptions stacked
+    // on first paint reads as desperate; this listener defers the region
+    // modal until the cookie banner is dismissed (any decision dispatches the
+    // sericia:consent-changed event from CookieConsent.tsx). If the banner is
+    // already past (returning visitor / dev mode), we open immediately.
+    let cookieBannerVisible = false;
+    try {
+      const raw = localStorage.getItem("sericia:cookie-consent");
+      cookieBannerVisible = !raw; // banner shows when no decision recorded yet
+    } catch {
+      cookieBannerVisible = false;
+    }
+    if (!cookieBannerVisible) {
+      setOpen(true);
+      return;
+    }
+    const onConsent = () => {
+      // Brief 300ms pause so the cookie banner exit animation completes
+      // before the region modal slides in — feels intentional rather than
+      // chained.
+      window.setTimeout(() => setOpen(true), 300);
+      window.removeEventListener("sericia:consent-changed", onConsent);
+    };
+    window.addEventListener("sericia:consent-changed", onConsent);
+    return () => window.removeEventListener("sericia:consent-changed", onConsent);
   }, [currentLocale]);
 
   useEffect(() => {

@@ -177,7 +177,7 @@ async function listActiveProductsRaw(): Promise<Product[]> {
     const { products } = await medusa.store.product.list({
       limit: 100,
       fields:
-        "id,title,handle,description,thumbnail,images.url,weight,status,metadata,categories.handle,categories.name,variants.id,variants.title,variants.prices.amount,variants.prices.currency_code,variants.inventory_quantity,variants.calculated_price,created_at,updated_at",
+        "id,title,handle,description,thumbnail,images.url,weight,status,metadata,categories.handle,categories.name,variants.id,variants.title,variants.prices.amount,variants.prices.currency_code,variants.manage_inventory,variants.allow_backorder,variants.inventory_quantity,variants.calculated_price,created_at,updated_at",
       ...(regionId ? { region_id: regionId } : {}),
     });
     return (products as unknown as MedusaProduct[])
@@ -200,7 +200,7 @@ async function getProductBySlugRaw(slug: string): Promise<Product | null> {
       handle: slug,
       limit: 1,
       fields:
-        "id,title,handle,description,thumbnail,images.url,weight,status,metadata,categories.handle,categories.name,variants.id,variants.title,variants.prices.amount,variants.prices.currency_code,variants.inventory_quantity,variants.calculated_price,created_at,updated_at",
+        "id,title,handle,description,thumbnail,images.url,weight,status,metadata,categories.handle,categories.name,variants.id,variants.title,variants.prices.amount,variants.prices.currency_code,variants.manage_inventory,variants.allow_backorder,variants.inventory_quantity,variants.calculated_price,created_at,updated_at",
       ...(regionId ? { region_id: regionId } : {}),
     });
     const mp = (products as unknown as MedusaProduct[])[0];
@@ -221,7 +221,7 @@ async function getProductsByIdsRaw(ids: string[]): Promise<Product[]> {
       id: ids,
       limit: ids.length,
       fields:
-        "id,title,handle,description,thumbnail,images.url,weight,status,metadata,categories.handle,categories.name,variants.id,variants.title,variants.prices.amount,variants.prices.currency_code,variants.inventory_quantity,variants.calculated_price,created_at,updated_at",
+        "id,title,handle,description,thumbnail,images.url,weight,status,metadata,categories.handle,categories.name,variants.id,variants.title,variants.prices.amount,variants.prices.currency_code,variants.manage_inventory,variants.allow_backorder,variants.inventory_quantity,variants.calculated_price,created_at,updated_at",
       ...(regionId ? { region_id: regionId } : {}),
     });
     return (products as unknown as MedusaProduct[]).map((p) =>

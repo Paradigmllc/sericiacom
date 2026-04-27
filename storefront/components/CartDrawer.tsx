@@ -181,10 +181,24 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                 <span className="text-sericia-ink-soft">Subtotal</span>
                 <span className="tabular-nums">${subtotal} USD</span>
               </div>
+              {/* Shipping line is conditional. Medusa shipping option
+                  `EMS Free Shipping over $100 - <country>` triggers at
+                  item_total ≥ $100; otherwise the per-region EMS standard
+                  rate is computed at checkout. The previous "Included
+                  worldwide" was an unconditional claim that the live
+                  config doesn't honour. */}
               <div className="flex items-center justify-between text-[11px] tracking-[0.18em] uppercase text-sericia-ink-soft">
                 <span>Shipping</span>
-                <span>Included worldwide</span>
+                <span>{subtotal >= 100 ? "Free EMS over $100" : "EMS at checkout"}</span>
               </div>
+              {/* Duties disclosure — Sericia ships DDU from Japan; the
+                  customer is the importer of record. Surface this once at
+                  the cart edge so a FedEx / customs invoice on arrival
+                  doesn't read as a surprise. Aesop, who registers VAT
+                  per region, doesn't show this; we do because we don't. */}
+              <p className="text-[10px] tracking-wider text-sericia-ink-mute leading-relaxed pt-1">
+                Duties &amp; taxes calculated by your local customs at delivery.
+              </p>
               <Link
                 href="/checkout"
                 onClick={() => onOpenChange(false)}
