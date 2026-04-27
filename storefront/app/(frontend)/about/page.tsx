@@ -1,21 +1,30 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import ContentSidebar from "@/components/ContentSidebar";
-import { Container, PageHero, Rule, StatBlock } from "@/components/ui";
+import { Container } from "@/components/ui";
+import CategoryHero from "@/components/CategoryHero";
+import ArticleBlocks from "@/components/ArticleBlocks";
+import type { ArticleBlock } from "@/lib/article-blocks";
 
 /**
- * /about — the long-form narrative version of the homepage /#story section.
+ * /about — Aesop-tier brand narrative.
  *
- * The homepage carries a short "Our philosophy" slab; this page expands on
- * the same voice with mission, sourcing model, and producer-share mechanics.
- * Intentionally kept as a server component (no FadeIn / StatCountUp) so it
- * pre-renders fully for SEO and has a fast LCP.
+ * Refactored from the previous flat prose-aesop layout to the shared
+ * ArticleBlocks renderer so the brand voice composes the same way as
+ * journal articles, pSEO pages, and PDP rich content. This is the
+ * canonical demo of:
+ *   • CategoryHero (cinematic banner)
+ *   • imageText sections (Aesop "Fragrance Armoire" pattern)
+ *   • statRow (animated numbers)
+ *   • pullQuote (large editorial italic)
+ *   • highlightBanner (key takeaway)
+ *   • cta cards
+ *   • marquee (rotating producer / region tags)
+ *   • table (producer-share comparison)
  *
- * Cross-navigation to /tokushoho at the bottom satisfies the Consumer
- * Affairs Agency recommendation that the 特商法 page be linked from
- * anywhere a Japanese visitor might land.
+ * Editor experience: in a follow-up, this page will be backed by Payload
+ * `pages.bodyBlocks` so editors can author the same kit visually. For now
+ * the blocks are co-located here for SSR speed and predictability.
  */
 
 export const metadata: Metadata = {
@@ -25,165 +34,194 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://sericia.com/about" },
 };
 
+const blocks: ArticleBlock[] = [
+  {
+    type: "paragraph",
+    size: "lead",
+    body: [
+      { mark: "text", text: "Sericia is a limited-drop storefront for near-expiry surplus from small Japanese producers — " },
+      { mark: "highlight", text: "tea, miso, shiitake, and other craft foods" },
+      { mark: "text", text: " that would otherwise be discarded despite being in peak condition." },
+    ],
+  },
+  {
+    type: "marquee",
+    items: [
+      "Uji, Kyoto",
+      "Aichi cedar sheds",
+      "Yamagata bamboo racks",
+      "Kagoshima volcanic soil",
+      "Hokkaido cold seas",
+      "Tokushima yuzu",
+      "Wakayama ume",
+      "Tamba heirloom",
+    ],
+    durationSeconds: 60,
+  },
+
+  // ── One — Why this exists (image+text) ──
+  {
+    type: "imageText",
+    imagePosition: "right",
+    eyebrow: "One",
+    heading: "Why this exists",
+    body: "Japan's craft food makers produce exceptional goods on small margins. A 120-year-old miso shed, a single-origin sencha farmer, a family drying shiitake on bamboo racks — each produces limited volume on long timelines. A missed wholesale order, a printing error on a label, a slightly-too-short remaining best-before window: any of these can push weeks of work into disposal. Not because the food is less good, but because the distribution system was never built for small batches and international eaters.",
+    ctaLabel: "See the current drop",
+    ctaUrl: "/products",
+    imageSrc: "",
+    imageAlt: "Cedar miso shed in Aichi",
+    tone: "miso",
+    ratio: "4/5",
+  },
+
+  // ── Producer-share principle as a highlight banner ──
+  {
+    type: "highlightBanner",
+    text: "When a producer is about to lose stock to expiry, the conventional discount channel pays them cents on the yen. Sericia pays the producer their full wholesale price.",
+    tone: "ink",
+  },
+
+  // ── Two — How a drop comes together (image+text) ──
+  {
+    type: "imageText",
+    imagePosition: "left",
+    eyebrow: "Two",
+    heading: "How a drop comes together",
+    body: "We work with a rotating set of small producers across Kyoto, Uji, Nagano, and Oita. Each drop pulls stock from three to five of them. Every piece is tasted, weighed, and approved before it enters the bundle. If it wouldn't arrive on our own dinner table, it doesn't ship. Hand-packed in Kyoto within 48 hours of the drop going live, EMS worldwide with tracking, customs paperwork pre-filled on our side.",
+    imageSrc: "",
+    imageAlt: "Hands packing a drop in Kyoto",
+    tone: "tea",
+    ratio: "4/5",
+  },
+
+  // ── Stats ──
+  {
+    type: "statRow",
+    items: [
+      { value: 23, suffix: "+", label: "Countries shipped" },
+      { value: 48, suffix: "h", label: "Dispatch from Kyoto" },
+      { value: 100, suffix: "%", label: "Producers paid full price" },
+    ],
+  },
+
+  // ── Producer-share table ──
+  {
+    type: "heading",
+    level: 2,
+    eyebrow: "Three",
+    text: "The producer-share principle",
+  },
+  {
+    type: "paragraph",
+    body: "Conventional surplus channels pay producers a fraction of wholesale. Sericia inverts that contract — the producer earns full wholesale, and our margin comes from the international retail uplift we add for curation, packing, and EMS paperwork. Numbers below per ¥1,000 retail unit:",
+  },
+  {
+    type: "table",
+    rowHeaders: true,
+    headers: ["Channel", "Producer paid", "Producer share"],
+    rows: [
+      ["Conventional surplus discounter", "¥200–¥280", "20–28%"],
+      ["Wholesale retailer (full price)", "¥400", "40%"],
+      ["Sericia (rescued bundle)", "¥400", "40%"],
+      ["Direct relationship (Phase 2)", "¥350+", "35%+"],
+    ],
+    caption: "Per ¥1,000 retail unit. Sericia matches wholesale even on rescued stock.",
+  },
+  {
+    type: "callout",
+    variant: "tip",
+    title: "Non-negotiable",
+    body: "If we can't land a bundle at full producer-share, the bundle doesn't ship. Our economics, not theirs.",
+  },
+
+  // ── Pull quote ──
+  {
+    type: "pullQuote",
+    quote:
+      "Rescued doesn't mean lesser. It means the same craft, two weeks earlier than the supermarket would otherwise discard it.",
+    attribution: "Sericia editorial",
+  },
+
+  // ── Four — Limited drops ──
+  {
+    type: "imageText",
+    imagePosition: "right",
+    eyebrow: "Four",
+    heading: "Why limited drops",
+    body: "Rescued stock is, by definition, finite. Limited-drop scheduling lets us move exactly the volume a producer has available, without creating evergreen demand we can't meet. It also keeps freight efficient — one concentrated shipping window per drop means tighter EMS rates and fresher arrival. Subscribers to the next-drop waitlist receive the release 24 hours before public sale.",
+    ctaLabel: "Join the waitlist",
+    ctaUrl: "/#waitlist",
+    imageSrc: "",
+    imageAlt: "Drop bundle on washi paper",
+    tone: "drop",
+    ratio: "4/5",
+  },
+
+  { type: "divider", style: "asterism" },
+
+  // ── Five — Who's behind ──
+  {
+    type: "heading",
+    level: 2,
+    eyebrow: "Five",
+    text: "Who's behind Sericia",
+  },
+  {
+    type: "paragraph",
+    body: [
+      { mark: "text", text: "Sericia is operated by " },
+      { mark: "bold", text: "Paradigm LLC" },
+      {
+        mark: "text",
+        text: ", a Delaware-registered company running small Japan-to-world craft commerce brands. Our Japan operations are headquartered in Tokyo with a dispatch node in Kyoto. Contact us at ",
+      },
+      { mark: "link", text: "contact@sericia.com", url: "mailto:contact@sericia.com" },
+      { mark: "text", text: "." },
+    ],
+  },
+
+  // ── Closing CTA card ──
+  {
+    type: "cta",
+    variant: "card",
+    label: "Browse the collection",
+    url: "/products",
+    caption: "Drop No. 01 is live. Forty-eight units remaining.",
+  },
+
+  { type: "divider", style: "wide" },
+
+  // ── FAQ ──
+  {
+    type: "faq",
+    items: [
+      {
+        q: "Is rescued stock expired or substandard?",
+        a: "No. Every product is well within its best-before window and from the same lots producers sell at full retail. 'Rescued' refers only to stock we source ahead of release-window cutoffs.",
+      },
+      {
+        q: "Why a single curated bundle instead of a marketplace?",
+        a: "Rescued stock is finite and unpredictable. A curated drop matches what's actually available; a marketplace would create demand we couldn't fulfil cleanly.",
+      },
+      {
+        q: "Where does Sericia ship to?",
+        a: "Most of North America, the EU, UK, Australia, Singapore, Hong Kong, Canada and Japan. Full list and transit times on /shipping.",
+      },
+    ],
+  },
+];
+
 export default function AboutPage() {
   return (
     <>
       <SiteHeader />
-      <PageHero
+      <CategoryHero
         eyebrow="About"
-        title="Rescued Japanese craft, curated in Kyoto, shipped worldwide."
-        lede="Sericia is a limited-drop storefront for near-expiry surplus from small Japanese producers — tea, miso, shiitake, and other craft foods that would otherwise be discarded despite being in peak condition."
+        title="Rescued Japanese craft, curated in Kyoto."
+        tone="ink"
       />
-
-      <Container size="wide" className="py-20 md:py-28">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-          <div className="flex-1 min-w-0 max-w-[680px] prose-aesop">
-        <h2>One — Why this exists</h2>
-        <p>
-          Japan&apos;s craft food makers produce exceptional goods on small
-          margins. A 120-year-old miso shed, a single-origin sencha farmer, a
-          family drying shiitake on bamboo racks — each produces limited volume
-          on long timelines. A missed wholesale order, a printing error on a
-          label, a slightly-too-short remaining best-before window: any of
-          these can push weeks of work into disposal. Not because the food is
-          less good, but because the distribution system was never built for
-          small batches and international eaters.
-        </p>
-        <p>
-          Sericia finds that stock, curates it into a single drop, photographs
-          every piece, names every producer, and ships it from Kyoto to tables
-          around the world — at a price that pays the producer in full and
-          still lands softly for the customer.
-        </p>
-
-        <h2>Two — How a drop comes together</h2>
-        <ul>
-          <li>
-            <strong>Source.</strong> We work with a rotating set of small
-            producers across Kyoto, Uji, Nagano, and Oita. Each drop pulls
-            stock from three to five of them.
-          </li>
-          <li>
-            <strong>Curate.</strong> Every piece is tasted, weighed, and
-            approved before it enters the bundle. If it wouldn&apos;t arrive
-            on our own dinner table, it doesn&apos;t ship.
-          </li>
-          <li>
-            <strong>Pack.</strong> Hand-packed in Kyoto within 48 hours of the
-            drop going live. A printed tasting card goes in each box —
-            producer name, region, storage notes, and a suggested first meal.
-          </li>
-          <li>
-            <strong>Ship.</strong> EMS worldwide with tracking. 2–7 business
-            days to most countries, customs paperwork pre-filled on our side.
-          </li>
-        </ul>
-
-        <h2>Three — The producer-share principle</h2>
-        <p>
-          When a producer is about to lose stock to expiry, the conventional
-          discount channel pays them cents on the yen. Sericia pays the
-          producer their <em>full</em> wholesale price. The margin we earn
-          comes from the international retail uplift we add for doing the
-          curation, packing, and EMS paperwork — not from squeezing the
-          producer. This is non-negotiable: if we can&apos;t land a bundle at
-          full producer-share, the bundle doesn&apos;t ship.
-        </p>
-
-        <h2>Four — Why limited drops</h2>
-        <p>
-          Rescued stock is, by definition, finite. Limited-drop scheduling
-          lets us move exactly the volume a producer has available, without
-          creating evergreen demand we can&apos;t meet. It also keeps freight
-          efficient — one concentrated shipping window per drop means
-          tighter EMS rates and fresher arrival.
-        </p>
-        <p>
-          Subscribers to the next-drop waitlist receive the release 24 hours
-          before public sale, a photographed maker&apos;s note, and a tasting
-          card. Drops typically sell out within a day.
-        </p>
-
-        <Rule className="my-14" />
-
-        <div className="not-prose grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 mb-14">
-          <StatBlock value="23+" label="Countries shipped" />
-          <StatBlock value="48h" label="Dispatch from Kyoto" />
-          <StatBlock value="100%" label="Producers paid full price" />
-        </div>
-
-        <h2>Five — Who&apos;s behind Sericia</h2>
-        <p>
-          Sericia is operated by{" "}
-          <strong>Paradigm LLC</strong>, a Delaware-registered company running
-          small Japan-to-world craft commerce brands. Our Japan operations
-          are headquartered in Tokyo with a dispatch node in Kyoto. Contact
-          us at{" "}
-          <a
-            href="mailto:contact@sericia.com"
-            className="underline-link"
-          >
-            contact@sericia.com
-          </a>
-          .
-        </p>
-
-        <Rule className="my-14" />
-
-        <p className="label mb-4">Also on Sericia</p>
-        <ul className="not-prose grid grid-cols-1 md:grid-cols-2 gap-3 text-[14px]">
-          <li>
-            <Link
-              href="/tokushoho"
-              className="text-sericia-ink-soft hover:text-sericia-ink"
-            >
-              特定商取引法に基づく表記 / Legal notation
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/shipping"
-              className="text-sericia-ink-soft hover:text-sericia-ink"
-            >
-              Shipping information
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/refund"
-              className="text-sericia-ink-soft hover:text-sericia-ink"
-            >
-              Refund policy
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/terms"
-              className="text-sericia-ink-soft hover:text-sericia-ink"
-            >
-              Terms of sale
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/privacy"
-              className="text-sericia-ink-soft hover:text-sericia-ink"
-            >
-              Privacy
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/journal"
-              className="text-sericia-ink-soft hover:text-sericia-ink"
-            >
-              Journal
-            </Link>
-          </li>
-        </ul>
-          </div>
-          <ContentSidebar />
-        </div>
+      <Container size="default" className="py-20 md:py-28">
+        <ArticleBlocks blocks={blocks} />
       </Container>
       <SiteFooter />
     </>

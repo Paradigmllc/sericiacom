@@ -1066,6 +1066,42 @@ export interface SiteSetting {
            * Render with stronger visual weight (e.g. CTA-style).
            */
           highlighted?: boolean | null;
+          mega?: {
+            enabled?: boolean | null;
+            columns?:
+              | {
+                  title?: string | null;
+                  links?:
+                    | {
+                        label: string;
+                        url: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            featuredCards?:
+              | {
+                  title: string;
+                  caption?: string | null;
+                  url: string;
+                  imageUrl?: string | null;
+                  tone?:
+                    | (
+                        | 'paper'
+                        | 'tea'
+                        | 'miso'
+                        | 'mushroom'
+                        | 'seasoning'
+                        | 'drop'
+                        | 'ink'
+                      )
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+          };
           id?: string | null;
         }[]
       | null;
@@ -1443,6 +1479,34 @@ export interface SiteSettingsSelect<T extends boolean = true> {
               label?: T;
               url?: T;
               highlighted?: T;
+              mega?:
+                | T
+                | {
+                    enabled?: T;
+                    columns?:
+                      | T
+                      | {
+                          title?: T;
+                          links?:
+                            | T
+                            | {
+                                label?: T;
+                                url?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                        };
+                    featuredCards?:
+                      | T
+                      | {
+                          title?: T;
+                          caption?: T;
+                          url?: T;
+                          imageUrl?: T;
+                          tone?: T;
+                          id?: T;
+                        };
+                  };
               id?: T;
             };
       };
