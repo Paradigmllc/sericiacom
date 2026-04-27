@@ -17,6 +17,8 @@ import CouponBanner from "@/components/CouponBanner";
 import SocialProofToastGate from "@/components/SocialProofToastGate";
 import ReferralCookieSetter from "@/components/ReferralCookieSetter";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import SettingsProvider from "@/components/SettingsProvider";
+import { getSiteSettings } from "@/lib/payload-settings";
 import { Suspense } from "react";
 
 const notoSans = Noto_Sans({
@@ -157,6 +159,12 @@ const websiteJsonLd = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = (await getLocale()) as Locale;
   const messages = await getMessages();
+  // Server-side fetch SiteSettings ONCE per request. Hands the resolved
+  // localised content to <SettingsProvider> so client-tree components
+  // (AnnouncementBar, CinematicHero, footer, etc.) can `useSettings()`
+  // without re-querying. Silent-falls back to null on Payload outage —
+  // consumers render hardcoded defaults in that case.
+  const siteSettings = await getSiteSettings(locale);
   // `dir` on <html> is the idiomatic way to flip document directionality. The
   // browser then mirrors scroll gutters, form UI, and most positional CSS
   // automatically. Tailwind classes that use physical axes (ml-/mr-/left-/right-)
@@ -173,6 +181,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
+         <SettingsProvider settings={siteSettings}>
           <LuxuryLoader />
           <Suspense fallback={null}>
             <RouteProgress />
@@ -191,6 +200,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Analytics />
           <DifyChat />
           <ServiceWorkerRegister />
+         </SettingsProvider>
         </NextIntlClientProvider>
       </body>
     </html>

@@ -861,22 +861,104 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface SiteSetting {
   id: number;
   /**
-   * Fallback hero video URL (if homepage hero block has no videoMedia).
+   * Background video URL for the homepage CinematicHero. Upload to Media collection first, then paste the URL here. Prefer MP4 <10MB. If empty, uses the env-driven fallback (NEXT_PUBLIC_HERO_VIDEO_URL) or a gradient-only hero.
    */
   heroVideoUrl?: string | null;
   /**
-   * Fallback hero image URL.
+   * Static image shown while the hero video buffers (or as a still on mobile / reduced-motion). Should match the video's first frame for a clean fade-in.
+   */
+  heroPosterUrl?: string | null;
+  /**
+   * Fallback hero image URL (used if no video set).
    */
   heroImageUrl?: string | null;
+  heroCopy?: {
+    /**
+     * Small all-caps kicker. Default: 'Drop No. 01 — Limited release'.
+     */
+    eyebrow?: string | null;
+    /**
+     * Top line of the giant H1. Default: 'Rescued Japanese'.
+     */
+    headlineLine1?: string | null;
+    /**
+     * Bottom line of the giant H1. Default: 'craft food,'.
+     */
+    headlineLine2?: string | null;
+    /**
+     * Lines that cycle through the typewriter effect. Order matters. Empty = uses defaults. Each line localised.
+     */
+    typewriterStrings?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Sub-paragraph below the headline. Default: 'Each drop is a single curated bundle...'.
+     */
+    body?: string | null;
+    /**
+     * Small caps meta strip. Default: 'Kyoto, Japan' / 'EMS worldwide' / '50 units'.
+     */
+    metaLines?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Primary button label. Default: 'Shop the drop'.
+     */
+    primaryCtaLabel?: string | null;
+    /**
+     * Primary button destination. Default: '/products'.
+     */
+    primaryCtaUrl?: string | null;
+    /**
+     * Secondary link label. Default: 'Our story'.
+     */
+    secondaryCtaLabel?: string | null;
+    /**
+     * Secondary link destination. Default: '/#story'.
+     */
+    secondaryCtaUrl?: string | null;
+  };
   announcementBar?: {
+    /**
+     * Master switch. Uncheck to hide the marquee bar entirely.
+     */
     enabled?: boolean | null;
+    /**
+     * Phrases that scroll across the top of every page. Drag to reorder. 4–8 items work best (too few → repetition obvious, too many → marquee speed drops). Each phrase localised across all 10 languages.
+     */
+    items?:
+      | {
+          text: string;
+          /**
+           * Optional URL. If empty, the phrase is plain text.
+           */
+          link?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * (Legacy) Single phrase. Only used if `items` array is empty. Kept for backward compatibility.
+     */
     text?: string | null;
     link?: string | null;
     /**
-     * CSS color value (hex/rgb/oklch).
+     * CSS color value (hex/rgb/oklch). Default: Sericia ink.
      */
     backgroundColor?: string | null;
+    /**
+     * CSS color value. Default: Sericia paper.
+     */
     textColor?: string | null;
+    /**
+     * Full marquee cycle time. Lower = faster. Default 40s.
+     */
+    scrollSpeedSeconds?: number | null;
   };
   socialLinks?:
     | {
@@ -1051,15 +1133,48 @@ export interface Homepage {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   heroVideoUrl?: T;
+  heroPosterUrl?: T;
   heroImageUrl?: T;
+  heroCopy?:
+    | T
+    | {
+        eyebrow?: T;
+        headlineLine1?: T;
+        headlineLine2?: T;
+        typewriterStrings?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        body?: T;
+        metaLines?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        primaryCtaLabel?: T;
+        primaryCtaUrl?: T;
+        secondaryCtaLabel?: T;
+        secondaryCtaUrl?: T;
+      };
   announcementBar?:
     | T
     | {
         enabled?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              link?: T;
+              id?: T;
+            };
         text?: T;
         link?: T;
         backgroundColor?: T;
         textColor?: T;
+        scrollSpeedSeconds?: T;
       };
   socialLinks?:
     | T
