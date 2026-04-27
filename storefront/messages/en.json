@@ -184,5 +184,27 @@
     "bilingual_notice_title": "About this page",
     "bilingual_notice_body": "Japan's Act on Specified Commercial Transactions (特定商取引法 第11条) legally requires this disclosure to be published in Japanese for customers in Japan. We provide an English rendering under each row for international visitors, but the Japanese text remains the binding version.",
     "also_on_sericia": "Also on Sericia"
+  },
+  "home_sections": {
+    "current_drop_eyebrow": "Current drop",
+    "current_drop_title": "Three rescued craft items, one curated set.",
+    "current_drop_lede": "Small-batch producers, photographed and shipped from Kyoto within 48 hours.",
+    "featured_bundle_eyebrow": "The featured bundle",
+    "most_loved_eyebrow": "Most loved",
+    "most_loved_title": "Return favourites from previous drops.",
+    "makers_eyebrow": "The makers",
+    "makers_title": "Three producers, one bundle.",
+    "makers_lede": "Each drop brings together small Japanese craft producers whose surplus would otherwise be discarded. We pay them full price, photograph their work, and ship the bundle to a curious table around the world.",
+    "philosophy_eyebrow": "Our philosophy",
+    "philosophy_body": "Japan's craft food makers produce exceptional goods on small margins. Near-expiry or overrun stock often ends up discarded. Sericia finds that stock, curates it into a single drop, and ships it to tables around the world — at a price that is kind to everyone in the chain.",
+    "waitlist_eyebrow": "Early access",
+    "waitlist_title": "The next drop, twenty-four hours early.",
+    "waitlist_body": "Drops sell out in hours. Subscribers receive the release twenty-four hours before public sale, a photographed maker's note, and a small tasting card.",
+    "waitlist_footnote": "One email per drop · Unsubscribe in a click",
+    "how_it_works_eyebrow": "How it works",
+    "how_it_works_title": "From Kyoto to your door in four steps.",
+    "faq_eyebrow": "Frequently asked",
+    "faq_title": "Questions & considerations.",
+    "faq_cta": "Read the full shipping policy"
   }
 }

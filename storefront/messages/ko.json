@@ -184,5 +184,27 @@
     "bilingual_notice_title": "이 페이지 안내",
     "bilingual_notice_body": "일본 특정상거래법 제11조(特定商取引法 第11条)에 의해 본 표기는 일본 내 소비자를 위해 일본어로 공개하는 것이 의무화되어 있습니다. 해외 방문객을 위해 각 항목에 영어 번역을 병기하고 있으나, 법적 정본은 일본어 표기입니다.",
     "also_on_sericia": "관련 페이지"
+  },
+  "home_sections": {
+    "current_drop_eyebrow": "현재 드롭",
+    "current_drop_title": "구조된 세 가지 공예 식품, 하나의 큐레이션 세트.",
+    "current_drop_lede": "소규모 생산자, 교토에서 48시간 이내에 촬영하고 배송합니다.",
+    "featured_bundle_eyebrow": "이번 번들",
+    "most_loved_eyebrow": "인기 상품",
+    "most_loved_title": "이전 드롭에서 돌아온 단골들.",
+    "makers_eyebrow": "메이커",
+    "makers_title": "세 명의 생산자, 하나의 번들.",
+    "makers_lede": "각 드롭은 잉여가 폐기될 뻔한 소규모 일본 공예 생산자들을 모읍니다. 전액을 지불하고 그들의 작업을 촬영하여 호기심 가득한 전 세계 식탁으로 번들을 배송합니다.",
+    "philosophy_eyebrow": "우리의 철학",
+    "philosophy_body": "일본의 공예 식품 제작자들은 적은 마진으로 뛰어난 제품을 생산합니다. 유통기한 임박 또는 과잉 재고는 종종 폐기됩니다. Sericia는 그 재고를 찾아 하나의 드롭으로 큐레이팅하여 전 세계 식탁으로 — 체인 내 모든 이에게 친절한 가격으로 — 배송합니다.",
+    "waitlist_eyebrow": "사전 액세스",
+    "waitlist_title": "다음 드롭, 24시간 일찍.",
+    "waitlist_body": "드롭은 몇 시간 안에 매진됩니다. 구독자는 일반 판매 24시간 전 출시 알림, 사진이 있는 메이커 노트, 작은 시음 카드를 받습니다.",
+    "waitlist_footnote": "드롭당 이메일 1통 · 클릭 한 번으로 구독 취소",
+    "how_it_works_eyebrow": "이용 방법",
+    "how_it_works_title": "교토에서 문 앞까지, 4단계.",
+    "faq_eyebrow": "자주 묻는 질문",
+    "faq_title": "질문과 고려사항.",
+    "faq_cta": "배송 정책 전문 읽기"
   }
 }

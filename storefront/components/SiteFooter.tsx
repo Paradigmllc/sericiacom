@@ -36,58 +36,16 @@ const LOCALE_NATIVE: Record<string, string> = {
   ar: "العربية",
 };
 
-// Hardcoded brand defaults — used when settings.footerCopy is empty.
-const DEFAULTS = {
-  editorialEyebrow: "Quietly, from Kyoto",
-  editorialHeading: "Four to six times a year, we open the door.",
-  editorialBody:
-    "Each drop is a small curated set from Japanese producers — surplus craft food rescued before disposal, hand-packed in our Kyoto studio, shipped via EMS within forty-eight hours. Subscribe to be notified a day before the next release, alongside the occasional essay from the producers themselves.",
-  subscribePrivacyNote:
-    "We write sparingly — no more than once a month. One-click unsubscribe, no third-party sharing. See our privacy policy.",
-  studioCopy:
-    "Paradigm LLC — registered in Delaware, USA. Operating brand: Sericia. Drops packed and dispatched from Kyoto, Japan; full corporate address disclosed per 特定商取引法.",
-  currentlyViewingLabel: "Currently viewing:",
-  columns: [
-    {
-      titleKey: "shop",
-      links: [
-        { labelKey: "shop", url: "/products" },
-        { labelKey: "current_drop", url: "/#drop" },
-        { label: "Next-drop waitlist", url: "/#waitlist" },
-        { labelKey: "guides", url: "/guides" },
-        { label: "Journal", url: "/journal" },
-      ],
-    },
-    {
-      title: "Tools",
-      links: [
-        { label: "EMS calculator", url: "/tools/ems-calculator" },
-        { label: "Matcha grade finder", url: "/tools/matcha-grade" },
-        { label: "Miso style finder", url: "/tools/miso-finder" },
-        { label: "Shelf-life estimator", url: "/tools/shelf-life" },
-        { label: "Japanese tea brewer", url: "/tools/tea-brewer" },
-      ],
-    },
-    {
-      titleKey: "company",
-      links: [
-        { labelKey: "our_story", url: "/about" },
-        { labelKey: "shipping", url: "/shipping" },
-        { label: "Refunds & returns", url: "/refund" },
-        { label: "Terms of sale", url: "/terms" },
-        { label: "Privacy", url: "/privacy" },
-        { label: "特定商取引法", url: "/tokushoho" },
-      ],
-    },
-    {
-      titleKey: "support",
-      links: [
-        { label: "contact@sericia.com", url: "mailto:contact@sericia.com" },
-        { label: "+81 050-3120-3706", url: "tel:+81-50-3120-3706" },
-      ],
-    },
-  ],
-};
+// Brand defaults — used when CMS `settings.footerCopy.*` is empty AND
+// then resolved through next-intl messages (locale-aware). The actual
+// strings live in messages/{locale}.json under namespace `footer`. Each
+// fallback below cites the message key it pulls.
+//
+// Why this refactor: in pre-i18n iterations the inline literal `"Tools"`
+// would ship to /ja viewers when CMS was empty. Now the locale tier of
+// the resolution chain (CMS → next-intl → emergency literal) actually
+// flips. Emergency literals remain only for next-intl outage scenarios.
+const EMERGENCY_TOOLS_TITLE = "Tools";
 
 export default function SiteFooter() {
   const t = useTranslations("footer");
@@ -97,13 +55,18 @@ export default function SiteFooter() {
   const settings = useSettings();
   const fc = settings?.footerCopy;
 
-  // Resolve every text field with CMS-first / hardcoded-fallback precedence.
-  const editorialEyebrow = fc?.editorialEyebrow?.trim() || DEFAULTS.editorialEyebrow;
-  const editorialHeading = fc?.editorialHeading?.trim() || DEFAULTS.editorialHeading;
-  const editorialBody = fc?.editorialBody?.trim() || DEFAULTS.editorialBody;
-  const privacyNote = fc?.subscribePrivacyNote?.trim() || DEFAULTS.subscribePrivacyNote;
-  const studioCopy = fc?.studioCopy?.trim() || DEFAULTS.studioCopy;
-  const viewingLabel = fc?.currentlyViewingLabel?.trim() || DEFAULTS.currentlyViewingLabel;
+  // Three-tier resolution: CMS (editor) → next-intl (locale) → emergency literal.
+  const editorialEyebrow = fc?.editorialEyebrow?.trim() || t("editorial_eyebrow");
+  const editorialHeading = fc?.editorialHeading?.trim() || t("editorial_title");
+  const editorialBody = fc?.editorialBody?.trim() || t("editorial_body");
+  // Privacy note translation has the link suffix as a separate key —
+  // we render `<note> <Link>privacy policy</Link>.` to keep the link
+  // localised independently of the surrounding sentence.
+  const privacyNoteBefore =
+    fc?.subscribePrivacyNote?.trim() || t("subscribe_note_before_link");
+  const studioBodyBefore =
+    fc?.studioCopy?.trim() || t("studio_body_before_link");
+  const viewingLabel = fc?.currentlyViewingLabel?.trim() || t("currently_viewing");
 
   // Resolve columns: CMS array if non-empty, else fallback uses next-intl
   // translation keys (for backward compatibility with existing translations).
@@ -122,29 +85,55 @@ export default function SiteFooter() {
         })) ?? [],
     }));
   } else {
-    columns = DEFAULTS.columns.map<ResolvedColumn>((col) => {
-      // DEFAULTS uses two shapes: titleKey (lookup via t) or title (literal).
-      // Narrow with `in` and provide explicit string fallback so TS widens
-      // correctly to ResolvedColumn["title"] = string (not string | undefined).
-      const title: string =
-        "title" in col && col.title
-          ? col.title
-          : "titleKey" in col && col.titleKey
-            ? t(col.titleKey as "shop" | "company" | "support")
-            : "";
-      const links: ResolvedLink[] = col.links.map<ResolvedLink>((l) => {
-        if ("labelKey" in l) {
-          return {
-            label: tNav(
-              l.labelKey as "shop" | "current_drop" | "guides" | "our_story" | "shipping",
-            ),
-            url: l.url,
-          };
-        }
-        return { label: l.label, url: l.url };
-      });
-      return { title, links };
-    });
+    // 4 brand-default columns — every label resolved through next-intl
+    // namespaces (footer / nav). This is the layer that fixes the bug
+    // where /ja showed English column titles when CMS was empty.
+    columns = [
+      {
+        title: t("shop"),
+        links: [
+          { label: tNav("shop"), url: "/products" },
+          { label: tNav("current_drop"), url: "/#drop" },
+          { label: t("nav_waitlist"), url: "/#waitlist" },
+          { label: tNav("guides"), url: "/guides" },
+          { label: t("nav_journal"), url: "/journal" },
+        ],
+      },
+      {
+        title: t("tools_label"),
+        links: [
+          { label: t("tool_ems"), url: "/tools/ems-calculator" },
+          { label: t("tool_matcha"), url: "/tools/matcha-grade" },
+          { label: t("tool_miso"), url: "/tools/miso-finder" },
+          { label: t("tool_shelf"), url: "/tools/shelf-life" },
+          { label: t("tool_brewer"), url: "/tools/tea-brewer" },
+        ],
+      },
+      {
+        title: t("company"),
+        links: [
+          { label: tNav("our_story"), url: "/about" },
+          { label: tNav("shipping"), url: "/shipping" },
+          { label: t("company_refund"), url: "/refund" },
+          { label: t("company_terms"), url: "/terms" },
+          { label: t("company_privacy"), url: "/privacy" },
+          { label: t("tokushoho_label"), url: "/tokushoho" },
+        ],
+      },
+      {
+        title: t("support"),
+        links: [
+          { label: "contact@sericia.com", url: "mailto:contact@sericia.com" },
+          { label: "+81 050-3120-3706", url: "tel:+81-50-3120-3706" },
+        ],
+      },
+    ];
+  }
+  // Emergency-literal escape valve: if next-intl somehow fails entirely,
+  // the columns array would have empty titles. Fall back to one English
+  // 'Tools'-only column to avoid an entirely blank footer.
+  if (columns.every((c) => !c.title)) {
+    columns = [{ title: EMERGENCY_TOOLS_TITLE, links: [] }];
   }
 
   // Resolve social links: CMS if present, else hardcoded Instagram + email.
@@ -174,7 +163,8 @@ export default function SiteFooter() {
               </p>
               <FooterSubscribeForm />
               <p className="mt-4 text-[11px] text-sericia-ink-mute tracking-wide max-w-md leading-relaxed">
-                {privacyNote}
+                {privacyNoteBefore}{" "}
+                <Link href="/privacy" className="underline-link">{t("company_privacy").toLowerCase()}</Link>.
               </p>
             </div>
           </div>
@@ -246,9 +236,13 @@ export default function SiteFooter() {
         <section className="py-14 border-b border-sericia-ink/10">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 md:gap-10 items-start md:items-center">
             <div>
-              <p className="label mb-3">Studio</p>
+              <p className="label mb-3">{t("studio_label")}</p>
               <p className="text-[14px] text-sericia-ink-soft leading-[1.75] max-w-xl">
-                {studioCopy}
+                {studioBodyBefore}{" "}
+                <Link href="/tokushoho" className="underline-link">
+                  {t("tokushoho_label")}
+                </Link>
+                .
               </p>
             </div>
             <div className="flex items-center gap-5">
@@ -271,7 +265,7 @@ export default function SiteFooter() {
                     href="https://www.instagram.com/sericia.official"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Sericia on Instagram"
+                    aria-label={t("instagram_label")}
                     className="inline-flex h-10 w-10 items-center justify-center border border-sericia-ink/20 hover:border-sericia-ink hover:bg-sericia-ink hover:text-sericia-paper transition-colors"
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -282,7 +276,7 @@ export default function SiteFooter() {
                   </a>
                   <a
                     href="mailto:contact@sericia.com"
-                    aria-label="Email Sericia"
+                    aria-label={t("email_label")}
                     className="inline-flex h-10 w-10 items-center justify-center border border-sericia-ink/20 hover:border-sericia-ink hover:bg-sericia-ink hover:text-sericia-paper transition-colors"
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">

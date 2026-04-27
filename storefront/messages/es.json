@@ -14,6 +14,44 @@
     "cart": "Carrito",
     "signed_in": "Sesión iniciada"
   },
+  "coupon_banner": {
+    "region_label": "Promoción de lanzamiento",
+    "prefix": "Oferta de lanzamiento —",
+    "discount_fmt": "{percent}% de descuento en tu primer pedido",
+    "with_code": "con el código",
+    "dismiss_label": "Cerrar oferta de lanzamiento"
+  },
+  "announcement": {
+    "aria_label": "Anuncios",
+    "free_ems": "EMS gratis al mundo",
+    "hand_packed": "Empaquetado a mano en Kioto",
+    "ships_48h": "Envío en 48 horas",
+    "small_batch": "Pequeños lotes, ediciones limitadas",
+    "countries_23": "23+ países",
+    "tracked": "Envío con seguimiento"
+  },
+  "hero": {
+    "eyebrow": "Drop No. 01 — Edición limitada",
+    "title_line_1": "Alimentos artesanales",
+    "title_line_2": "japoneses rescatados,",
+    "typewriter_1": "enviados al mundo.",
+    "typewriter_2": "empaquetados a mano en Kioto.",
+    "typewriter_3": "de artesanos a tu mesa.",
+    "lede": "Cada edición es un paquete curado de excedentes de productores japoneses cerca de su caducidad — té, miso, shiitake. Cuando se agota, se acabó.",
+    "meta_kyoto": "Kioto, Japón",
+    "meta_ems": "EMS al mundo",
+    "meta_units_fmt": "{count} unidades",
+    "cta_shop": "Comprar la edición",
+    "cta_story": "Nuestra historia",
+    "scroll_hint": "Desplazar"
+  },
+  "cookie_consent": {
+    "sr_title": "Una nota discreta sobre las cookies",
+    "body_before_link": "Las cookies esenciales mantienen tu carrito, sesión y región; las analíticas son opcionales — puedes rechazar en cualquier momento. Consulta nuestra",
+    "privacy_link": "política de privacidad",
+    "decline": "Rechazar opcionales",
+    "accept": "Aceptar todas"
+  },
   "footer": {
     "tagline": "Artesanía japonesa rescatada, enviada desde Kioto.",
     "shop": "Tienda",
@@ -123,5 +161,27 @@
     "bilingual_notice_title": "Sobre esta página",
     "bilingual_notice_body": "La Ley japonesa de Transacciones Comerciales Especificadas (特定商取引法 第11条) exige legalmente publicar este aviso en japonés para consumidores en Japón. Incluimos una traducción al inglés bajo cada fila para visitantes internacionales, pero el texto japonés es el único jurídicamente vinculante.",
     "also_on_sericia": "Páginas relacionadas"
+  },
+  "home_sections": {
+    "current_drop_eyebrow": "Edición actual",
+    "current_drop_title": "Tres productos artesanales rescatados, un set curado.",
+    "current_drop_lede": "Pequeños productores, fotografiados y enviados desde Kioto en 48 horas.",
+    "featured_bundle_eyebrow": "El bundle destacado",
+    "most_loved_eyebrow": "Los más queridos",
+    "most_loved_title": "Favoritos que regresan de ediciones anteriores.",
+    "makers_eyebrow": "Los artesanos",
+    "makers_title": "Tres productores, un bundle.",
+    "makers_lede": "Cada edición reúne a pequeños artesanos japoneses cuyos excedentes de otra forma se descartarían. Les pagamos el precio completo, fotografiamos su trabajo y enviamos el bundle a mesas curiosas en todo el mundo.",
+    "philosophy_eyebrow": "Nuestra filosofía",
+    "philosophy_body": "Los artesanos alimentarios de Japón producen bienes excepcionales con márgenes pequeños. El stock próximo a caducar o sobreproducido a menudo termina descartado. Sericia encuentra ese stock, lo curata en una sola edición y lo envía a mesas de todo el mundo — a un precio amable con todos en la cadena.",
+    "waitlist_eyebrow": "Acceso anticipado",
+    "waitlist_title": "La próxima edición, veinticuatro horas antes.",
+    "waitlist_body": "Las ediciones se agotan en horas. Los suscriptores reciben el lanzamiento veinticuatro horas antes de la venta pública, una nota fotografiada del artesano y una pequeña tarjeta de cata.",
+    "waitlist_footnote": "Un correo por edición · Cancelación con un clic",
+    "how_it_works_eyebrow": "Cómo funciona",
+    "how_it_works_title": "De Kioto a tu puerta en cuatro pasos.",
+    "faq_eyebrow": "Preguntas frecuentes",
+    "faq_title": "Preguntas y consideraciones.",
+    "faq_cta": "Leer la política de envío completa"
   }
 }

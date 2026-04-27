@@ -14,6 +14,44 @@
     "cart": "Carrello",
     "signed_in": "Accesso effettuato"
   },
+  "coupon_banner": {
+    "region_label": "Promozione di lancio",
+    "prefix": "Offerta di lancio —",
+    "discount_fmt": "{percent}% sul primo ordine",
+    "with_code": "con il codice",
+    "dismiss_label": "Chiudi offerta di lancio"
+  },
+  "announcement": {
+    "aria_label": "Annunci",
+    "free_ems": "EMS gratuito in tutto il mondo",
+    "hand_packed": "Confezionato a mano a Kyoto",
+    "ships_48h": "Spedito entro 48 ore",
+    "small_batch": "Piccoli lotti, edizioni limitate",
+    "countries_23": "Oltre 23 paesi",
+    "tracked": "Consegna tracciata"
+  },
+  "hero": {
+    "eyebrow": "Drop No. 01 — Edizione limitata",
+    "title_line_1": "Cibo artigianale",
+    "title_line_2": "giapponese salvato,",
+    "typewriter_1": "spedito in tutto il mondo.",
+    "typewriter_2": "confezionato a mano a Kyoto.",
+    "typewriter_3": "dagli artigiani alla tua tavola.",
+    "lede": "Ogni edizione riunisce le eccedenze di produttori giapponesi prossimi alla scadenza — tè, miso, shiitake. Quando finisce, è finita.",
+    "meta_kyoto": "Kyoto, Giappone",
+    "meta_ems": "EMS in tutto il mondo",
+    "meta_units_fmt": "{count} unità",
+    "cta_shop": "Acquista l'edizione",
+    "cta_story": "La nostra storia",
+    "scroll_hint": "Scorri"
+  },
+  "cookie_consent": {
+    "sr_title": "Una nota discreta sui cookie",
+    "body_before_link": "I cookie essenziali mantengono il carrello, l'accesso e la regione; quelli analitici sono opzionali — puoi rifiutare in qualsiasi momento. Consulta la nostra",
+    "privacy_link": "informativa sulla privacy",
+    "decline": "Rifiuta opzionali",
+    "accept": "Accetta tutti"
+  },
   "footer": {
     "tagline": "Artigianato giapponese salvato, spedito da Kyoto.",
     "shop": "Shop",
@@ -123,5 +161,27 @@
     "bilingual_notice_title": "Informazioni su questa pagina",
     "bilingual_notice_body": "La Legge giapponese sulle transazioni commerciali specificate (特定商取引法 第11条) richiede legalmente la pubblicazione di queste informazioni in giapponese per i consumatori in Giappone. Forniamo una traduzione inglese sotto ciascuna voce per i visitatori internazionali, ma il testo giapponese resta l unico giuridicamente vincolante.",
     "also_on_sericia": "Pagine correlate"
+  },
+  "home_sections": {
+    "current_drop_eyebrow": "Edizione attuale",
+    "current_drop_title": "Tre prodotti artigianali salvati, un set curato.",
+    "current_drop_lede": "Produttori in piccoli lotti, fotografati e spediti da Kyoto entro 48 ore.",
+    "featured_bundle_eyebrow": "Il bundle in evidenza",
+    "most_loved_eyebrow": "I più amati",
+    "most_loved_title": "Ritorni preferiti delle edizioni precedenti.",
+    "makers_eyebrow": "Gli artigiani",
+    "makers_title": "Tre produttori, un bundle.",
+    "makers_lede": "Ogni edizione riunisce piccoli artigiani giapponesi le cui eccedenze altrimenti verrebbero scartate. Li paghiamo a prezzo pieno, fotografiamo il loro lavoro e spediamo il bundle a tavole curiose in tutto il mondo.",
+    "philosophy_eyebrow": "La nostra filosofia",
+    "philosophy_body": "Gli artigiani alimentari del Giappone producono beni eccezionali con margini ridotti. Le scorte prossime alla scadenza o in eccesso spesso vengono scartate. Sericia trova quelle scorte, le curata in una singola edizione e le spedisce a tavole in tutto il mondo — a un prezzo gentile per tutti nella catena.",
+    "waitlist_eyebrow": "Accesso anticipato",
+    "waitlist_title": "La prossima edizione, ventiquattro ore prima.",
+    "waitlist_body": "Le edizioni si esauriscono in ore. Gli iscritti ricevono il rilascio ventiquattro ore prima della vendita pubblica, una nota fotografata dell'artigiano e una piccola scheda di degustazione.",
+    "waitlist_footnote": "Una email per edizione · Annulla con un clic",
+    "how_it_works_eyebrow": "Come funziona",
+    "how_it_works_title": "Da Kyoto alla tua porta in quattro passi.",
+    "faq_eyebrow": "Domande frequenti",
+    "faq_title": "Domande e considerazioni.",
+    "faq_cta": "Leggi la politica di spedizione completa"
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 /**
  * CookieConsent — Aesop-style bottom-fixed banner.
@@ -75,6 +76,7 @@ function writeDecision(decision: Decision) {
 }
 
 export default function CookieConsent() {
+  const t = useTranslations("cookie_consent");
   const [visible, setVisible] = useState(false);
 
   // Initial visibility check after mount (avoids SSR hydration mismatch)
@@ -107,16 +109,15 @@ export default function CookieConsent() {
             id="cookie-consent-title"
             className="sr-only"
           >
-            A quiet note on cookies
+            {t("sr_title")}
           </p>
           <p
             id="cookie-consent-body"
             className="text-[13px] md:text-[13.5px] leading-snug text-sericia-ink-soft max-w-4xl"
           >
-            Essential cookies keep your cart, sign-in, and region; analytics
-            are optional — decline anytime. See our{" "}
+            {t("body_before_link")}{" "}
             <Link href="/privacy" className="underline-link">
-              privacy policy
+              {t("privacy_link")}
             </Link>
             .
           </p>
@@ -127,7 +128,7 @@ export default function CookieConsent() {
             onClick={() => handle("decline")}
             className="inline-flex items-center justify-center px-4 md:px-5 py-2 text-[11px] tracking-[0.18em] uppercase border border-sericia-line text-sericia-ink-soft hover:border-sericia-ink hover:text-sericia-ink transition-colors"
           >
-            Decline optional
+            {t("decline")}
           </button>
           <button
             type="button"
@@ -135,7 +136,7 @@ export default function CookieConsent() {
             autoFocus
             className="inline-flex items-center justify-center px-4 md:px-5 py-2 text-[11px] tracking-[0.18em] uppercase bg-sericia-ink text-sericia-paper hover:bg-sericia-accent transition-colors"
           >
-            Accept all
+            {t("accept")}
           </button>
         </div>
       </div>

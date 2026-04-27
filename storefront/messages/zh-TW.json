@@ -14,6 +14,44 @@
     "cart": "購物車",
     "signed_in": "已登入"
   },
+  "coupon_banner": {
+    "region_label": "上市優惠",
+    "prefix": "上市優惠 —",
+    "discount_fmt": "首次訂單享 {percent}% 折扣",
+    "with_code": "輸入代碼",
+    "dismiss_label": "關閉上市優惠"
+  },
+  "announcement": {
+    "aria_label": "公告",
+    "free_ems": "全球 EMS 免運",
+    "hand_packed": "京都手工包裝",
+    "ships_48h": "48 小時內出貨",
+    "small_batch": "小批量限定發售",
+    "countries_23": "23 個以上國家",
+    "tracked": "可追蹤配送"
+  },
+  "hero": {
+    "eyebrow": "Drop No. 01 — 限定發售",
+    "title_line_1": "拯救日本",
+    "title_line_2": "工藝食品，",
+    "typewriter_1": "運送至全世界。",
+    "typewriter_2": "在京都手工包裝。",
+    "typewriter_3": "從匠人到您的餐桌。",
+    "lede": "每一波都是日本生產者臨期庫存的精選 — 茶、味噌、椎茸。售完即止。",
+    "meta_kyoto": "京都，日本",
+    "meta_ems": "EMS 全球配送",
+    "meta_units_fmt": "{count} 件限量",
+    "cta_shop": "選購本期",
+    "cta_story": "我們的故事",
+    "scroll_hint": "向下滾動"
+  },
+  "cookie_consent": {
+    "sr_title": "關於 Cookie 的小提示",
+    "body_before_link": "必要 Cookie 用於保留購物車、登入狀態和地區設定；分析 Cookie 為選用 — 隨時可拒絕。詳見我們的",
+    "privacy_link": "隱私政策",
+    "decline": "拒絕選用",
+    "accept": "全部接受"
+  },
   "footer": {
     "tagline": "從京都寄出,拯救的日本職人食品。",
     "shop": "商店",
@@ -123,5 +161,27 @@
     "bilingual_notice_title": "關於本頁",
     "bilingual_notice_body": "依日本特定商業交易法第11條（特定商取引法 第11条），本揭露必須以日文對日本境內消費者公開。為方便國際訪客，各欄位下方附上英文翻譯，惟法律上以日文版本為正本。",
     "also_on_sericia": "相關頁面"
+  },
+  "home_sections": {
+    "current_drop_eyebrow": "本期發售",
+    "current_drop_title": "三件被拯救的工藝食品，一份精選套組。",
+    "current_drop_lede": "小批量生產者，於京都拍攝並 48 小時內發貨。",
+    "featured_bundle_eyebrow": "本期套組",
+    "most_loved_eyebrow": "人氣商品",
+    "most_loved_title": "從過往發售中回歸的最愛。",
+    "makers_eyebrow": "匠人",
+    "makers_title": "三位生產者，一份套組。",
+    "makers_lede": "每一波發售都集結了即將被丟棄餘量的日本小型工藝生產者。我們以全價購入，拍攝他們的作品，並將套組寄往世界各地好奇的餐桌。",
+    "philosophy_eyebrow": "我們的理念",
+    "philosophy_body": "日本工藝食品的製作者以薄利生產卓越的商品。臨期或過剩的庫存常被丟棄。Sericia 尋找這些庫存，將它們策劃為一次發售，並寄往世界各地的餐桌 — 以對整個產業鏈都友善的價格。",
+    "waitlist_eyebrow": "搶先體驗",
+    "waitlist_title": "下期發售，提前 24 小時。",
+    "waitlist_body": "發售在數小時內售罄。訂閱者於公開發售前 24 小時收到通知、附照片的匠人筆記，以及一張小品鑑卡。",
+    "waitlist_footnote": "每期發售一封信 · 一鍵取消訂閱",
+    "how_it_works_eyebrow": "運作方式",
+    "how_it_works_title": "從京都到您的家門口，四個步驟。",
+    "faq_eyebrow": "常見問題",
+    "faq_title": "疑問與考量。",
+    "faq_cta": "閱讀完整的配送政策"
   }
 }

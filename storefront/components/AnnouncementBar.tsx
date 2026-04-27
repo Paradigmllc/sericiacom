@@ -23,20 +23,24 @@
  *   filled even at the seam.
  */
 
+import { useTranslations } from "next-intl";
 import { useSettings } from "./SettingsProvider";
-
-const DEFAULT_ITEMS: { text: string; link?: string }[] = [
-  { text: "Free EMS worldwide" },
-  { text: "Hand-packed in Kyoto" },
-  { text: "Ships within 48 hours" },
-  { text: "Small-batch, limited releases" },
-  { text: "23+ countries" },
-  { text: "Tracked delivery" },
-];
 
 export default function AnnouncementBar() {
   const settings = useSettings();
   const bar = settings?.announcementBar;
+  const t = useTranslations("announcement");
+
+  // Three-tier resolution: CMS items[] → CMS legacy text/link →
+  // next-intl 6-item brand baseline (each in active locale).
+  const DEFAULT_ITEMS: { text: string; link?: string }[] = [
+    { text: t("free_ems") },
+    { text: t("hand_packed") },
+    { text: t("ships_48h") },
+    { text: t("small_batch") },
+    { text: t("countries_23") },
+    { text: t("tracked") },
+  ];
 
   // Master kill switch from CMS: editor unticks `enabled` → bar disappears.
   // Default behaviour when settings null: stay visible (assume editor wants it).
@@ -72,7 +76,7 @@ export default function AnnouncementBar() {
     >
       <div
         className="announcement-marquee flex whitespace-nowrap py-2"
-        aria-label="Announcements"
+        aria-label={t("aria_label")}
         style={{ animationDuration: `${speed}s` }}
       >
         {sequence.map((it, i) => {

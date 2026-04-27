@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { buildHomepageMetadata } from "@/lib/payload-homepage";
 import { getSiteSettings } from "@/lib/payload-settings";
 import type { Locale } from "@/i18n/routing";
@@ -38,6 +38,11 @@ export default async function Home() {
   // Cached per-request — same instance the layout's SettingsProvider got.
   const settings = await getSiteSettings(locale);
   const hc = settings?.homepageCopy;
+  // Three-tier resolution: CMS (editor) → next-intl messages (locale) →
+  // hardcoded English (emergency). `getTranslations("home_sections")` is
+  // the second tier and is required for /ja /fr /ar etc. to render local
+  // copy when the editor hasn't filled CMS yet.
+  const tHome = await getTranslations("home_sections");
   const drop = await getCurrentDrop();
   const products = await listActiveProducts();
   const currentDropProducts = products.slice(0, 3);
@@ -106,9 +111,9 @@ export default async function Home() {
           <Container size="wide" className="py-24 md:py-32">
             <FadeIn>
               <SectionHeading
-                eyebrow={hc?.currentDrop?.eyebrow?.trim() || "Current drop"}
-                title={hc?.currentDrop?.title?.trim() || "Three rescued craft items, one curated set."}
-                lede={hc?.currentDrop?.lede?.trim() || "Small-batch producers, photographed and shipped from Kyoto within 48 hours."}
+                eyebrow={hc?.currentDrop?.eyebrow?.trim() || tHome("current_drop_eyebrow")}
+                title={hc?.currentDrop?.title?.trim() || tHome("current_drop_title")}
+                lede={hc?.currentDrop?.lede?.trim() || tHome("current_drop_lede")}
               />
             </FadeIn>
             <div className="grid grid-cols-1 md:grid-cols-3 bg-sericia-line gap-px">
@@ -134,7 +139,7 @@ export default async function Home() {
           )}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
             <FadeIn as="div" className="md:col-span-5">
-              <Eyebrow>{hc?.featuredBundle?.eyebrow?.trim() || "The featured bundle"}</Eyebrow>
+              <Eyebrow>{hc?.featuredBundle?.eyebrow?.trim() || tHome("featured_bundle_eyebrow")}</Eyebrow>
               <h2 className="text-[36px] md:text-[44px] leading-[1.15] font-normal tracking-tight mb-8">
                 {dropData.title}
               </h2>
@@ -214,8 +219,8 @@ export default async function Home() {
           <Container size="wide" className="py-24 md:py-32">
             <FadeIn>
               <SectionHeading
-                eyebrow={hc?.mostLoved?.eyebrow?.trim() || "Most loved"}
-                title={hc?.mostLoved?.title?.trim() || "Return favourites from previous drops."}
+                eyebrow={hc?.mostLoved?.eyebrow?.trim() || tHome("most_loved_eyebrow")}
+                title={hc?.mostLoved?.title?.trim() || tHome("most_loved_title")}
               />
             </FadeIn>
             <div className="grid grid-cols-1 md:grid-cols-3 bg-sericia-line gap-px">
@@ -234,9 +239,9 @@ export default async function Home() {
         <Container size="wide" className="py-24 md:py-32">
           <FadeIn>
             <SectionHeading
-              eyebrow={hc?.makers?.eyebrow?.trim() || "The makers"}
-              title={hc?.makers?.title?.trim() || "Three producers, one bundle."}
-              lede={hc?.makers?.lede?.trim() || "Each drop brings together small Japanese craft producers whose surplus would otherwise be discarded. We pay them full price, photograph their work, and ship the bundle to a curious table around the world."}
+              eyebrow={hc?.makers?.eyebrow?.trim() || tHome("makers_eyebrow")}
+              title={hc?.makers?.title?.trim() || tHome("makers_title")}
+              lede={hc?.makers?.lede?.trim() || tHome("makers_lede")}
             />
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
@@ -284,10 +289,9 @@ export default async function Home() {
       <section id="story" className="border-b border-sericia-line">
         <Container size="default" className="py-28 md:py-36 text-center">
           <FadeIn>
-            <Eyebrow>{hc?.philosophy?.eyebrow?.trim() || "Our philosophy"}</Eyebrow>
+            <Eyebrow>{hc?.philosophy?.eyebrow?.trim() || tHome("philosophy_eyebrow")}</Eyebrow>
             <p className="text-[24px] md:text-[32px] leading-[1.45] font-normal max-w-3xl mx-auto text-sericia-ink">
-              {hc?.philosophy?.body?.trim() ||
-                "Japan's craft food makers produce exceptional goods on small margins. Near-expiry or overrun stock often ends up discarded. Sericia finds that stock, curates it into a single drop, and ships it to tables around the world — at a price that is kind to everyone in the chain."}
+              {hc?.philosophy?.body?.trim() || tHome("philosophy_body")}
             </p>
           </FadeIn>
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 max-w-4xl mx-auto text-left">
@@ -326,17 +330,16 @@ export default async function Home() {
       <section id="waitlist" className="border-b border-sericia-line bg-sericia-paper-deep">
         <Container size="narrow" className="py-24 md:py-28 text-center">
           <FadeIn>
-            <Eyebrow>{hc?.waitlist?.eyebrow?.trim() || "Early access"}</Eyebrow>
+            <Eyebrow>{hc?.waitlist?.eyebrow?.trim() || tHome("waitlist_eyebrow")}</Eyebrow>
             <h2 className="text-[32px] md:text-[40px] leading-[1.15] font-normal tracking-tight mb-5">
-              {hc?.waitlist?.title?.trim() || "The next drop, twenty-four hours early."}
+              {hc?.waitlist?.title?.trim() || tHome("waitlist_title")}
             </h2>
             <p className="text-[15px] text-sericia-ink-soft leading-relaxed mb-10 max-w-prose mx-auto">
-              {hc?.waitlist?.body?.trim() ||
-                "Drops sell out in hours. Subscribers receive the release twenty-four hours before public sale, a photographed maker's note, and a small tasting card."}
+              {hc?.waitlist?.body?.trim() || tHome("waitlist_body")}
             </p>
             <WaitlistForm source="homepage" country={country} />
             <p className="text-[11px] text-sericia-ink-mute mt-5 tracking-wider uppercase">
-              {hc?.waitlist?.footnote?.trim() || "One email per drop · Unsubscribe in a click"}
+              {hc?.waitlist?.footnote?.trim() || tHome("waitlist_footnote")}
             </p>
           </FadeIn>
         </Container>
@@ -347,8 +350,8 @@ export default async function Home() {
         <Container size="wide" className="py-24 md:py-32">
           <FadeIn>
             <SectionHeading
-              eyebrow={hc?.howItWorks?.eyebrow?.trim() || "How it works"}
-              title={hc?.howItWorks?.title?.trim() || "From Kyoto to your door in four steps."}
+              eyebrow={hc?.howItWorks?.eyebrow?.trim() || tHome("how_it_works_eyebrow")}
+              title={hc?.howItWorks?.title?.trim() || tHome("how_it_works_title")}
             />
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -380,8 +383,8 @@ export default async function Home() {
         <Container size="default" className="py-24 md:py-28">
           <FadeIn>
             <SectionHeading
-              eyebrow={hc?.faq?.eyebrow?.trim() || "Frequently asked"}
-              title={hc?.faq?.title?.trim() || "Questions & considerations."}
+              eyebrow={hc?.faq?.eyebrow?.trim() || tHome("faq_eyebrow")}
+              title={hc?.faq?.title?.trim() || tHome("faq_title")}
             />
           </FadeIn>
           <div className="divide-y divide-sericia-line">
@@ -417,7 +420,7 @@ export default async function Home() {
           </div>
           <div className="mt-12">
             <Button href={hc?.faq?.ctaUrl?.trim() || "/shipping"} variant="link">
-              {hc?.faq?.ctaLabel?.trim() || "Read the full shipping policy"}
+              {hc?.faq?.ctaLabel?.trim() || tHome("faq_cta")}
             </Button>
           </div>
         </Container>

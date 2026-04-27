@@ -15,6 +15,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useSettings } from "./SettingsProvider";
 
 // Default coupon — exported so the checkout page can import the same source.
@@ -23,10 +24,6 @@ import { useSettings } from "./SettingsProvider";
 export const LAUNCH_COUPON_CODE = "SERICIA10";
 export const LAUNCH_COUPON_PERCENT = 10;
 
-const DEFAULT_HEADLINE = "Launch offer";
-const DEFAULT_OFFER_TEXT = "10% off your first order";
-const DEFAULT_WITH_CODE_PREFIX = "with code";
-
 function dismissKey(version: string) {
   return `sericia:coupon-banner-dismissed-${version}`;
 }
@@ -34,13 +31,18 @@ function dismissKey(version: string) {
 export default function CouponBanner() {
   const settings = useSettings();
   const cb = settings?.couponBanner;
+  const t = useTranslations("coupon_banner");
 
-  // Resolve every value — CMS first, hardcoded fallback second.
+  // Three-tier resolution: CMS (editor) → next-intl (locale) → emergency literal.
   const enabled = cb?.enabled ?? true;
   const code = (cb?.code?.trim() || LAUNCH_COUPON_CODE).toUpperCase();
-  const headline = cb?.headline?.trim() || DEFAULT_HEADLINE;
-  const offerText = cb?.offerText?.trim() || DEFAULT_OFFER_TEXT;
-  const withCodePrefix = cb?.withCodePrefix?.trim() || DEFAULT_WITH_CODE_PREFIX;
+  // `prefix` already contains the trailing em-dash in messages files,
+  // so we strip it to keep the rendered "{headline} —" pattern symmetric.
+  const headlineRaw = cb?.headline?.trim() || t("prefix");
+  const headline = headlineRaw.replace(/[\s—-]+$/, "");
+  const offerText =
+    cb?.offerText?.trim() || t("discount_fmt", { percent: LAUNCH_COUPON_PERCENT });
+  const withCodePrefix = cb?.withCodePrefix?.trim() || t("with_code");
   const storageKeyVersion = cb?.storageKeyVersion?.trim() || "v1";
   const STORAGE_KEY = dismissKey(storageKeyVersion);
 
@@ -72,7 +74,7 @@ export default function CouponBanner() {
   return (
     <div
       role="region"
-      aria-label="Launch promotion"
+      aria-label={t("region_label")}
       className="relative border-b border-sericia-line bg-sericia-paper-deep"
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-2.5 flex items-center justify-between gap-6">
@@ -90,7 +92,7 @@ export default function CouponBanner() {
         <button
           type="button"
           onClick={handleDismiss}
-          aria-label="Dismiss launch offer"
+          aria-label={t("dismiss_label")}
           className="text-sericia-ink-mute hover:text-sericia-ink text-[14px] leading-none shrink-0 w-6 h-6 inline-flex items-center justify-center"
         >
           ×

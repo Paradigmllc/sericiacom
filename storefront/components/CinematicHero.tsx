@@ -37,6 +37,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Typewriter from "typewriter-effect";
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 import MagneticButton from "./MagneticButton";
 import SakuraFall from "./SakuraFall";
 import { useSettings } from "./SettingsProvider";
@@ -51,58 +52,52 @@ const HERO_VIDEO_TYPE = process.env.NEXT_PUBLIC_HERO_VIDEO_TYPE?.trim() || "vide
 // Set NEXT_PUBLIC_SAKURA_ENABLED=true in Coolify during spring campaigns.
 const SAKURA_ENABLED = process.env.NEXT_PUBLIC_SAKURA_ENABLED === "true";
 
-// Hardcoded brand defaults — used when SiteSettings.heroCopy is null/empty.
-// Each component drilling SiteSettings should keep its own defaults so
-// we never ship "" to the user when Payload is unreachable.
-const DEFAULT_HERO = {
-  eyebrow: "Drop No. 01 — Limited release",
-  headlineLine1: "Rescued Japanese",
-  headlineLine2: "craft food,",
-  typewriter: ["shipped worldwide.", "hand-packed in Kyoto.", "from makers, to your table."],
-  body:
-    "Each drop is a single curated bundle of near-expiry Japanese producers' surplus — tea, miso, shiitake. When it is gone, it is gone.",
-  meta: ["Kyoto, Japan", "EMS worldwide", "50 units"],
-  primaryCtaLabel: "Shop the drop",
-  primaryCtaUrl: "/products",
-  secondaryCtaLabel: "Our story",
-  secondaryCtaUrl: "/#story",
-} as const;
+// Brand defaults are sourced via next-intl `useTranslations("hero")` so a
+// visitor on /ja sees Japanese hero copy even before the editor opens
+// Payload. URLs (which aren't translation candidates) stay literal.
+const DEFAULT_PRIMARY_CTA_URL = "/products";
+const DEFAULT_SECONDARY_CTA_URL = "/#story";
 
 export default function CinematicHero() {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const settings = useSettings();
   const copy = settings?.heroCopy;
+  const t = useTranslations("hero");
 
   // Resolve every visible string with CMS-first / env-second / hardcoded-third
   // precedence. Editor edits in Payload → instant reflect on next request.
   const heroVideoUrl = (settings?.heroVideoUrl?.trim() || ENV_HERO_VIDEO_URL).trim();
   const heroPosterUrl = (settings?.heroPosterUrl?.trim() || ENV_HERO_VIDEO_POSTER).trim();
 
-  const eyebrow = copy?.eyebrow?.trim() || DEFAULT_HERO.eyebrow;
-  const headlineLine1 = copy?.headlineLine1?.trim() || DEFAULT_HERO.headlineLine1;
-  const headlineLine2 = copy?.headlineLine2?.trim() || DEFAULT_HERO.headlineLine2;
-  const body = copy?.body?.trim() || DEFAULT_HERO.body;
+  // Three-tier resolution: CMS (editor) → next-intl messages (locale) →
+  // emergency literal. The locale tier is the one the user was missing on
+  // /ja before this fix — without it we fall back to en-baked literals.
+  const eyebrow = copy?.eyebrow?.trim() || t("eyebrow");
+  const headlineLine1 = copy?.headlineLine1?.trim() || t("title_line_1");
+  const headlineLine2 = copy?.headlineLine2?.trim() || t("title_line_2");
+  const body = copy?.body?.trim() || t("lede");
 
   const typewriterStrings: string[] =
     copy?.typewriterStrings && copy.typewriterStrings.length > 0
       ? copy.typewriterStrings
           .map((s) => (s as { text?: string | null })?.text?.trim() || "")
           .filter((s): s is string => s.length > 0)
-      : [...DEFAULT_HERO.typewriter];
-  const safeTypewriter = typewriterStrings.length > 0 ? typewriterStrings : [...DEFAULT_HERO.typewriter];
+      : [t("typewriter_1"), t("typewriter_2"), t("typewriter_3")];
+  const safeTypewriter =
+    typewriterStrings.length > 0 ? typewriterStrings : [t("typewriter_1")];
 
   const metaLines: string[] =
     copy?.metaLines && copy.metaLines.length > 0
       ? copy.metaLines
           .map((s) => (s as { text?: string | null })?.text?.trim() || "")
           .filter((s): s is string => s.length > 0)
-      : [...DEFAULT_HERO.meta];
+      : [t("meta_kyoto"), t("meta_ems"), t("meta_units_fmt", { count: 50 })];
 
-  const primaryCtaLabel = copy?.primaryCtaLabel?.trim() || DEFAULT_HERO.primaryCtaLabel;
-  const primaryCtaUrl = copy?.primaryCtaUrl?.trim() || DEFAULT_HERO.primaryCtaUrl;
-  const secondaryCtaLabel = copy?.secondaryCtaLabel?.trim() || DEFAULT_HERO.secondaryCtaLabel;
-  const secondaryCtaUrl = copy?.secondaryCtaUrl?.trim() || DEFAULT_HERO.secondaryCtaUrl;
+  const primaryCtaLabel = copy?.primaryCtaLabel?.trim() || t("cta_shop");
+  const primaryCtaUrl = copy?.primaryCtaUrl?.trim() || DEFAULT_PRIMARY_CTA_URL;
+  const secondaryCtaLabel = copy?.secondaryCtaLabel?.trim() || t("cta_story");
+  const secondaryCtaUrl = copy?.secondaryCtaUrl?.trim() || DEFAULT_SECONDARY_CTA_URL;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -259,7 +254,7 @@ export default function CinematicHero() {
           transition={{ delay: 1.2, duration: 0.8 }}
         >
           <span className="inline-block h-px w-10 bg-sericia-paper/50" />
-          Scroll
+          {t("scroll_hint")}
         </motion.div>
       </motion.div>
 

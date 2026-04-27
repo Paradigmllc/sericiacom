@@ -184,5 +184,27 @@
     "bilingual_notice_title": "Zu dieser Seite",
     "bilingual_notice_body": "Japans Gesetz über spezifische Handelsgeschäfte (特定商取引法 第11条) verpflichtet uns gesetzlich, diese Angaben für Kunden in Japan auf Japanisch zu veröffentlichen. Wir fügen unter jedem Feld eine englische Übersetzung für internationale Besucher hinzu, rechtlich verbindlich bleibt jedoch die japanische Fassung.",
     "also_on_sericia": "Verwandte Seiten"
+  },
+  "home_sections": {
+    "current_drop_eyebrow": "Aktuelle Drop",
+    "current_drop_title": "Drei gerettete Handwerksstücke, ein kuratiertes Set.",
+    "current_drop_lede": "Kleinserienproduzenten, fotografiert und innerhalb von 48 Stunden aus Kyoto verschickt.",
+    "featured_bundle_eyebrow": "Das ausgewählte Bundle",
+    "most_loved_eyebrow": "Beliebt",
+    "most_loved_title": "Favoriten aus früheren Drops.",
+    "makers_eyebrow": "Die Macher",
+    "makers_title": "Drei Produzenten, ein Bundle.",
+    "makers_lede": "Jeder Drop bringt kleine japanische Handwerksproduzenten zusammen, deren Überschuss sonst entsorgt würde. Wir zahlen den vollen Preis, fotografieren ihre Arbeit und versenden das Bundle an neugierige Tische weltweit.",
+    "philosophy_eyebrow": "Unsere Philosophie",
+    "philosophy_body": "Japans Handwerksproduzenten stellen außergewöhnliche Waren mit geringen Margen her. Bestände kurz vor dem Mindesthaltbarkeitsdatum oder Überproduktionen landen oft im Müll. Sericia findet diese Bestände, kuratiert sie zu einem Drop und versendet sie an Tische weltweit — zu einem Preis, der allen in der Kette gerecht wird.",
+    "waitlist_eyebrow": "Früher Zugang",
+    "waitlist_title": "Der nächste Drop, vierundzwanzig Stunden früher.",
+    "waitlist_body": "Drops verkaufen sich in Stunden aus. Abonnenten erhalten die Veröffentlichung vierundzwanzig Stunden vor dem öffentlichen Verkauf, eine fotografierte Notiz des Produzenten und eine kleine Verkostungskarte.",
+    "waitlist_footnote": "Eine E-Mail pro Drop · Mit einem Klick abmelden",
+    "how_it_works_eyebrow": "So funktioniert's",
+    "how_it_works_title": "Von Kyoto an Ihre Tür in vier Schritten.",
+    "faq_eyebrow": "Häufig gefragt",
+    "faq_title": "Fragen & Überlegungen.",
+    "faq_cta": "Vollständige Versandrichtlinien lesen"
   }
 }
