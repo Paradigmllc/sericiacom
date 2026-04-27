@@ -67,6 +67,32 @@ export default function ToolPageShell({
           />
         </div>
 
+        {/* "What this tool is" — single-sentence orientation, the answer to
+            "why am I on this page?". Larger type than the body for instant
+            scannability; sits at the very top of the page below breadcrumb. */}
+        <p className="text-[20px] md:text-[22px] leading-[1.55] text-sericia-ink max-w-prose mb-12 md:mb-14">
+          {content.whatItIs}
+        </p>
+
+        {/* Quick tour — Aesop-tier "how to use" 3-step. Numbered, no fluff,
+            visible BEFORE the calculator so first-time visitors aren't faced
+            with a bare form. */}
+        {content.quickTour && content.quickTour.length > 0 && (
+          <div className="mb-12 md:mb-14 grid grid-cols-1 md:grid-cols-3 gap-px bg-sericia-line border-y border-sericia-line">
+            {content.quickTour.map((step, i) => (
+              <div key={i} className="bg-sericia-paper p-6 md:p-8">
+                <p className="label mb-3 tabular-nums">Step {String(i + 1).padStart(2, "0")}</p>
+                <p className="text-[16px] font-normal mb-3 text-sericia-ink leading-snug">
+                  {step.label}
+                </p>
+                <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
+                  {step.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Intro context — 2-4 ArticleBlocks setting up the why before the
             calculator surface. */}
         <ArticleBlocks blocks={content.introBlocks} />
@@ -82,6 +108,34 @@ export default function ToolPageShell({
       </section>
 
       <Container size="default" className="py-16 md:py-24">
+        {/* Worked examples — input → output → why, two scenarios side-by-side.
+            Sits directly after the calculator so visitors can sanity-check
+            the tool's output against curated answers. */}
+        {content.workedExamples && content.workedExamples.length > 0 && (
+          <div className="mb-16 md:mb-20">
+            <p className="label mb-3">Examples</p>
+            <h2 className="text-[24px] md:text-[28px] font-normal leading-snug mb-10 text-sericia-ink">
+              Two scenarios, end-to-end.
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-sericia-line">
+              {content.workedExamples.map((ex, i) => (
+                <div key={i} className="bg-sericia-paper p-8 md:p-10">
+                  <p className="label mb-3">Input</p>
+                  <p className="text-[15px] text-sericia-ink mb-6">{ex.input}</p>
+                  <p className="label mb-3">Output</p>
+                  <p className="text-[20px] md:text-[22px] font-normal text-sericia-ink mb-6 leading-snug">
+                    {ex.output}
+                  </p>
+                  <p className="label mb-3">Why</p>
+                  <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
+                    {ex.commentary}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Deeper context — table, callout, technique, CTA card. */}
         <ArticleBlocks blocks={content.afterBlocks} />
 

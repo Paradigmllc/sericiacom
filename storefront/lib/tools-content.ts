@@ -34,6 +34,12 @@ export type ToolSlug =
 export type ToolContent = {
   hero: { eyebrow: string; title: string; tone?: "tea" | "miso" | "mushroom" | "seasoning" | "drop" | "ink" | "paper" };
   breadcrumbLabel: string;
+  /** One-sentence "what is this tool" appearing under the hero, before any other content. */
+  whatItIs: string;
+  /** 3-step quick tour rendered as a numbered list above the calculator. */
+  quickTour: { label: string; body: string }[];
+  /** 2 worked examples (input → output → why) rendered as a comparison strip below the calculator. */
+  workedExamples: { input: string; output: string; commentary: string }[];
   introBlocks: ArticleBlock[];
   afterBlocks: ArticleBlock[];
   related: { label: string; url: string }[];
@@ -48,6 +54,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "tea",
     },
     breadcrumbLabel: "Japanese tea brewer",
+    whatItIs: "A calculator that gives you the exact water temperature, leaf weight, and steep time for seven Japanese green teas — so the next cup tastes the way the producer intended.",
+    quickTour: [
+      { label: "Pick the tea", body: "Choose sencha, gyokuro, bancha, hojicha, genmaicha, or matcha (thin or thick) from the dropdown." },
+      { label: "Set cup size", body: "Type your cup volume in millilitres. 150ml is one Japanese yunomi; 300ml is a Western mug." },
+      { label: "Read the recipe", body: "We compute exact leaf grams, water temperature in Celsius, and steep time in seconds. Use a kitchen scale and a thermometer once — after that the eye learns." },
+    ],
+    workedExamples: [
+      { input: "Sencha, 200ml cup", output: "75°C · 60s · 6g leaf", commentary: "Two cups for one person. Bring water to a boil, cool 2 minutes off-heat to land at 75°C, then pour over the leaves and decant fully at 60s." },
+      { input: "Matcha — usucha, 70ml", output: "75°C · whisk · 2g leaf", commentary: "Sift matcha into a warm bowl, pour 70ml of 75°C water, whisk in a zigzag motion for 15 seconds until a thin foam crowns the surface." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
@@ -123,6 +139,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "tea",
     },
     breadcrumbLabel: "Matcha grade guide",
+    whatItIs: "Three honest questions about how you'll use matcha, what you'll spend, and how you take bitterness — out comes a recommendation for ceremonial, premium, or culinary grade.",
+    quickTour: [
+      { label: "Answer three questions", body: "Use, budget, bitterness tolerance. There is no 'right' answer — the questions exist because grade is genuinely use-dependent." },
+      { label: "Read the verdict", body: "We score each grade against your answers and surface the one that fits your context, with origin, harvest, and pricing context." },
+      { label: "Cross-check the table", body: "The reference table below the calculator shows visual / aroma / mouthfeel signals you can verify on the tin before you buy." },
+    ],
+    workedExamples: [
+      { input: "Daily lattes, $20-30 budget, balanced", output: "Premium grade", commentary: "First-flush Uji, less shaded than ceremonial, holds up against milk without losing colour. Roughly $25 for a 30g tin." },
+      { input: "Whisked usucha, $40+ budget, mellow", output: "Ceremonial grade", commentary: "Three weeks of shade, stone-milled at glacial speed. Vivid jade green, marine sweetness, no grit. Sericia stocks a 30g Uji tin at this tier." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
@@ -189,6 +215,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "miso",
     },
     breadcrumbLabel: "Miso finder",
+    whatItIs: "Pick the dish you want to cook — we recommend which of the six main Japanese miso styles will land it best, with region, age, and a cooking note.",
+    quickTour: [
+      { label: "Pick the dish", body: "Eight common uses: light soup, hearty soup, ramen, fish glaze, marinade, dressing, pickling, slow stew." },
+      { label: "See the recommendation", body: "We map the dish to the right miso style — shiro, aka, awase, hatcho, or saikyo — explaining why that style suits this use." },
+      { label: "Read the cooking note", body: "Each style has a single line about how to actually use it (e.g. 'add shiro after heat off — boiling kills the aroma')." },
+    ],
+    workedExamples: [
+      { input: "Light breakfast miso soup", output: "Shiro miso (Kyoto)", commentary: "High rice-koji ratio, low salt, sweet and mineral. Add it once the dashi is off the heat to keep the live cultures and aroma." },
+      { input: "Eggplant glaze (dengaku)", output: "Saikyo miso (Kyoto)", commentary: "Very sweet, pale yellow, almost paste-like. Brush onto halved eggplants and broil — the sugar caramelises into a savoury crust." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
@@ -260,6 +296,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "seasoning",
     },
     breadcrumbLabel: "Dashi ratio calculator",
+    whatItIs: "Six dashi styles × your water volume → the exact gram weights of kombu, katsuobushi, iriko, or shiitake. Stops the guess-work that turns dashi into pond water.",
+    quickTour: [
+      { label: "Pick a style", body: "Ichiban for clear soups, niban for braising, awase for everyday, kombu / iriko / shiitake for vegan and regional variants." },
+      { label: "Set water volume", body: "In millilitres. 1 litre is one large pot; 500ml is one bowl of soup." },
+      { label: "Weigh and brew", body: "We compute the exact gram weights of each ingredient based on the style's official ratio, plus a single-line method." },
+    ],
+    workedExamples: [
+      { input: "Ichiban dashi, 1 litre", output: "10g kombu + 20g katsuobushi", commentary: "Cold-soak the kombu 30-60 min, bring to 60-65°C, remove the kombu. Take off heat, add the katsuobushi, strain after 60 seconds. Clear, gold-tinted, marine." },
+      { input: "Vegan kombu dashi, 1 litre", output: "15g kombu only", commentary: "Cold-brew overnight in the fridge — never boil kombu, or it turns slimy. Pair with cold-rehydrated shiitake liquid for a fully plant-based stock with depth." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
@@ -329,6 +375,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "paper",
     },
     breadcrumbLabel: "Shelf life estimator",
+    whatItIs: "Tell us what you have and whether it's been opened — we estimate practical shelf life with a producer-grounded note. Far more useful than the conservative best-before stamps.",
+    quickTour: [
+      { label: "Pick the item", body: "Nine pantry staples — sencha, matcha, miso (shiro/aka), dried shiitake, dashi granules, yuzu kosho, shichimi, furikake." },
+      { label: "Toggle 'opened'", body: "Sealed and opened windows differ by an order of magnitude — sealed sencha lasts two years; opened, three months." },
+      { label: "Read the note", body: "Each item has a one-paragraph storage note explaining the chemistry and what aroma decline looks like before it's truly past use." },
+    ],
+    workedExamples: [
+      { input: "Sealed sencha (vacuum pack)", output: "≈ 2 years", commentary: "Nitrogen-flushed vacuum packs hold sencha for two years before the catechin oxidation flattens flavour. Once opened, finish within three months." },
+      { input: "Opened aka miso (refrigerated)", output: "≈ 1 year", commentary: "Long-aged red miso is nearly indestructible. Refrigerated, it stays usable for a year or more after opening — the flavour deepens, doesn't degrade." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
@@ -397,6 +453,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "mushroom",
     },
     breadcrumbLabel: "Shiitake rehydration",
+    whatItIs: "Calculator that returns water volume, soak time and finished mushroom weight by method — cold overnight gets you 4× the umami compounds of boiling water.",
+    quickTour: [
+      { label: "Pick a method", body: "Cold overnight (best), cold 6h at room temperature, warm 30 minutes (compromise), or boiling 15 minutes (avoid for dashi)." },
+      { label: "Enter dried shiitake grams", body: "30g is the standard packet; 50g is a generous portion for four servings of dashi." },
+      { label: "Read the plan", body: "We compute soak water volume, soak time, and finished weight (mushrooms expand 4-5×). Save the soaking liquid — it's vegan dashi." },
+    ],
+    workedExamples: [
+      { input: "30g donko, cold overnight", output: "1.2L cold water · 8h fridge · 135g finished", commentary: "Maximum guanylate extraction. The mushrooms triple their dried weight; the soaking liquid becomes a deep umami stock you can use as the base of vegan dashi." },
+      { input: "30g koshin, warm 30 min", output: "1.2L warm water · 30 min · ~120g finished", commentary: "Quick fix — about 60% of the umami a cold soak gets. Workable when time is tight, but pair with kombu to compensate." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
@@ -465,6 +531,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "seasoning",
     },
     breadcrumbLabel: "Yuzu substitute guide",
+    whatItIs: "Yuzu costs £80/kg outside Japan when you can find it fresh. Pick the dish you're cooking and we'll show the closest possible substitute — plus the honest match percentage.",
+    quickTour: [
+      { label: "Pick the dish", body: "Five common uses — ponzu, yuzu kosho paste, dressings, desserts, hot pot." },
+      { label: "Read the substitute", body: "Each maps to a specific multi-citrus blend (e.g. Meyer lemon + grapefruit zest) with exact ratios." },
+      { label: "Honest match %", body: "We tell you what fraction of yuzu's character the substitute captures. Some uses (yuzu sorbet, yuzu-cha) have no substitute — we say so." },
+    ],
+    workedExamples: [
+      { input: "Ponzu sauce", output: "Lemon 60% + lime 30% + mandarin zest 10%", commentary: "Yuzu's defining quality is the grapefruit-like bitter top note. Lemon alone is one-dimensional; lime + mandarin zest rebuilds the complexity to about 60-70% of the real thing." },
+      { input: "Yuzu sorbet", output: "No good substitute", commentary: "When yuzu is the dish — sorbet, yuzu-cha, yuzu-shio — there is no substitution, only an ingredient swap. Wait for Sericia's Tokushima yuzu drop or omit." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
@@ -532,6 +608,16 @@ export const TOOLS_CONTENT: Record<ToolSlug, ToolContent> = {
       tone: "ink",
     },
     breadcrumbLabel: "EMS shipping calculator",
+    whatItIs: "Estimate Japan Post EMS international shipping cost in JPY and approximate USD across 23 destinations. Same rate brackets Sericia uses to ship every drop from Kyoto.",
+    quickTour: [
+      { label: "Pick a destination", body: "23 countries — North America, Europe, East Asia, Oceania, the Middle East, plus a handful in Latin America." },
+      { label: "Set parcel weight", body: "Slider in grams (100g–5kg). 250g is one tea pouch; 750g is a Drop-bundle equivalent (sencha + miso + shiitake)." },
+      { label: "Read the rate", body: "We look up the official EMS rate bracket and surface JPY price, approximate USD, transit window, and the zone." },
+    ],
+    workedExamples: [
+      { input: "USA, 750g (Drop-bundle weight)", output: "¥3,100 · 4-7 days", commentary: "Lands in the ≤1kg US bracket. Sericia covers EMS at $200+, so a typical 4-product order ships free; smaller orders pay actual EMS, no markup." },
+      { input: "Singapore, 200g", output: "¥1,900 · 3-5 days", commentary: "Single tea pouch to Zone 1. Closest market geographically — fastest transit and lowest rate from Japan to anywhere outside the country." },
+    ],
     introBlocks: [
       {
         type: "paragraph",
