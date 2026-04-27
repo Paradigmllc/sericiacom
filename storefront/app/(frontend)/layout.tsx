@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
+import LuxuryToaster from "@/components/LuxuryToaster";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { isRtlLocale, type Locale } from "@/i18n/routing";
@@ -201,7 +201,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <RegionModal />
           <CookieConsent />
           <SocialProofToastGate />
-          <Toaster position="top-right" richColors />
+          <LuxuryToaster />
           <Analytics />
           <DifyChat />
           <ServiceWorkerRegister />

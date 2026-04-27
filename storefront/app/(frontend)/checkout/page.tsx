@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import CheckoutForm from "@/components/CheckoutForm";
 import CartCheckoutForm from "@/components/CartCheckoutForm";
+import CheckoutGate from "@/components/CheckoutGate";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, Eyebrow, Rule } from "@/components/ui";
@@ -70,6 +72,7 @@ export default async function CheckoutPage({
   // ---- Drop checkout path (legacy) ----
   if (sp.drop) {
     const drop = await getCurrentDrop();
+    const tDrop = await getTranslations("checkout");
     if (!drop || drop.id !== sp.drop) {
       return (
         <>
@@ -87,11 +90,10 @@ export default async function CheckoutPage({
         <SiteHeader />
         <section className="border-b border-sericia-line bg-sericia-paper-card">
           <Container size="wide" className="py-16 md:py-20">
-            <Eyebrow>Step 1 of 2 — Shipping</Eyebrow>
-            <h1 className="text-[36px] md:text-[48px] leading-[1.1] font-normal tracking-tight">Shipping details.</h1>
-            <p className="text-[15px] text-sericia-ink-soft mt-4 max-w-prose">
-              We will use this address for EMS worldwide shipping. Tracking is emailed within 48 hours of payment.
-            </p>
+            <Eyebrow>{tDrop("title")}</Eyebrow>
+            <h1 className="text-[36px] md:text-[48px] leading-[1.1] font-normal tracking-tight">
+              {tDrop("shipping_address")}
+            </h1>
           </Container>
         </section>
         <Container size="wide" className="py-16 md:py-24">
@@ -101,21 +103,16 @@ export default async function CheckoutPage({
             </div>
             <aside className="md:col-span-5">
               <div className="md:sticky md:top-8 border border-sericia-line bg-sericia-paper-card p-8">
-                <p className="label mb-6">Order summary</p>
+                <p className="label mb-6">{tDrop("order_summary")}</p>
                 <div className="aspect-[4/3] bg-gradient-to-br from-[#d4c9b0] to-[#8a7d5c] mb-6" />
                 <h2 className="text-[20px] font-normal mb-2 leading-snug">{drop.title}</h2>
                 <p className="text-[13px] text-sericia-ink-mute mb-6 tracking-wide">
-                  {drop.weight_g}g · Ships within {drop.ships_within_hours}h from Kyoto
+                  {drop.weight_g}g · {drop.ships_within_hours}h
                 </p>
                 <Rule />
                 <div className="flex justify-between py-4 text-[14px]">
                   <span className="text-sericia-ink-soft">Subtotal</span>
                   <span>${drop.price_usd}.00</span>
-                </div>
-                <Rule />
-                <div className="flex justify-between py-4 text-[14px]">
-                  <span className="text-sericia-ink-soft">Shipping (EMS worldwide)</span>
-                  <span>Included</span>
                 </div>
                 <Rule />
                 <div className="flex justify-between py-5 text-[16px] font-medium">
@@ -124,12 +121,12 @@ export default async function CheckoutPage({
                 </div>
                 {isLocalized && (
                   <p className="text-[12px] text-sericia-ink-mute mt-1">
-                    ≈ {localPrice} at today&apos;s rate · charged in USD
+                    ≈ {localPrice} · USD
                   </p>
                 )}
                 <Rule className="mt-2" />
                 <p className="text-[12px] text-sericia-ink-mute mt-5 tracking-wider uppercase">
-                  {remaining} of {drop.total_units} remaining
+                  {remaining} / {drop.total_units}
                 </p>
               </div>
             </aside>
@@ -141,20 +138,22 @@ export default async function CheckoutPage({
   }
 
   // ---- Cart checkout path ----
+  const tCheckout = await getTranslations("checkout");
   return (
     <>
       <SiteHeader />
       <section className="border-b border-sericia-line bg-sericia-paper-card">
         <Container size="wide" className="py-16 md:py-20">
-          <Eyebrow>Checkout</Eyebrow>
-          <h1 className="text-[36px] md:text-[48px] leading-[1.1] font-normal tracking-tight">Shipping details.</h1>
-          <p className="text-[15px] text-sericia-ink-soft mt-4 max-w-prose">
-            We will use this address for EMS worldwide shipping. Tracking is emailed within 48 hours of payment.
-          </p>
+          <Eyebrow>{tCheckout("title")}</Eyebrow>
+          <h1 className="text-[36px] md:text-[48px] leading-[1.1] font-normal tracking-tight">
+            {tCheckout("shipping_address")}
+          </h1>
         </Container>
       </section>
       <Container size="wide" className="py-16 md:py-24">
-        <CartCheckoutForm defaultCountry={country} profileDefaults={profileDefaults} />
+        <CheckoutGate>
+          <CartCheckoutForm defaultCountry={country} profileDefaults={profileDefaults} />
+        </CheckoutGate>
       </Container>
       <SiteFooter />
     </>

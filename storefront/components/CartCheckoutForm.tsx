@@ -83,13 +83,17 @@ export default function CartCheckoutForm({
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (items.length === 0) {
-      toast.error("Your cart is empty");
+      toast.error("Your cart is empty.", {
+        description: "Add something before checking out.",
+      });
       router.push("/products");
       return;
     }
     const parsed = Schema.safeParse(form);
     if (!parsed.success) {
-      toast.error(parsed.error.issues[0]?.message ?? "Please fill all required fields");
+      toast.error("A detail is missing.", {
+        description: parsed.error.issues[0]?.message ?? "Please complete the required fields.",
+      });
       return;
     }
     setLoading(true);
@@ -114,23 +118,41 @@ export default function CartCheckoutForm({
       });
       const data = await res.json();
       if (!res.ok) {
-        const map: Record<string, string> = {
-          insufficient_stock: "One of the items in your cart just sold out. Please refresh.",
-          product_inactive: "One of your items is no longer available.",
-          product_not_found: "One of your items is no longer available.",
+        const map: Record<string, { title: string; description: string }> = {
+          insufficient_stock: {
+            title: "An item just sold out.",
+            description: "Drops move quickly. Please refresh your cart and try again.",
+          },
+          product_inactive: {
+            title: "Item no longer available.",
+            description: "One of your items has been retired. Please review your cart.",
+          },
+          product_not_found: {
+            title: "Item no longer available.",
+            description: "One of your items has been retired. Please review your cart.",
+          },
         };
-        toast.error(map[data?.error as string] ?? "Could not create order. Please try again.");
+        const fallback = {
+          title: "We couldn't reserve your order.",
+          description: "Please try once more. If it persists, write to concierge@sericia.com.",
+        };
+        const msg = map[data?.error as string] ?? fallback;
+        toast.error(msg.title, { description: msg.description });
         console.error("[cart-checkout] failed", data);
         setLoading(false);
         return;
       }
-      toast.success("Order reserved. Redirecting to payment…");
+      toast.success("Reserved.", {
+        description: "Continuing to payment.",
+      });
       clear();
       router.push(`/pay/${data.order_id}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[cart-checkout] exception", err);
-      toast.error(msg);
+      toast.error("Something interrupted the request.", {
+        description: msg,
+      });
       setLoading(false);
     }
   }
