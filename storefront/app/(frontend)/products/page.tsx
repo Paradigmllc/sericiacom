@@ -162,8 +162,44 @@ export default async function ProductsIndexPage(
         { label: "Shop" },
       ];
 
+  // ItemList JSON-LD — Google rich-result eligibility for collection pages.
+  // We list up to 30 visible products so the snippet stays under the
+  // recommended ~10KB. Each gets position, name, image, URL.
+  const SITE = "https://sericia.com";
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: heroTitle,
+    description:
+      "Single-origin tea, barrel-aged miso, sun-dried mushrooms and small-batch seasonings — limited stock, EMS worldwide from Kyoto.",
+    url: `${SITE}/products${category ? `?category=${category}` : ""}`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: withBadges.length,
+      itemListElement: withBadges.slice(0, 30).map((p, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE}/products/${p.slug}`,
+        name: p.name,
+      })),
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: breadcrumb.map((b, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: b.label,
+        item: b.url ? `${SITE}${b.url}` : undefined,
+      })),
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
       <SiteHeader />
       <CategoryHero
         eyebrow={heroEyebrow}

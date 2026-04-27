@@ -6,6 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ContentSidebar from "@/components/ContentSidebar";
 import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
 import { Container, SectionHeading, Rule } from "@/components/ui";
+import { webPageJsonLd } from "@/lib/page-jsonld";
 
 export const metadata: Metadata = {
   title: "Shipping Information | Sericia",
@@ -14,8 +15,18 @@ export const metadata: Metadata = {
 };
 
 export default function ShippingPage() {
+  const jsonLd = webPageJsonLd({
+    name: "Shipping — EMS worldwide from Kyoto",
+    description: "Sericia ships every drop from Japan via EMS within 48 hours of payment. Transit windows, customs paperwork, and tracking by destination country.",
+    path: "/shipping",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shipping", path: "/shipping" }],
+  });
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
       <CategoryHero
         eyebrow="Shipping"

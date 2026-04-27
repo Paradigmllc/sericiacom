@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ContentSidebar from "@/components/ContentSidebar";
 import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
 import { Container, Rule } from "@/components/ui";
+import { webPageJsonLd } from "@/lib/page-jsonld";
 
 export const metadata: Metadata = {
   title: "Terms of Service | Sericia",
@@ -13,8 +14,18 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
+  const jsonLd = webPageJsonLd({
+    name: "Terms of service",
+    description: "Terms governing the use of sericia.com and every drop Sericia releases — operator details, pricing, drop scheduling, refunds, and limitation of liability.",
+    path: "/terms",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Terms of service", path: "/terms" }],
+  });
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
       <CategoryHero eyebrow="Legal" title="Terms of service." tone="paper" />
       <Container size="wide" className="pt-10 md:pt-14 pb-20 md:pb-28">

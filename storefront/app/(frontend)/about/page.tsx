@@ -5,6 +5,7 @@ import { Container } from "@/components/ui";
 import CategoryHero from "@/components/CategoryHero";
 import ArticleBlocks from "@/components/ArticleBlocks";
 import type { ArticleBlock } from "@/lib/article-blocks";
+import { webPageJsonLd } from "@/lib/page-jsonld";
 
 /**
  * /about — Aesop-tier brand narrative.
@@ -212,8 +213,20 @@ const blocks: ArticleBlock[] = [
 ];
 
 export default function AboutPage() {
+  const jsonLd = webPageJsonLd({
+    variant: "AboutPage",
+    name: "About Sericia",
+    description:
+      "Sericia is a Kyoto-rooted, globally shipped curation of rescued Japanese craft food — near-expiry surplus sourced directly from small producers and bundled into limited drops.",
+    path: "/about",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "About", path: "/about" }],
+  });
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
       <CategoryHero
         eyebrow="About"

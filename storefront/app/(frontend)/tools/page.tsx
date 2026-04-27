@@ -64,8 +64,36 @@ const TOOLS = [
 ];
 
 export default function ToolsIndex() {
+  // ItemList JSON-LD for the tools collection — same schema pattern as
+  // /products and /journal so Google sees Sericia's three index pages as
+  // structured collections it can crawl and surface in rich results.
+  const SITE = "https://sericia.com";
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Sericia Tools — Japanese craft food utilities",
+    description:
+      "Eight free, focused calculators and guides for Japanese craft food buyers: EMS shipping, matcha grading, miso pairing, dashi ratios, tea brewing, shelf life, shiitake rehydration, yuzu substitutes.",
+    url: `${SITE}/tools`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: TOOLS.length,
+      itemListElement: TOOLS.map((t, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE}${t.href}`,
+        name: t.title,
+        description: t.desc,
+      })),
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
       <SiteHeader />
       <PageHero
         eyebrow="Tools"

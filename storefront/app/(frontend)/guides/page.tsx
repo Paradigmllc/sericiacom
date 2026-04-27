@@ -13,8 +13,46 @@ export const metadata: Metadata = {
 };
 
 export default function GuidesIndex() {
+  // CollectionPage + ItemList JSON-LD across all 64 country×product combos.
+  // Each guide is its own URL and Google should treat /guides as the index
+  // for the cluster.
+  const SITE = "https://sericia.com";
+  const items: { country: string; productName: string; productSlug: string; countryCode: string }[] = [];
+  for (const c of COUNTRIES) {
+    for (const p of PRODUCTS) {
+      items.push({
+        country: c.name,
+        countryCode: c.code,
+        productName: p.name,
+        productSlug: p.slug,
+      });
+    }
+  }
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Japanese craft food guides by country",
+    description:
+      "Country-by-country guides to importing authentic Japanese sencha, matcha, miso, shiitake, dashi, yuzu, shichimi, and furikake.",
+    url: `${SITE}/guides`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: items.length,
+      itemListElement: items.slice(0, 50).map((it, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE}/guides/${it.countryCode}/${it.productSlug}`,
+        name: `Buying ${it.productName} in ${it.country}`,
+      })),
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
       <SiteHeader />
       <PageHero
         eyebrow="Guides"

@@ -48,8 +48,66 @@ export default function ToolPageShell({
     );
   }
 
+  // ── HowTo JSON-LD: maps the 3-step quickTour onto schema.org so Google's
+  //    rich-result eligibility kicks in and Perplexity / ChatGPT have a
+  //    structured citation source. WebPage JSON-LD covers the basic
+  //    navigability schema. Both render inline as <script> — React 19
+  //    + Next 15 hoist them to <head> automatically, even from a "use
+  //    client" component.
+  const url = `https://sericia.com/tools/${slug}`;
+  const howToJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: content.hero.title.replace(/\.$/, ""),
+    description: content.whatItIs,
+    url,
+    step: content.quickTour.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.label,
+      text: s.body,
+    })),
+  };
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: content.hero.title.replace(/\.$/, ""),
+    description: content.whatItIs,
+    url,
+    isPartOf: { "@type": "WebSite", name: "Sericia", url: "https://sericia.com" },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://sericia.com" },
+        { "@type": "ListItem", position: 2, name: "Tools", item: "https://sericia.com/tools" },
+        { "@type": "ListItem", position: 3, name: content.breadcrumbLabel, item: url },
+      ],
+    },
+  };
+  const pageTitle = `${content.hero.title.replace(/\.$/, "")} | Sericia Tools`;
+
   return (
     <>
+      {/* React 19 metadata hoisting — these tags render here in the JSX tree
+          but get hoisted to <head> at render time. Replaces the otherwise-
+          required `export const metadata` boilerplate in 8 separate page.tsx
+          files. */}
+      <title>{pageTitle}</title>
+      <meta name="description" content={content.whatItIs} />
+      <link rel="canonical" href={url} />
+      <meta property="og:title" content={pageTitle} />
+      <meta property="og:description" content={content.whatItIs} />
+      <meta property="og:url" content={url} />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
       <SiteHeader />
       <CategoryHero
         eyebrow={content.hero.eyebrow}

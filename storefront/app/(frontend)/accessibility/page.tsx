@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ContentSidebar from "@/components/ContentSidebar";
 import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
 import { Container, Rule } from "@/components/ui";
+import { webPageJsonLd } from "@/lib/page-jsonld";
 
 /**
  * /accessibility — Accessibility Statement.
@@ -24,8 +25,18 @@ export const metadata: Metadata = {
 };
 
 export default function AccessibilityPage() {
+  const jsonLd = webPageJsonLd({
+    name: "Accessibility statement",
+    description: "Sericia's commitment to WCAG 2.2 AA — what we do today, what we fall short on, and how to reach us if a barrier keeps you from ordering.",
+    path: "/accessibility",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Accessibility", path: "/accessibility" }],
+  });
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
       <CategoryHero eyebrow="Accessibility" title="A storefront anyone can enter." tone="paper" />
       <Container size="wide" className="pt-10 md:pt-14 pb-20 md:pb-28">

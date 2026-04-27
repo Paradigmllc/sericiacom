@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ContentSidebar from "@/components/ContentSidebar";
 import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
 import { Container, Rule } from "@/components/ui";
+import { webPageJsonLd } from "@/lib/page-jsonld";
 
 export const metadata: Metadata = {
   title: "Refund & Returns | Sericia",
@@ -13,8 +14,18 @@ export const metadata: Metadata = {
 };
 
 export default function RefundPage() {
+  const jsonLd = webPageJsonLd({
+    name: "Refund & returns",
+    description: "Sericia refund policy for perishable Japanese craft food drops — eligibility for full refund, store credit, and the request workflow.",
+    path: "/refund",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Refund & returns", path: "/refund" }],
+  });
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
       <CategoryHero eyebrow="Legal" title="Refund & returns." tone="paper" />
       <Container size="wide" className="pt-10 md:pt-14 pb-20 md:pb-28">
