@@ -458,7 +458,90 @@ export const SiteSettings: GlobalConfig = {
         {
           name: "featuredBundle",
           type: "group",
-          fields: [{ name: "eyebrow", type: "text", localized: true }],
+          fields: [
+            { name: "eyebrow", type: "text", localized: true },
+            // ── F1 Cinematic videos: drop bundle right-side imagery ──
+            // Replaces the gradient placeholders on the homepage drop section.
+            // Editor uploads to Media collection, then pastes the URL here.
+            // Empty = gradient + grain fallback (current production state).
+            {
+              name: "heroVideoUrl",
+              type: "text",
+              admin: {
+                description:
+                  "Large bundle video (col-span-2 / aspect 4:5). Slow still-life loop ≤15s, MP4 <8MB. Empty → gradient + grain.",
+              },
+            },
+            {
+              name: "heroPosterUrl",
+              type: "text",
+              admin: {
+                description:
+                  "Poster frame for bundle video (first frame). Required for CLS=0 if video URL is set.",
+              },
+            },
+            {
+              name: "secondaryVideoUrlA",
+              type: "text",
+              admin: {
+                description:
+                  "Bottom-left square video (e.g. tea brewing). Optional. Empty → gradient.",
+              },
+            },
+            {
+              name: "secondaryPosterUrlA",
+              type: "text",
+            },
+            {
+              name: "secondaryVideoUrlB",
+              type: "text",
+              admin: {
+                description:
+                  "Bottom-right square video (e.g. miso scoop / shiitake bamboo). Optional.",
+              },
+            },
+            {
+              name: "secondaryPosterUrlB",
+              type: "text",
+            },
+          ],
+        },
+        // ── F1 New: full-bleed cinematic interstitial between Makers & Philosophy ──
+        // Aesop's signature "breathing room" video — wide 21:9 strip, no copy
+        // overlay, just imagery. Empty disables the section entirely (silent
+        // fallback — no empty band shipped).
+        {
+          name: "interstitial",
+          type: "group",
+          label: "Interstitial — cinematic break",
+          admin: {
+            description:
+              "Optional full-bleed video between Makers and Philosophy sections. Wide 21:9 letterbox. If videoUrl is empty, the section is hidden — never ships an empty band.",
+          },
+          fields: [
+            {
+              name: "videoUrl",
+              type: "text",
+              admin: {
+                description:
+                  "Full-bleed loop video (21:9). Slow Kyoto morning, hands at work, etc. Empty → entire section hidden.",
+              },
+            },
+            {
+              name: "posterUrl",
+              type: "text",
+              admin: { description: "Poster frame. Strongly recommended if video is set." },
+            },
+            {
+              name: "caption",
+              type: "text",
+              localized: true,
+              admin: {
+                description:
+                  "Tiny overlay caption (e.g. 'Kyoto, 5:42 AM'). Empty → no caption.",
+              },
+            },
+          ],
         },
         {
           name: "mostLoved",
@@ -488,6 +571,39 @@ export const SiteSettings: GlobalConfig = {
                 { name: "craft", type: "text", localized: true, required: true },
                 { name: "region", type: "text", localized: true, required: true },
                 { name: "note", type: "textarea", localized: true, required: true },
+                // ── F1 per-maker cinematic video ──
+                // Replaces the gradient card with a regional still-life loop
+                // (rice paddy, cedar shed, bamboo rack). Empty = gradient.
+                {
+                  name: "videoUrl",
+                  type: "text",
+                  admin: {
+                    description:
+                      "Per-maker still-life video (4:5). e.g. tea field, miso barrel, bamboo rack. Empty → category gradient.",
+                  },
+                },
+                {
+                  name: "posterUrl",
+                  type: "text",
+                  admin: { description: "Poster frame. Recommended if videoUrl is set." },
+                },
+                {
+                  name: "tone",
+                  type: "select",
+                  defaultValue: "tea",
+                  options: [
+                    { label: "Tea (green)", value: "tea" },
+                    { label: "Miso (warm brown)", value: "miso" },
+                    { label: "Mushroom (deep brown)", value: "mushroom" },
+                    { label: "Seasoning (gold)", value: "seasoning" },
+                    { label: "Paper (neutral)", value: "paper" },
+                    { label: "Ink (dark)", value: "ink" },
+                  ],
+                  admin: {
+                    description:
+                      "Gradient tone shown when no video is set. Match the maker's craft.",
+                  },
+                },
               ],
             },
           ],

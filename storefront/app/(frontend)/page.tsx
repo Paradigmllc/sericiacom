@@ -11,6 +11,7 @@ import { Container, Eyebrow, Button, SectionHeading, Rule } from "@/components/u
 import { formatPricePPP, PPP } from "@/lib/ppp";
 import { getCurrentDrop } from "@/lib/drops";
 import CinematicHero from "@/components/CinematicHero";
+import CinematicVideo from "@/components/CinematicVideo";
 import FadeIn from "@/components/FadeIn";
 import { listActiveProducts } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
@@ -200,12 +201,33 @@ export default async function Home() {
             </FadeIn>
 
             <FadeIn delay={0.1} className="md:col-span-7">
+              {/* F1 Cinematic — gradient placeholders replaced with optional
+                  loop videos. Editor adds URLs in Payload (Site Settings →
+                  homepageCopy.featuredBundle); empty = brand gradient + grain. */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="aspect-[4/5] bg-gradient-to-br from-[#d4c9b0] to-[#8a7d5c] col-span-2 relative overflow-hidden">
-                  <div aria-hidden className="absolute inset-0 opacity-[0.15] mix-blend-overlay" style={{backgroundImage:"url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>\")"}} />
+                <div className="col-span-2">
+                  <CinematicVideo
+                    src={hc?.featuredBundle?.heroVideoUrl}
+                    poster={hc?.featuredBundle?.heroPosterUrl}
+                    ratio="4/5"
+                    tone="drop"
+                    caption="Drop No. 01"
+                  />
                 </div>
-                <div className="aspect-square bg-gradient-to-br from-[#c9bfa3] to-[#6f6443]" />
-                <div className="aspect-square bg-gradient-to-br from-[#e0d7bf] to-[#9f8f69]" />
+                <CinematicVideo
+                  src={hc?.featuredBundle?.secondaryVideoUrlA}
+                  poster={hc?.featuredBundle?.secondaryPosterUrlA}
+                  ratio="square"
+                  tone="tea"
+                  parallax={false}
+                />
+                <CinematicVideo
+                  src={hc?.featuredBundle?.secondaryVideoUrlB}
+                  poster={hc?.featuredBundle?.secondaryPosterUrlB}
+                  ratio="square"
+                  tone="seasoning"
+                  parallax={false}
+                />
               </div>
               <p className="label mt-5">Clockwise · Sencha · Miso · Shiitake</p>
             </FadeIn>
@@ -251,6 +273,15 @@ export default async function Home() {
                   craft: m.craft,
                   region: m.region,
                   note: m.note,
+                  videoUrl: m.videoUrl ?? null,
+                  posterUrl: m.posterUrl ?? null,
+                  tone: (m.tone ?? "tea") as
+                    | "tea"
+                    | "miso"
+                    | "mushroom"
+                    | "seasoning"
+                    | "paper"
+                    | "ink",
                 }))
               : [
                   {
@@ -258,23 +289,41 @@ export default async function Home() {
                     craft: "Single-origin sencha",
                     region: "Uji, Kyoto",
                     note: "Fourth-generation grower. Surplus from the first flush of 2026.",
+                    videoUrl: null,
+                    posterUrl: null,
+                    tone: "tea" as const,
                   },
                   {
                     name: "Kurashige Jozoten",
                     craft: "Barrel-aged miso",
                     region: "Aichi",
                     note: "120-year-old cedar sheds. Over-ferment batch rescued from recycling.",
+                    videoUrl: null,
+                    posterUrl: null,
+                    tone: "miso" as const,
                   },
                   {
                     name: "Yamagata Mori",
                     craft: "Hand-dried shiitake",
                     region: "Yamagata",
                     note: "Bamboo-rack dried over five days. Sorted-out small caps with deeper flavour.",
+                    videoUrl: null,
+                    posterUrl: null,
+                    tone: "mushroom" as const,
                   },
                 ]
             ).map((m, i) => (
               <FadeIn as="article" key={m.name} delay={i * 0.08}>
-                <div className="aspect-[4/5] bg-gradient-to-br from-[#cfc5aa] to-[#716649] mb-6" />
+                {/* F1 Cinematic per maker — empty videoUrl falls back to a
+                    tone-tuned gradient + grain (no broken layout). */}
+                <CinematicVideo
+                  src={m.videoUrl}
+                  poster={m.posterUrl}
+                  ratio="4/5"
+                  tone={m.tone}
+                  playWhenInView
+                  className="mb-6"
+                />
                 <p className="label mb-2">{m.region}</p>
                 <h3 className="text-[22px] font-normal mb-2">{m.name}</h3>
                 <p className="text-[14px] text-sericia-ink-soft mb-3">{m.craft}</p>
@@ -284,6 +333,26 @@ export default async function Home() {
           </div>
         </Container>
       </section>
+
+      {/* F1 Cinematic interstitial — full-bleed video break between Makers and
+          Philosophy. Renders only if editor has set a videoUrl in Payload
+          (Site Settings → homepageCopy.interstitial). Empty = section omitted
+          entirely (no empty band shipped, by design). */}
+      {hc?.interstitial?.videoUrl && (
+        <section
+          aria-label="Cinematic interstitial"
+          className="relative border-b border-sericia-line"
+        >
+          <CinematicVideo
+            src={hc.interstitial.videoUrl}
+            poster={hc.interstitial.posterUrl}
+            ratio="21/9"
+            tone="ink"
+            caption={hc.interstitial.caption ?? undefined}
+            darken={false}
+          />
+        </section>
+      )}
 
       {/* Philosophy */}
       <section id="story" className="border-b border-sericia-line">

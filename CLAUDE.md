@@ -10,7 +10,7 @@
 | ★★☆☆☆ | 4 | [📊 財務KPI](#s4) | 粗利試算あり、目標KPI未設定 |
 | ★★★☆☆ | 5 | [📈 ロードマップ](#s5) | Phase 1〜3定義済み |
 | ★☆☆☆☆ | 6 | [⚖️ 法的リスク](#s6) | `/accessibility` WCAG 2.2 AA 公開・Cookie Consent 実装・特商法12項目は s7 経由で公開済み |
-| ★★★★★ | 7 | [🗺️ プロダクト設計](#s7) | ラグジュアリーUX（Aesop/LV級）+ P2仕上げ（404・/faq・/accessibility・/sitemap・CookieConsent・鮮ロゴ撤廃・ロードスピナー簡素化）完了 |
+| ★★★★★ | 7 | [🗺️ プロダクト設計](#s7) | ラグジュアリーUX（Aesop/LV級）+ P2仕上げ + F1 動画基盤（CinematicVideo・Drop/Makers/Interstitialへ video差替可能・gradient fallback完備）完了 |
 | ★★★★☆ | 8 | [⚙️ 技術設計](#s8) | Next.js 15 + Supabase + Framer Motion + Lenis + vaul + Fuse.js + Embla 完成・Coolifyデプロイ稼働 |
 | ★★★★☆ | 9 | [📣 GTM・集客](#s9) | Reddit戦略・SNS設計済み + pSEO briefs自動生成基盤（DeepSeek V3 Context Caching 90%OFF）+ Push PWA再訪導線 |
 | ★★★★☆ | 10 | [🖥️ 運用](#s10) | UAT自動化E2E完備（uat:magic-link 9check / uat:purchase-flow 8check・triple safety interlock・tampered HMAC rejects 401）+ Crossmint本番移行§5.1-5.8 playbook（rollback先置）+ /api/push/subscribe VAPID RLS |
@@ -663,6 +663,7 @@ Ships within 14 days from Japan.
 | **M4b-T0-C UAT purchase flow** | `scripts/uat-purchase-flow.ts` — cart → signed webhook → paid の Bridge 側 8 check E2E + `docs/uat-purchase-flow.md` + triple safety interlock（`UAT_ALLOW_DESTRUCTIVE=1` + production URL ブロック + env validation）+ 改竄 body 送信で 401 を期待する HMAC regression guard | ✅ 完了 | `4399ec56` | Crossmint iframe / real card / USDC / webhook auto-delivery は意図的に対象外 — `docs/crossmint-integration.md §5.6 $1 live smoke test` との役割分担を明示 / Rule LL (E2E 必須) |
 | **M4b-T0-D Crossmint playbook** | `docs/crossmint-integration.md §5` を 5 行箇条書きから 8 サブセクション運用 playbook に書き換え — §5.1 前提GO判定 / §5.2 Console 切替 / §5.3 env 差し替え / §5.4 コード有効化 / §5.5 Webhook 再登録 / §5.6 $1 スモークテスト / §5.7 ロールバック（サインオフ前に配置）/ §5.8 サインオフゲート + §6 トラブルシューティング 5 行追加 | ✅ 完了 | `ca3319e9` | §5.7 をサインオフ前に置くことで「本番ボタンを押す前に 5 分で戻す exit path が見えている」状態を作る心理設計 / §5.1 で Solana を除外し Polygon を推奨（Tria 非互換が理由）|
 | **M5** | pSEO 量産（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル実投入） | ⏸️ 待機（T3-C 基盤完成済 → あと brief 投入のみ） | — | — |
+| **M4b-F1 Cinematic Video Foundation** | Aesop級の動画基盤 — `<CinematicVideo>` 汎用コンポーネント + Payload `homepageCopy.featuredBundle` に video URL 3スロット + 新規 `homepageCopy.interstitial` (Makers↔Philosophy間 full-bleed break) + `makers.items[]` に per-maker videoUrl/posterUrl/tone | ✅ 完了 | (this commit) | **設計**: `storefront/components/CinematicVideo.tsx` — gradient fallback (7 brand tones tea/miso/mushroom/seasoning/paper/ink/drop) + poster-first paint (CLS=0・onCanPlay で video fade-in) + scroll-tied scale 1→1.06 + IntersectionObserver `playWhenInView` (Makersで3本同時 autoplay decoder pressure 回避) + `prefers-reduced-motion` で scale & autoplay を完全停止 (poster静止表示・WCAG 2.2 AA) / **配線**: page.tsx の Drop section 右側 gradient grid → `<CinematicVideo>` 3枚 (col-span-2 4:5 + 2x square) / Makers 3 cards の gradient → `<CinematicVideo>` per maker (tone自動マップ tea/miso/mushroom) / interstitial section は `videoUrl` 設定時のみレンダ (空 = section ごと削除・空の黒帯ゼロ・Aesop restraint) / **空時の見え方**: 全gradient + grain で現状と同等の品で degrade（破壊的変更ゼロ）/ Editor が Payload (Site Settings → Homepage section copy → Featured bundle / Interstitial / Makers item ごと) で URL 入れた瞬間に video 反映 / **型**: `payload-types.ts` の `SiteSetting` interface + `*Select<T>` の両方を手動同期（worktree から `payload generate:types` は DB 接続不可のため）|
 
 ### M1 根本原因（完了済）
 

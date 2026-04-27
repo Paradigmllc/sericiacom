@@ -1099,6 +1099,17 @@ export interface SiteSetting {
     };
     featuredBundle?: {
       eyebrow?: string | null;
+      heroVideoUrl?: string | null;
+      heroPosterUrl?: string | null;
+      secondaryVideoUrlA?: string | null;
+      secondaryPosterUrlA?: string | null;
+      secondaryVideoUrlB?: string | null;
+      secondaryPosterUrlB?: string | null;
+    };
+    interstitial?: {
+      videoUrl?: string | null;
+      posterUrl?: string | null;
+      caption?: string | null;
     };
     mostLoved?: {
       eyebrow?: string | null;
@@ -1117,6 +1128,9 @@ export interface SiteSetting {
             craft: string;
             region: string;
             note: string;
+            videoUrl?: string | null;
+            posterUrl?: string | null;
+            tone?: ('tea' | 'miso' | 'mushroom' | 'seasoning' | 'paper' | 'ink') | null;
             id?: string | null;
           }[]
         | null;
@@ -1455,6 +1469,19 @@ export interface SiteSettingsSelect<T extends boolean = true> {
           | T
           | {
               eyebrow?: T;
+              heroVideoUrl?: T;
+              heroPosterUrl?: T;
+              secondaryVideoUrlA?: T;
+              secondaryPosterUrlA?: T;
+              secondaryVideoUrlB?: T;
+              secondaryPosterUrlB?: T;
+            };
+        interstitial?:
+          | T
+          | {
+              videoUrl?: T;
+              posterUrl?: T;
+              caption?: T;
             };
         mostLoved?:
           | T
@@ -1475,6 +1502,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
                     craft?: T;
                     region?: T;
                     note?: T;
+                    videoUrl?: T;
+                    posterUrl?: T;
+                    tone?: T;
                     id?: T;
                   };
             };
