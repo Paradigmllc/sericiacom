@@ -1,3 +1,7 @@
+// Module marker — see warmup-isr.ts comment. Without it Coolify CI's tsc
+// treats both files as scripts and declares them in a shared namespace.
+export {};
+
 /**
  * pSEO queue drainer — sequentially calls /api/pseo/generate until queue is empty.
  *

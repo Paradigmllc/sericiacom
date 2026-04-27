@@ -1,0 +1,102 @@
+{
+  "name": "Sericia — Post-deploy ISR warm-up (after Coolify deploys storefront)",
+  "_purpose": "Every Coolify deploy restarts the storefront container, wiping the Next.js HTML cache and `unstable_cache` map. Without this workflow the first real visitor after a deploy pays a 2-6 second render bill. We listen for the Coolify deploy webhook and run `npm run warmup` which sequentially hits every URL in /sitemap.xml so the cache is hot before traffic lands.",
+  "_trigger": "Configure Coolify → Storefront app → Webhooks → 'On deploy succeeded' to POST to this n8n webhook URL.",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sericia-storefront-deployed",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Coolify deploy succeeded",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "notes": "Coolify fires this when the storefront deploy lands `finished`. Exposed at /webhook/sericia-storefront-deployed."
+    },
+    {
+      "parameters": {
+        "amount": 60,
+        "unit": "seconds"
+      },
+      "id": "wait_60",
+      "name": "Wait 60s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [460, 300],
+      "notes": "Give the new container time to boot, run payload migrations, and start serving — empirically 30-50s on CPX22; 60s is a comfortable margin."
+    },
+    {
+      "parameters": {
+        "url": "https://sericia.com/sitemap.xml",
+        "options": {
+          "timeout": 20000,
+          "response": { "response": { "responseFormat": "text" } }
+        }
+      },
+      "id": "fetch_sitemap",
+      "name": "GET /sitemap.xml",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract URLs from <loc>...</loc> in the sitemap XML.\n// Sericia's sitemap.ts emits ~102 URLs (pSEO + tools + journal + products + brand pages).\n// We hit each sequentially with a 200ms gap to stay friendly to the origin.\nconst xml = $input.first().json.data || $input.first().json.body || '';\nconst urls = Array.from(xml.matchAll(/<loc>([^<]+)<\\/loc>/g)).map(m => m[1]);\nreturn urls.map(url => ({ json: { url } }));"
+      },
+      "id": "parse_urls",
+      "name": "Parse <loc> URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 30000,
+          "redirect": { "redirect": { "followRedirects": true } },
+          "response": { "response": { "fullResponse": false, "neverError": true } }
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "User-Agent", "value": "Sericia-Warmup-n8n/1.0 (+ops@sericia.com)" }
+          ]
+        }
+      },
+      "id": "warm_url",
+      "name": "Warm URL (each)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300],
+      "notes": "Sequential mode (set executeOnce=false and concurrency=1 in the trigger settings). 200ms n8n inter-iteration delay = friendly pace; full sweep ~30s for 102 URLs."
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \":fire: *Sericia warmup complete* — {{ $items.length }} URLs hit, cache is hot.\"\n}"
+      },
+      "id": "notify_slack",
+      "name": "Slack: warmup done",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300],
+      "notes": "Optional. Comment out if the daily cadence (every deploy = one ping) becomes noise."
+    }
+  ],
+  "connections": {
+    "webhook": { "main": [[{ "node": "wait_60", "type": "main", "index": 0 }]] },
+    "wait_60": { "main": [[{ "node": "fetch_sitemap", "type": "main", "index": 0 }]] },
+    "fetch_sitemap": { "main": [[{ "node": "parse_urls", "type": "main", "index": 0 }]] },
+    "parse_urls": { "main": [[{ "node": "warm_url", "type": "main", "index": 0 }]] },
+    "warm_url": { "main": [[{ "node": "notify_slack", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

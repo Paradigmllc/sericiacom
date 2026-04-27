@@ -1,3 +1,8 @@
+// Module marker — without this the file is treated as a script and TS
+// cross-pollutes top-level declarations into a shared namespace with
+// drain-pseo-queue.ts, causing CI-only "Duplicate function" errors.
+export {};
+
 /**
  * ISR warm-up — hit every cacheable URL once after a deploy so the
  * first real visitor gets a hot HTML chunk instead of a 6-second
