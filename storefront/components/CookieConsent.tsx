@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -78,6 +78,7 @@ function writeDecision(decision: Decision) {
 export default function CookieConsent() {
   const t = useTranslations("cookie_consent");
   const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   // Initial visibility check after mount (avoids SSR hydration mismatch)
   useEffect(() => {
@@ -89,6 +90,30 @@ export default function CookieConsent() {
     }
   }, []);
 
+  // Publish the banner's live height as `--cookie-consent-h` on :root so
+  // bottom-fixed siblings (DifyChat, BackToTop) can lift cleanly above it
+  // without hard-coding a margin. ResizeObserver tracks responsive rewraps
+  // (1-line desktop vs 3-line mobile). Reset to 0 on dismount.
+  useEffect(() => {
+    if (!visible) {
+      document.documentElement.style.setProperty("--cookie-consent-h", "0px");
+      return;
+    }
+    const node = ref.current;
+    if (!node) return;
+    const apply = () => {
+      const h = node.offsetHeight;
+      document.documentElement.style.setProperty("--cookie-consent-h", `${h}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(node);
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.setProperty("--cookie-consent-h", "0px");
+    };
+  }, [visible]);
+
   if (!visible) return null;
 
   const handle = (decision: Decision) => {
@@ -98,6 +123,7 @@ export default function CookieConsent() {
 
   return (
     <div
+      ref={ref}
       role="dialog"
       aria-labelledby="cookie-consent-title"
       aria-describedby="cookie-consent-body"

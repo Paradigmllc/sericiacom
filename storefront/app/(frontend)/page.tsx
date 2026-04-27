@@ -20,6 +20,7 @@ import DropCountdown from "@/components/DropCountdown";
 import TestimonialsWall from "@/components/TestimonialsWall";
 import PressStrip from "@/components/PressStrip";
 import HomepageBlocks from "@/components/HomepageBlocks";
+import SamplerBanner from "@/components/SamplerBanner";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
@@ -101,6 +102,11 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       <SiteHeader />
       <CinematicHero />
+
+      {/* Aesop-style complimentary sample strip. Always visible — converts
+          the editorial promise (CLAUDE.md s14-14 Phase 1 plan) into an on-site
+          surface that every visitor sees on first scroll. */}
+      <SamplerBanner variant="wide" />
 
       {/* Press strip — "As mentioned in" row. Silent-fails to null when the
           Payload collection is empty, so the layout stays clean pre-seed. */}

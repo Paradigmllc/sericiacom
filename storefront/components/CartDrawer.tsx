@@ -6,6 +6,7 @@ import autoAnimate from "@formkit/auto-animate";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart-store";
 import { CloseIcon, MinusIcon, PlusIcon } from "./Icons";
+import SamplerBanner from "./SamplerBanner";
 
 type CartDrawerProps = {
   open: boolean;
@@ -200,6 +201,11 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               </Link>
             </div>
           )}
+
+          {/* Aesop-tier "small gift" reassurance — only when the cart isn't empty.
+              Reinforces the complimentary sample promise at the highest-intent
+              surface (about to checkout). */}
+          {mounted && items.length > 0 && <SamplerBanner variant="drawer" />}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

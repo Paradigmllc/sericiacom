@@ -340,7 +340,11 @@ export default function DifyChat() {
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close Sericia Assistant" : "Open Sericia Assistant"}
         aria-expanded={open}
-        className="fixed bottom-5 right-5 z-[90] flex h-12 w-12 items-center justify-center rounded-full bg-sericia-accent text-sericia-paper shadow-[0_12px_40px_-12px_rgba(33,35,29,0.45)] transition-transform hover:scale-105 active:scale-95"
+        // Lift above CookieConsent banner via the live --cookie-consent-h CSS
+        // variable. When the banner is dismissed the variable resets to 0px
+        // and the button settles back to its 20px resting position.
+        style={{ bottom: "calc(20px + var(--cookie-consent-h, 0px))" }}
+        className="fixed right-5 z-[100] flex h-12 w-12 items-center justify-center rounded-full bg-sericia-accent text-sericia-paper shadow-[0_12px_40px_-12px_rgba(33,35,29,0.45)] transition-[bottom,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95"
       >
         {open ? (
           <svg
@@ -377,10 +381,16 @@ export default function DifyChat() {
         <div
           role="dialog"
           aria-label="Sericia Assistant"
-          className="fixed bottom-20 right-5 z-[89] flex flex-col overflow-hidden border border-sericia-line bg-sericia-paper shadow-[0_24px_80px_-20px_rgba(33,35,29,0.35)]"
+          className="fixed right-5 z-[99] flex flex-col overflow-hidden border border-sericia-line bg-sericia-paper shadow-[0_24px_80px_-20px_rgba(33,35,29,0.35)]"
           style={{
+            // Stack the panel directly above the floating button (button is
+            // 48px high + 20px gap = 68px), then lift the whole thing above
+            // the cookie banner with the same shared CSS variable.
+            bottom: "calc(80px + var(--cookie-consent-h, 0px))",
             width: "min(22rem, calc(100vw - 2.5rem))",
-            height: "min(34rem, calc(100vh - 7rem))",
+            // Cap height so the panel never overlaps the cookie banner;
+            // 8rem = chat header + button gap + safety margin.
+            height: "min(34rem, calc(100vh - 8rem - var(--cookie-consent-h, 0px)))",
           }}
         >
           {/* Header */}

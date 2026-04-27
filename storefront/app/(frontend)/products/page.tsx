@@ -10,6 +10,8 @@ import ProductsFilterBar, {
   type SortKey,
 } from "@/components/ProductsFilterBar";
 import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
+import SamplerBanner from "@/components/SamplerBanner";
+import { RecentlyViewedSection } from "@/components/RecentlyViewed";
 
 /**
  * /products — collection index with URL-synced category filter + sort.
@@ -163,6 +165,9 @@ export default async function ProductsIndexPage(
         title={heroTitle}
         tone={heroTone}
       />
+      {/* Aesop-style "complimentary sample with order" strip — sits just below
+          the hero, just above the breadcrumb. Hairline border, no decoration. */}
+      <SamplerBanner variant="wide" />
       <Container size="wide" className="pt-10 md:pt-14 pb-20 md:pb-28">
         <div className="mb-8 md:mb-12">
           <Breadcrumb items={breadcrumb} />
@@ -194,6 +199,9 @@ export default async function ProductsIndexPage(
           )}
         </div>
       </Container>
+      {/* Recently-viewed continue-browsing strip — silent when the visitor has
+          no history; populates after their second PDP view. */}
+      <RecentlyViewedSection />
       <SiteFooter />
     </>
   );

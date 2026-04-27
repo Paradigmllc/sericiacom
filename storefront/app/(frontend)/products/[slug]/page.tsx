@@ -10,6 +10,11 @@ import ProductCard from "@/components/ProductCard";
 import FadeIn from "@/components/FadeIn";
 import DropCountdown from "@/components/DropCountdown";
 import ProductDetailShell from "./ProductDetailShell";
+import {
+  RecentlyViewedTracker,
+  RecentlyViewedSection,
+} from "@/components/RecentlyViewed";
+import SamplerBanner from "@/components/SamplerBanner";
 
 const SITE_URL = "https://sericia.com";
 
@@ -147,6 +152,22 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
         </FadeIn>
       </Container>
 
+      {/* RecentlyViewed tracker — invisible. Records the current PDP into the
+          per-visitor "recently viewed" Zustand store (capped at 12, persists
+          via localStorage). The section below pulls from the same store. */}
+      <RecentlyViewedTracker
+        product={{
+          id: p.id,
+          slug: p.slug,
+          name: p.name,
+          category: p.category,
+          price_usd: p.price_usd,
+          weight_g: p.weight_g,
+          origin_region: p.origin_region,
+          thumbnail: (p.images?.[0] as string | undefined) ?? null,
+        }}
+      />
+
       {related.length > 0 && (
         <>
           <Rule />
@@ -177,6 +198,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
           </Container>
         </>
       )}
+
+      {/* Aesop-style "complimentary sample" hairline strip + the
+          continue-browsing recently viewed row. Both render only when they
+          have content (sampler is always-on; recently-viewed silent until
+          the visitor has browsed ≥1 other product). */}
+      <SamplerBanner variant="compact" />
+      <RecentlyViewedSection excludeId={p.id} />
 
       <SiteFooter />
     </>
