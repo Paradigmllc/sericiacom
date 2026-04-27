@@ -22,8 +22,12 @@ import PressStrip from "@/components/PressStrip";
 import HomepageBlocks from "@/components/HomepageBlocks";
 import SamplerBanner from "@/components/SamplerBanner";
 
+// 60-second ISR. Pre-F5 we forced dynamic to keep the country cookie fresh,
+// but cookies() already opts the page into per-request rendering at runtime,
+// so removing force-dynamic just lets Next.js cache the post-cookie payload
+// for repeat visitors at the same edge. That eliminates the 502 storm seen
+// during deploy transitions when /products+/ both hit Medusa simultaneously.
 export const revalidate = 60;
-export const dynamic = "force-dynamic";
 
 /**
  * generateMetadata — overlays editor-controlled Payload homepage SEO on top of

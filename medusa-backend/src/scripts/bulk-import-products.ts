@@ -10,8 +10,7 @@ import {
   createProductsWorkflow,
 } from "@medusajs/medusa/core-flows";
 import { readFileSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
 /**
  * Sericia bulk product import.
@@ -84,9 +83,6 @@ type BulkConfig = {
   products: BulkProduct[];
 };
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 function priceForAll(usdAmount: number) {
   return [
     { currency_code: "usd", amount: usdAmount },
@@ -111,7 +107,12 @@ export default async function bulkImportProducts({ container }: ExecArgs) {
   logger.info("=== Sericia bulk product import start ===");
 
   // ---------- 1. Load config ----------
-  const configPath = resolve(__dirname, "products-bulk.json");
+  // Use cwd-relative path. Medusa runs scripts with cwd = /app, so the
+  // products-bulk.json sits at ./src/scripts/products-bulk.json.
+  // Avoid `import.meta.url` here — Medusa's TS compiler emits CJS but the
+  // runtime treats `import.meta` calls as ESM, which trips
+  // "exports is not defined in ES module scope".
+  const configPath = resolve(process.cwd(), "src/scripts/products-bulk.json");
   let config: BulkConfig;
   try {
     const raw = readFileSync(configPath, "utf8");

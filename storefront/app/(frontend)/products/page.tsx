@@ -63,7 +63,12 @@ function sortProducts(products: Product[], sort: SortKey): Product[] {
   }
 }
 
-export const dynamic = "force-dynamic";
+// ISR: 60-second cache window for the listing. Medusa data is refetched on
+// the first request after expiry; subsequent visitors within the window get
+// the static-rendered HTML in <50ms instead of triggering a 6s Medusa fetch.
+// Removing force-dynamic was the fix for the 502 storms during deploy
+// transitions — now the listing is HTML at the edge, not React-rendered.
+export const revalidate = 60;
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 

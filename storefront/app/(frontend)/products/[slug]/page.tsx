@@ -18,7 +18,12 @@ import SamplerBanner from "@/components/SamplerBanner";
 
 const SITE_URL = "https://sericia.com";
 
-export const dynamic = "force-dynamic";
+// PDP cache window: 30s. Stock-remaining badges ("Only 3 left") tolerate a
+// 30s lag — by the time anyone races to checkout the cart endpoint
+// re-validates inventory live. Without this every PDP visit re-fetched both
+// the product and listActiveProducts() (used for "Recommended pairings"),
+// which exhausted the storefront's 3GB heap during traffic spikes.
+export const revalidate = 30;
 
 type Params = { slug: string };
 

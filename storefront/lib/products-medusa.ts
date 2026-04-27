@@ -20,8 +20,22 @@
  *  - inferCategory(product) → Product.category  ← see TODO below
  */
 
+import { unstable_cache } from "next/cache";
 import { medusa, DEFAULT_REGION_SLUG, getRegionId } from "./medusa";
 import type { Product } from "./products";
+
+/**
+ * Cache windows.
+ *   • LIST_TTL: 60s — listing pages tolerate stock counts being up to a minute
+ *     stale (low-stock badges remain accurate within a tight margin).
+ *   • DETAIL_TTL: 30s — PDP needs fresher stock since "Only 3 left" pills
+ *     are cart-decision-critical, but every-request fresh exhausts CPU.
+ *   • IDS_TTL: 30s — used by /api/crossmint-webhook for inventory decrement
+ *     and the cart drawer; same trade-off as detail.
+ */
+const LIST_TTL_SEC = 60;
+const DETAIL_TTL_SEC = 30;
+const IDS_TTL_SEC = 30;
 
 type MedusaImage = { id: string; url: string };
 type MedusaPrice = { amount: number; currency_code: string };
@@ -138,7 +152,13 @@ async function fetchWithRegion(): Promise<{
   return { regionId, currency };
 }
 
-export async function listActiveProducts(): Promise<Product[]> {
+// ── Uncached fetchers (raw work) ───────────────────────────────────────────
+// `unstable_cache` requires its inner function to be a stable reference, so
+// we factor the actual Medusa calls out and let the public exports below wrap
+// them with caching keys + revalidate windows. This keeps the same external
+// API while giving us per-key cache invalidation.
+
+async function listActiveProductsRaw(): Promise<Product[]> {
   try {
     const { regionId, currency } = await fetchWithRegion();
     const { products } = await medusa.store.product.list({
@@ -160,7 +180,7 @@ export async function listActiveProducts(): Promise<Product[]> {
   }
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+async function getProductBySlugRaw(slug: string): Promise<Product | null> {
   try {
     const { regionId, currency } = await fetchWithRegion();
     const { products } = await medusa.store.product.list({
@@ -180,7 +200,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   }
 }
 
-export async function getProductsByIds(ids: string[]): Promise<Product[]> {
+async function getProductsByIdsRaw(ids: string[]): Promise<Product[]> {
   if (ids.length === 0) return [];
   try {
     const { regionId, currency } = await fetchWithRegion();
@@ -199,6 +219,31 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
     return [];
   }
 }
+
+// ── Cached public exports ──────────────────────────────────────────────────
+// `unstable_cache` keeps the function reference stable across requests so
+// repeat callers within `LIST_TTL_SEC` reuse the same Medusa response — turning
+// the post-import 6-second /products page into a sub-50ms cache-hit page after
+// the first warmup. tag: "products" allows targeted revalidation later
+// (e.g. from a Medusa product.updated webhook).
+
+export const listActiveProducts = unstable_cache(
+  listActiveProductsRaw,
+  ["products-list-active"],
+  { revalidate: LIST_TTL_SEC, tags: ["products", "products-list"] },
+);
+
+export const getProductBySlug = unstable_cache(
+  async (slug: string) => getProductBySlugRaw(slug),
+  ["products-by-slug"],
+  { revalidate: DETAIL_TTL_SEC, tags: ["products", "products-detail"] },
+);
+
+export const getProductsByIds = unstable_cache(
+  async (ids: string[]) => getProductsByIdsRaw([...ids].sort()),
+  ["products-by-ids"],
+  { revalidate: IDS_TTL_SEC, tags: ["products"] },
+);
 
 // categoryLabel lives in ./products alongside the Product type (canonical).
 // Consumers should continue importing from "@/lib/products".
