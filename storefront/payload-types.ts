@@ -970,6 +970,53 @@ export interface SiteSetting {
   footerCopy?: {
     tagline?: string | null;
     copyrightText?: string | null;
+    /**
+     * Footer top band — small eyebrow. Default: 'Quietly, from Kyoto'.
+     */
+    editorialEyebrow?: string | null;
+    /**
+     * Footer top band — large heading. Default: 'Four to six times a year, we open the door.'.
+     */
+    editorialHeading?: string | null;
+    /**
+     * Subscribe-band body copy. Default mentions Kyoto, EMS, 48h.
+     */
+    editorialBody?: string | null;
+    /**
+     * Small print under subscribe form. Default mentions monthly, unsubscribe, privacy.
+     */
+    subscribePrivacyNote?: string | null;
+    /**
+     * Footer band 3 — Studio paragraph. Default: 'Paradigm LLC — registered in Delaware...'.
+     */
+    studioCopy?: string | null;
+    /**
+     * Locale-acknowledgement label. Default: 'Currently viewing:'.
+     */
+    currentlyViewingLabel?: string | null;
+    /**
+     * Footer link columns. Drag to reorder. 4 columns is the visual sweet spot. If empty, defaults to coded structure (Shop / Tools / Company / Support).
+     */
+    columns?:
+      | {
+          /**
+           * Column heading (eyebrow style).
+           */
+          title: string;
+          links?:
+            | {
+                label: string;
+                url: string;
+                /**
+                 * Tick if URL opens in new tab.
+                 */
+                external?: boolean | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
     legalLinks?:
       | {
           label: string;
@@ -977,6 +1024,153 @@ export interface SiteSetting {
           id?: string | null;
         }[]
       | null;
+  };
+  /**
+   * Sticky launch promotion strip above the header. Editor controls enabled/copy/code without a deploy. Code must match the actual Medusa promotion to be applied at checkout.
+   */
+  couponBanner?: {
+    /**
+     * Master switch — uncheck to hide entirely.
+     */
+    enabled?: boolean | null;
+    /**
+     * Coupon code. Should match a Medusa promotion exactly. This same value is used as the link to the checkout pre-applied path.
+     */
+    code?: string | null;
+    /**
+     * Top label. Default: 'Launch offer'. Localised so 'ローンチ特典' shows for ja viewers.
+     */
+    headline?: string | null;
+    /**
+     * Main offer phrase. Default: '10% off your first order'. Reads after the headline + dash.
+     */
+    offerText?: string | null;
+    /**
+     * Glue text before the code. Default: 'with code'.
+     */
+    withCodePrefix?: string | null;
+    /**
+     * Bump this string (v2/v3/...) to force every visitor to see the banner again. We append it to the localStorage dismiss key.
+     */
+    storageKeyVersion?: string | null;
+  };
+  /**
+   * Header navigation items. If empty, falls back to the coded brand defaults (Shop / Current drop / Story / Guides). Localised per item.
+   */
+  navigation?: {
+    items?:
+      | {
+          label: string;
+          url: string;
+          /**
+           * Render with stronger visual weight (e.g. CTA-style).
+           */
+          highlighted?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Region-specific banner shown under the header. Country code matches Sericia's region slugs (jp/us/eu/gb/ca/au/sg/hk/me). First match wins. Empty array → no banner.
+   */
+  regionBanners?:
+    | {
+        regionCode: 'jp' | 'us' | 'eu' | 'gb' | 'ca' | 'au' | 'sg' | 'hk' | 'me';
+        /**
+         * Banner copy. e.g. 'Free shipping over $200' or '送料無料 ¥30,000〜'.
+         */
+        text: string;
+        /**
+         * Optional link. If empty, banner is plain text.
+         */
+        url?: string | null;
+        enabled?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Edit every section eyebrow / heading / intro on the homepage. Each field is localised. Empty fields fall back to the coded brand default — never ship empty strings.
+   */
+  homepageCopy?: {
+    currentDrop?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      lede?: string | null;
+    };
+    featuredBundle?: {
+      eyebrow?: string | null;
+    };
+    mostLoved?: {
+      eyebrow?: string | null;
+      title?: string | null;
+    };
+    makers?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      lede?: string | null;
+      /**
+       * Producer cards. If empty, defaults to coded 3-maker fallback (Yamane-en / Kurashige Jozoten / Yamagata Mori).
+       */
+      items?:
+        | {
+            name: string;
+            craft: string;
+            region: string;
+            note: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    philosophy?: {
+      eyebrow?: string | null;
+      body?: string | null;
+    };
+    waitlist?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      body?: string | null;
+      footnote?: string | null;
+    };
+    howItWorks?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      /**
+       * 4 steps recommended. Defaults to coded 4-step fallback.
+       */
+      steps?:
+        | {
+            /**
+             * e.g. '01' / '02'.
+             */
+            number: string;
+            title: string;
+            body: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    faq?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      /**
+       * FAQ items. Defaults to coded 4-item brand baseline.
+       */
+      items?:
+        | {
+            q: string;
+            a: string;
+            id?: string | null;
+          }[]
+        | null;
+      /**
+       * Button label below FAQ. Default: 'Read the full shipping policy'.
+       */
+      ctaLabel?: string | null;
+      /**
+       * Default: /shipping.
+       */
+      ctaUrl?: string | null;
+    };
   };
   contact?: {
     supportEmail?: string | null;
@@ -1188,12 +1382,144 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         tagline?: T;
         copyrightText?: T;
+        editorialEyebrow?: T;
+        editorialHeading?: T;
+        editorialBody?: T;
+        subscribePrivacyNote?: T;
+        studioCopy?: T;
+        currentlyViewingLabel?: T;
+        columns?:
+          | T
+          | {
+              title?: T;
+              links?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    external?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
         legalLinks?:
           | T
           | {
               label?: T;
               url?: T;
               id?: T;
+            };
+      };
+  couponBanner?:
+    | T
+    | {
+        enabled?: T;
+        code?: T;
+        headline?: T;
+        offerText?: T;
+        withCodePrefix?: T;
+        storageKeyVersion?: T;
+      };
+  navigation?:
+    | T
+    | {
+        items?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              highlighted?: T;
+              id?: T;
+            };
+      };
+  regionBanners?:
+    | T
+    | {
+        regionCode?: T;
+        text?: T;
+        url?: T;
+        enabled?: T;
+        id?: T;
+      };
+  homepageCopy?:
+    | T
+    | {
+        currentDrop?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              lede?: T;
+            };
+        featuredBundle?:
+          | T
+          | {
+              eyebrow?: T;
+            };
+        mostLoved?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+            };
+        makers?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              lede?: T;
+              items?:
+                | T
+                | {
+                    name?: T;
+                    craft?: T;
+                    region?: T;
+                    note?: T;
+                    id?: T;
+                  };
+            };
+        philosophy?:
+          | T
+          | {
+              eyebrow?: T;
+              body?: T;
+            };
+        waitlist?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              footnote?: T;
+            };
+        howItWorks?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              steps?:
+                | T
+                | {
+                    number?: T;
+                    title?: T;
+                    body?: T;
+                    id?: T;
+                  };
+            };
+        faq?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    q?: T;
+                    a?: T;
+                    id?: T;
+                  };
+              ctaLabel?: T;
+              ctaUrl?: T;
             };
       };
   contact?:
