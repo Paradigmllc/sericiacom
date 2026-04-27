@@ -18,6 +18,8 @@
     "seed:testimonials": "tsx scripts/seed-testimonials.ts",
     "seed:articles": "tsx scripts/seed-articles.ts",
     "seed:pseo-briefs": "tsx scripts/seed-pseo-briefs.ts",
+    "pseo:expand": "tsx scripts/expand-pseo-briefs.ts",
+    "pseo:drain": "tsx scripts/drain-pseo-queue.ts",
     "uat:magic-link": "tsx scripts/uat-magic-link.ts",
     "uat:purchase-flow": "tsx scripts/uat-purchase-flow.ts"
   },
