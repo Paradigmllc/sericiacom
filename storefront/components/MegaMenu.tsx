@@ -150,19 +150,18 @@ export function MegaPanel({
           transition={{ duration: reduceMotion ? 0.1 : 0.22, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-12 md:py-14">
-            <div
-              className="grid gap-10 md:gap-16"
-              style={{
-                gridTemplateColumns:
-                  cards.length > 0
-                    ? `repeat(${columns.length}, minmax(0,1fr)) repeat(${cards.length}, minmax(0,1.4fr))`
-                    : `repeat(${columns.length}, minmax(0,1fr))`,
-              }}
-            >
+            {/* Flex layout with explicit column min-widths so labels don't
+                word-wrap into "Drop / No. / 01" when the panel narrows.
+                Link columns: 200px min, content-driven. Featured cards:
+                280px fixed so the image actually reads as an image rather
+                than a sliver. Gap-16 keeps the editorial whitespace. */}
+            <div className="flex flex-wrap gap-12 md:gap-16">
               {columns.map((col, ci) => (
-                <div key={`col-${ci}`}>
+                <div key={`col-${ci}`} className="min-w-[200px]">
                   {col.title && (
-                    <p className="label mb-5 text-sericia-ink-mute">{col.title}</p>
+                    <p className="label mb-5 text-sericia-ink-mute whitespace-nowrap">
+                      {col.title}
+                    </p>
                   )}
                   <ul className="space-y-3">
                     {col.links.map((link, li) => (
@@ -171,7 +170,7 @@ export function MegaPanel({
                           href={link.url}
                           role="menuitem"
                           onClick={onLinkClick}
-                          className="text-[15px] text-sericia-ink hover:text-sericia-accent transition-colors inline-block"
+                          className="text-[15px] text-sericia-ink hover:text-sericia-accent transition-colors inline-block whitespace-nowrap"
                         >
                           {link.label}
                         </Link>
@@ -181,57 +180,63 @@ export function MegaPanel({
                 </div>
               ))}
 
-              {cards.map((card, idx) => {
-                const tone = (card.tone ?? "paper") as NonNullable<
-                  MegaCard["tone"]
-                >;
-                const gradient = TONE_GRADIENTS[tone];
-                return (
-                  <Link
-                    key={`card-${idx}`}
-                    href={card.url}
-                    role="menuitem"
-                    onClick={onLinkClick}
-                    className="group block"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden mb-4">
-                      {card.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={card.imageUrl}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-                          loading="lazy"
-                        />
-                      ) : (
-                        // No-sloppy-images rule: gradient + grain fallback,
-                        // never a placeholder photo.
-                        <>
-                          <div
-                            className={`absolute inset-0 bg-gradient-to-br ${gradient} transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]`}
-                          />
-                          <div
-                            aria-hidden
-                            className="absolute inset-0 opacity-[0.13] mix-blend-overlay"
-                            style={{
-                              backgroundImage:
-                                "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>\")",
-                            }}
-                          />
-                        </>
-                      )}
-                    </div>
-                    <p className="text-[15px] text-sericia-ink leading-snug group-hover:text-sericia-accent transition-colors">
-                      {card.title}
-                    </p>
-                    {card.caption && (
-                      <p className="text-[12px] text-sericia-ink-mute mt-1">
-                        {card.caption}
-                      </p>
-                    )}
-                  </Link>
-                );
-              })}
+              {cards.length > 0 && (
+                // Push cards to the right edge so editorial categories live
+                // on the left and featured imagery on the right (Aesop layout).
+                <div className="ml-auto flex flex-wrap gap-8 md:gap-10">
+                  {cards.map((card, idx) => {
+                    const tone = (card.tone ?? "paper") as NonNullable<MegaCard["tone"]>;
+                    const gradient = TONE_GRADIENTS[tone];
+                    return (
+                      <Link
+                        key={`card-${idx}`}
+                        href={card.url}
+                        role="menuitem"
+                        onClick={onLinkClick}
+                        // Fixed width keeps the card recognisable as a card —
+                        // images need real estate or they read as decoration.
+                        className="group block w-[260px]"
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden mb-4">
+                          {card.imageUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={card.imageUrl}
+                              alt=""
+                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                              loading="lazy"
+                            />
+                          ) : (
+                            // No-sloppy-images rule: gradient + grain fallback,
+                            // never a placeholder photo.
+                            <>
+                              <div
+                                className={`absolute inset-0 bg-gradient-to-br ${gradient} transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]`}
+                              />
+                              <div
+                                aria-hidden
+                                className="absolute inset-0 opacity-[0.13] mix-blend-overlay"
+                                style={{
+                                  backgroundImage:
+                                    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>\")",
+                                }}
+                              />
+                            </>
+                          )}
+                        </div>
+                        <p className="text-[15px] text-sericia-ink leading-snug group-hover:text-sericia-accent transition-colors">
+                          {card.title}
+                        </p>
+                        {card.caption && (
+                          <p className="text-[12px] text-sericia-ink-mute mt-1 leading-relaxed">
+                            {card.caption}
+                          </p>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
