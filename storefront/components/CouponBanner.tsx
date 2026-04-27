@@ -3,31 +3,47 @@
 /**
  * CouponBanner — Aesop-style static launch-discount strip.
  *
- * Design principles:
- *   • NO popup, NO modal — static paper-deep bar at the top
- *   • Copy is matter-of-fact ("Ten percent off your first order") — not
- *     "🔥 LIMITED TIME 🔥" hype. Luxury brands signal value through
- *     quiet specificity
- *   • Dismissible. localStorage key so it stays dismissed per-visitor
- *   • Rendered ABOVE SiteHeader via RootLayout, so announcement sits at
- *     the very top of the page (matches Aesop/Bokksu pattern)
+ * Phase 2-C: every visible string + the coupon code itself comes from
+ * `siteSettings.couponBanner`. Editor toggles enabled / changes copy /
+ * rotates the code without a deploy. The `storageKeyVersion` field gives
+ * editors a "force re-show" lever — bumping `v1` → `v2` makes every
+ * visitor see the bar again even if they previously dismissed it.
  *
- * Storage contract:
- *   localStorage["sericia:coupon-banner-dismissed"] = "1" (undated — dismiss is permanent
- *   until we rotate the coupon code, in which case we'll bump the storage key)
- *
- * Copy rotation: `CODE` is single source of truth. Checkout reads the same
- * constant via import so the applied discount actually matches what's shown.
+ * Hardcoded fallbacks preserved: when CMS is null/empty, the bar still
+ * renders the original "10% off — SERICIA10" launch offer copy.
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSettings } from "./SettingsProvider";
 
+// Default coupon — exported so the checkout page can import the same source.
+// When CMS overrides, the storefront uses the CMS value but legacy callsites
+// importing this constant continue to compile.
 export const LAUNCH_COUPON_CODE = "SERICIA10";
 export const LAUNCH_COUPON_PERCENT = 10;
-const STORAGE_KEY = "sericia:coupon-banner-dismissed-v1";
+
+const DEFAULT_HEADLINE = "Launch offer";
+const DEFAULT_OFFER_TEXT = "10% off your first order";
+const DEFAULT_WITH_CODE_PREFIX = "with code";
+
+function dismissKey(version: string) {
+  return `sericia:coupon-banner-dismissed-${version}`;
+}
 
 export default function CouponBanner() {
+  const settings = useSettings();
+  const cb = settings?.couponBanner;
+
+  // Resolve every value — CMS first, hardcoded fallback second.
+  const enabled = cb?.enabled ?? true;
+  const code = (cb?.code?.trim() || LAUNCH_COUPON_CODE).toUpperCase();
+  const headline = cb?.headline?.trim() || DEFAULT_HEADLINE;
+  const offerText = cb?.offerText?.trim() || DEFAULT_OFFER_TEXT;
+  const withCodePrefix = cb?.withCodePrefix?.trim() || DEFAULT_WITH_CODE_PREFIX;
+  const storageKeyVersion = cb?.storageKeyVersion?.trim() || "v1";
+  const STORAGE_KEY = dismissKey(storageKeyVersion);
+
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -39,7 +55,7 @@ export default function CouponBanner() {
       // localStorage can throw in privacy modes — surface banner anyway
       setVisible(true);
     }
-  }, []);
+  }, [STORAGE_KEY]);
 
   function handleDismiss() {
     try {
@@ -50,6 +66,7 @@ export default function CouponBanner() {
     setVisible(false);
   }
 
+  if (!enabled) return null;
   if (!visible) return null;
 
   return (
@@ -60,16 +77,14 @@ export default function CouponBanner() {
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-2.5 flex items-center justify-between gap-6">
         <p className="text-[11px] md:text-[12px] tracking-[0.18em] uppercase text-sericia-ink-soft text-center flex-1">
-          Launch offer —{" "}
-          <span className="text-sericia-ink">
-            {LAUNCH_COUPON_PERCENT}% off your first order
-          </span>{" "}
-          with code{" "}
+          {headline} —{" "}
+          <span className="text-sericia-ink">{offerText}</span>{" "}
+          {withCodePrefix}{" "}
           <Link
-            href={`/checkout?code=${LAUNCH_COUPON_CODE}`}
+            href={`/checkout?code=${code}`}
             className="inline-block border-b border-sericia-ink/60 hover:border-sericia-ink text-sericia-ink font-medium"
           >
-            {LAUNCH_COUPON_CODE}
+            {code}
           </Link>
         </p>
         <button
