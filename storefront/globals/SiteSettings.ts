@@ -387,6 +387,89 @@ export const SiteSettings: GlobalConfig = {
               defaultValue: false,
               admin: { description: "Render with stronger visual weight (e.g. CTA-style)." },
             },
+            // ── F2 Mega menu: optional Aesop-style hover panel per nav item ──
+            // When `mega.enabled` is true, hovering / focusing this nav item
+            // opens a wide multi-column panel. Empty/disabled = behaves as a
+            // plain link (current behaviour). One mega per nav item.
+            {
+              name: "mega",
+              type: "group",
+              label: "Mega menu (optional)",
+              admin: {
+                description:
+                  "Optional Aesop-style hover panel. If 'enabled' is unchecked, the nav item behaves as a plain link.",
+              },
+              fields: [
+                { name: "enabled", type: "checkbox", defaultValue: false },
+                {
+                  name: "columns",
+                  type: "array",
+                  labels: { singular: "Column", plural: "Columns" },
+                  admin: {
+                    description:
+                      "Link columns inside the panel. 1-3 columns is the visual sweet spot.",
+                  },
+                  fields: [
+                    {
+                      name: "title",
+                      type: "text",
+                      localized: true,
+                      admin: { description: "Column heading (small caps eyebrow style)." },
+                    },
+                    {
+                      name: "links",
+                      type: "array",
+                      labels: { singular: "Link", plural: "Links" },
+                      fields: [
+                        { name: "label", type: "text", localized: true, required: true },
+                        { name: "url", type: "text", required: true },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  name: "featuredCards",
+                  type: "array",
+                  labels: { singular: "Featured card", plural: "Featured cards" },
+                  admin: {
+                    description:
+                      "Right-side image cards (1-2 recommended). Each shows a title + image + optional caption + URL. If imageUrl is empty, falls back to a brand gradient.",
+                  },
+                  fields: [
+                    { name: "title", type: "text", localized: true, required: true },
+                    {
+                      name: "caption",
+                      type: "text",
+                      localized: true,
+                      admin: { description: "Small line under the title." },
+                    },
+                    { name: "url", type: "text", required: true },
+                    {
+                      name: "imageUrl",
+                      type: "text",
+                      admin: {
+                        description:
+                          "Optional image URL. Empty → tone-based gradient fallback. NEVER use AI-gen / random Unsplash here — Sericia brand rule.",
+                      },
+                    },
+                    {
+                      name: "tone",
+                      type: "select",
+                      defaultValue: "paper",
+                      options: [
+                        { label: "Paper (neutral)", value: "paper" },
+                        { label: "Tea (green)", value: "tea" },
+                        { label: "Miso (warm brown)", value: "miso" },
+                        { label: "Mushroom (deep brown)", value: "mushroom" },
+                        { label: "Seasoning (gold)", value: "seasoning" },
+                        { label: "Drop (warm)", value: "drop" },
+                        { label: "Ink (dark)", value: "ink" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
           ],
         },
       ],

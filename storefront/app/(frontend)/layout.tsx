@@ -18,6 +18,7 @@ import SocialProofToastGate from "@/components/SocialProofToastGate";
 import ReferralCookieSetter from "@/components/ReferralCookieSetter";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import SettingsProvider from "@/components/SettingsProvider";
+import ThemeProvider, { NoFlashThemeScript } from "@/components/ThemeProvider";
 import { getSiteSettings } from "@/lib/payload-settings";
 import { Suspense } from "react";
 
@@ -176,12 +177,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} dir={dir} className={`${notoSans.variable} ${notoSansJp.variable}`}>
       <head>
+        {/* No-flash theme script — must be FIRST in <head> so it runs before
+            any paint. Reads localStorage and sets data-theme synchronously. */}
+        <NoFlashThemeScript />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       </head>
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
          <SettingsProvider settings={siteSettings}>
+          <ThemeProvider />
           <LuxuryLoader />
           <Suspense fallback={null}>
             <RouteProgress />

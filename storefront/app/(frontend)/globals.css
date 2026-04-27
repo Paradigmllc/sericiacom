@@ -7,9 +7,60 @@
    Usage: <span class="fi fi-us" /> etc. See LocaleSwitcher.tsx. */
 @import "flag-icons/css/flag-icons.min.css";
 
-:root {
-  --background: #f5f0e8;
-  --foreground: #21231d;
+/* Sericia colour tokens — single source of truth for both Tailwind
+   (sericia.* scale via var()) and raw CSS. The full set lives on :root for
+   light theme; <html data-theme="dark"> overrides re-map for dark. Other
+   utilities (--background, --foreground) stay 1:1 aliases for legacy code
+   that doesn't go through Tailwind. */
+:root,
+[data-theme="light"] {
+  --sericia-paper: #f5f0e8;
+  --sericia-paper-deep: #ebe4d4;
+  --sericia-paper-card: #faf6ee;
+  --sericia-ink: #21231d;
+  --sericia-ink-soft: #4a4c44;
+  --sericia-ink-mute: #7b7d73;
+  --sericia-line: #d4cfc4;
+  --sericia-accent: #5c5d45;
+  --sericia-heart: #BF3649;
+
+  --background: var(--sericia-paper);
+  --foreground: var(--sericia-ink);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  /* Dark palette — inverted by mood, not value. Background uses a deep
+     ink-leaning charcoal (#1a1c17) instead of pure black so the paper-grain
+     SVG overlays still register; foreground uses a warm cream (#ede7d4)
+     instead of pure white so it reads quiet, not clinical. The accent stays
+     warm to keep brand identity coherent across themes. */
+  --sericia-paper: #14160f;
+  --sericia-paper-deep: #0e1009;
+  --sericia-paper-card: #1c1f17;
+  --sericia-ink: #ede7d4;
+  --sericia-ink-soft: #c5beac;
+  --sericia-ink-mute: #8e8a7a;
+  --sericia-line: #2c2e26;
+  --sericia-accent: #b8a987;
+  --sericia-heart: #d65060;
+
+  --background: var(--sericia-paper);
+  --foreground: var(--sericia-ink);
+
+  color-scheme: dark;
+}
+
+/* Smooth theme cross-fade. Transition only paint properties — animating
+   `all` would jank scroll-driven framer-motion transforms. */
+html {
+  transition:
+    background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { transition: none; }
 }
 
 html {

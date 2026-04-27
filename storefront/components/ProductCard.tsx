@@ -16,6 +16,8 @@ type Product = {
   origin_region: string | null;
   /** Optional — if passed and low, shows "Only X left" pill on the card */
   stock?: number | null;
+  /** Aesop-style status pill ("New addition" / "Limited release" / "Beloved formulation") */
+  badge?: string | null;
 };
 
 // Matches ProductDetailShell threshold so listing + PDP stay in sync
@@ -87,6 +89,12 @@ export default function ProductCard({
       >
         <AnimatedHeart filled={has} className="h-5 w-5" />
       </button>
+      {/* Aesop-style category-page status pill (top-left, above image, no backdrop).
+          Renders only when `badge` is explicitly provided — most surfaces pass nothing. */}
+      {product.badge && (
+        <p className="label mb-3 text-sericia-accent">{product.badge}</p>
+      )}
+
       <div className="relative aspect-[4/5] mb-6 overflow-hidden">
         {showLowStock && (
           <div className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 bg-sericia-paper/90 backdrop-blur-sm border border-sericia-line px-2.5 py-1 text-[9px] tracking-[0.18em] uppercase text-sericia-accent">

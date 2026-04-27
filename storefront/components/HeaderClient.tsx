@@ -8,6 +8,7 @@ import { supabaseBrowser } from "@/lib/supabase-browser";
 import { useCart } from "@/lib/cart-store";
 import { useUi } from "@/lib/ui-store";
 import LocaleSwitcher from "./LocaleSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import { BagIcon, SearchIcon, UserIcon } from "./Icons";
 
 type SessionState = {
@@ -165,6 +166,8 @@ export default function HeaderClient() {
           </span>
         )}
       </button>
+
+      <ThemeToggle />
 
       <LocaleSwitcher />
     </div>
