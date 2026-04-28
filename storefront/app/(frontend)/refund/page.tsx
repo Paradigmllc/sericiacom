@@ -63,13 +63,22 @@ export default async function RefundPage() {
         <h2>How to request</h2>
         <ol>
           <li>
-            Write to{" "}
-            <a href="mailto:contact@sericia.com" className="underline-link">contact@sericia.com</a>{" "}
-            within seven days of delivery.
+            <Link href="/refund/request" className="underline-link">Submit a refund request</Link>{" "}
+            within seven days of delivery (or write to{" "}
+            <a href="mailto:contact@sericia.com" className="underline-link">contact@sericia.com</a>).
           </li>
-          <li>Include your order reference and clear photographs.</li>
+          <li>Include your order reference; if photographs are needed we&rsquo;ll reply asking for them.</li>
           <li>We respond within forty-eight hours and process approved refunds within seven business days to the original payment method.</li>
         </ol>
+
+        <p className="not-prose mt-6">
+          <Link
+            href="/refund/request"
+            className="inline-flex items-center gap-2 bg-sericia-ink text-sericia-paper px-6 py-3 text-[12px] tracking-[0.18em] uppercase hover:bg-sericia-accent transition-colors"
+          >
+            Submit a refund request <span aria-hidden="true">→</span>
+          </Link>
+        </p>
 
         <p className="text-[13px] text-sericia-ink-mute mt-8">
           Refunds are issued in United States dollars. Currency conversion differences are not refundable.
