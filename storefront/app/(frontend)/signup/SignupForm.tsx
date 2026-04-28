@@ -74,7 +74,12 @@ export default function SignupForm() {
             country_code: parsed.data.country_code,
           },
           shouldCreateUser: true,
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`,
+          // Defensive: pin to production origin in prod builds (see LoginForm).
+          emailRedirectTo: `${
+            process.env.NODE_ENV === "production"
+              ? "https://sericia.com"
+              : window.location.origin
+          }/auth/callback?next=${encodeURIComponent(redirect)}`,
         },
       });
       if (error) throw error;

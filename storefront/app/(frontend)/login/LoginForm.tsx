@@ -39,11 +39,20 @@ export default function LoginForm() {
     }
     setLoading(true);
     try {
+      // Defensive: use the canonical production origin in production builds
+      // regardless of `window.location.origin`. Prevents dev/preview deploys
+      // from leaking localhost or staging URLs into magic-link emails the
+      // user might click on a different device. Falls back to runtime origin
+      // only in non-production (local dev) where localhost IS correct.
+      const origin =
+        process.env.NODE_ENV === "production"
+          ? "https://sericia.com"
+          : window.location.origin;
       const { error } = await supabaseBrowser().auth.signInWithOtp({
         email: trimmed,
         options: {
           shouldCreateUser: true,
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`,
+          emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(redirect)}`,
         },
       });
       if (error) throw error;

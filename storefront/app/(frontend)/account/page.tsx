@@ -73,8 +73,8 @@ export default async function AccountOverviewPage() {
         </Link>
         <Link href="/account/settings" className="block border border-sericia-line p-8 hover:border-sericia-ink transition">
           <p className="label mb-3">Settings</p>
-          <h2 className="text-[22px] font-normal leading-snug mb-3">Email & password</h2>
-          <p className="text-[13px] text-sericia-ink-soft">Change credentials or delete your account.</p>
+          <h2 className="text-[22px] font-normal leading-snug mb-3">Profile, email & language</h2>
+          <p className="text-[13px] text-sericia-ink-soft">Edit your name, language, email or delete your account.</p>
         </Link>
       </div>
 
