@@ -35,7 +35,8 @@
 
 import Link from "next/link";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import Typewriter from "typewriter-effect";
+// Typewriter import removed — kept commented for archival context.
+// import Typewriter from "typewriter-effect";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import MagneticButton from "./MagneticButton";
@@ -195,20 +196,21 @@ export default function CinematicHero() {
             <h1 className="text-[46px] md:text-[80px] leading-[1.02] font-light tracking-tight text-sericia-paper drop-shadow-[0_2px_20px_rgba(33,35,29,0.25)]">
               {headlineLine1}<br />{headlineLine2}
             </h1>
+            {/*
+              Sub-headline: rendered statically, NOT as a typewriter.
+              We removed the runtime Typewriter (typewriter-effect lib) for
+              brand reasons — Aesop / Le Labo / La Mer never have animated
+              keystrokes on first paint. The cursor blink and mid-word
+              backspacing made every fresh visit catch a half-typed phrase
+              like "Rescued Japanese craft food, shi" (mid-stream of
+              "shipped worldwide"), which read as nervous/early-stage SaaS.
+              The first phrase from the editor (or i18n fallback) is now
+              rendered confidently as a single line. Editors can still set
+              all 3 typewriterStrings in Payload — only the first one is
+              displayed; the rest are kept for future A/B or seasonal swap.
+            */}
             <div className="mt-3 text-[28px] md:text-[40px] leading-[1.1] text-sericia-paper/95 font-light min-h-[1.2em]">
-              <Typewriter
-                // Key forces full re-init when editor changes the typewriter
-                // strings — without this, the component caches the old strings.
-                key={safeTypewriter.join("|")}
-                options={{
-                  strings: safeTypewriter,
-                  autoStart: true,
-                  loop: true,
-                  delay: 60,
-                  deleteSpeed: 30,
-                  cursor: "_",
-                }}
-              />
+              {safeTypewriter[0]}
             </div>
           </div>
           <div className="md:col-span-4">

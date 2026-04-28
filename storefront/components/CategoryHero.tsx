@@ -132,7 +132,7 @@ export default function CategoryHero({
       <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 md:px-12 py-16 md:py-24">
         <motion.div style={{ y: titleY, opacity: titleOpacity }}>
           {eyebrow && (
-            <p className="text-[11px] tracking-[0.3em] uppercase font-medium text-sericia-paper/80 mb-6">
+            <p className="text-[11px] tracking-[0.3em] uppercase font-medium text-sericia-paper/85 mb-6">
               {eyebrow}
             </p>
           )}

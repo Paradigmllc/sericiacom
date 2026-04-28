@@ -21,17 +21,23 @@ export default {
     extend: {
       colors: {
         sericia: {
-          paper: "var(--sericia-paper)",
-          "paper-deep": "var(--sericia-paper-deep)",
-          "paper-card": "var(--sericia-paper-card)",
-          ink: "var(--sericia-ink)",
-          "ink-soft": "var(--sericia-ink-soft)",
-          "ink-mute": "var(--sericia-ink-mute)",
-          line: "var(--sericia-line)",
-          accent: "var(--sericia-accent)",
+          // RGB-channel pattern — required for Tailwind opacity modifiers
+          // (e.g., `text-sericia-paper/80`) to work with CSS-variable colors.
+          // CSS vars are defined in globals.css as `R G B` triplets (no
+          // commas, no `rgb()` wrapper); Tailwind's JIT inlines the alpha.
+          // Without this pattern, `/80` silently falls back to the default
+          // text color, producing WCAG-fail eyebrow-on-dark-hero situations.
+          paper: "rgb(var(--sericia-paper) / <alpha-value>)",
+          "paper-deep": "rgb(var(--sericia-paper-deep) / <alpha-value>)",
+          "paper-card": "rgb(var(--sericia-paper-card) / <alpha-value>)",
+          ink: "rgb(var(--sericia-ink) / <alpha-value>)",
+          "ink-soft": "rgb(var(--sericia-ink-soft) / <alpha-value>)",
+          "ink-mute": "rgb(var(--sericia-ink-mute) / <alpha-value>)",
+          line: "rgb(var(--sericia-line) / <alpha-value>)",
+          accent: "rgb(var(--sericia-accent) / <alpha-value>)",
           // Wishlist / "loved" state. Aged crimson — warm but restrained,
           // harmonizes with earth-tone brand palette. Used by AnimatedHeart.
-          heart: "var(--sericia-heart)",
+          heart: "rgb(var(--sericia-heart) / <alpha-value>)",
         },
       },
       fontFamily: {

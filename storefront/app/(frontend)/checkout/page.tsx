@@ -145,8 +145,17 @@ export default async function CheckoutPage({
       <section className="border-b border-sericia-line bg-sericia-paper-card">
         <Container size="wide" className="py-16 md:py-20">
           <Eyebrow>{tCheckout("title")}</Eyebrow>
+          {/*
+            H1 stays neutral ("Checkout") — the gate below carries the
+            specific stage heading ("Sign in or check out as guest" before
+            decision; the form's section headings after). This keeps the
+            page-level H1 stable across states (gate / signed-in /
+            anonymous-guest) instead of telling the user they're entering
+            a "Shipping address" while the actual section below asks them
+            to pick an account path. Same pattern Aesop / SSENSE use.
+          */}
           <h1 className="text-[36px] md:text-[48px] leading-[1.1] font-normal tracking-tight">
-            {tCheckout("shipping_address")}
+            {tCheckout("title")}
           </h1>
         </Container>
       </section>

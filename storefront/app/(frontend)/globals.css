@@ -12,42 +12,57 @@
    light theme; <html data-theme="dark"> overrides re-map for dark. Other
    utilities (--background, --foreground) stay 1:1 aliases for legacy code
    that doesn't go through Tailwind. */
+/*
+  Brand tokens are defined as space-separated RGB channel triplets so
+  Tailwind's `text-sericia-paper/80` opacity modifier resolves correctly.
+  Raw `var(--sericia-paper)` references must be wrapped in `rgb()` (e.g.,
+  `--background: rgb(var(--sericia-paper))`) since the variable itself
+  no longer carries the `rgb()` wrapper.
+
+  Hex equivalents (kept here as comments for human readers / brand docs):
+    paper #f5f0e8 / paper-deep #ebe4d4 / paper-card #faf6ee
+    ink #21231d / ink-soft #4a4c44 / ink-mute #7b7d73
+    line #d4cfc4 / accent #5c5d45 / heart #BF3649
+*/
 :root,
 [data-theme="light"] {
-  --sericia-paper: #f5f0e8;
-  --sericia-paper-deep: #ebe4d4;
-  --sericia-paper-card: #faf6ee;
-  --sericia-ink: #21231d;
-  --sericia-ink-soft: #4a4c44;
-  --sericia-ink-mute: #7b7d73;
-  --sericia-line: #d4cfc4;
-  --sericia-accent: #5c5d45;
-  --sericia-heart: #BF3649;
+  --sericia-paper: 245 240 232;
+  --sericia-paper-deep: 235 228 212;
+  --sericia-paper-card: 250 246 238;
+  --sericia-ink: 33 35 29;
+  --sericia-ink-soft: 74 76 68;
+  --sericia-ink-mute: 123 125 115;
+  --sericia-line: 212 207 196;
+  --sericia-accent: 92 93 69;
+  --sericia-heart: 191 54 73;
 
-  --background: var(--sericia-paper);
-  --foreground: var(--sericia-ink);
+  --background: rgb(var(--sericia-paper));
+  --foreground: rgb(var(--sericia-ink));
 
   color-scheme: light;
 }
 
 [data-theme="dark"] {
   /* Dark palette — inverted by mood, not value. Background uses a deep
-     ink-leaning charcoal (#1a1c17) instead of pure black so the paper-grain
+     ink-leaning charcoal (#14160f) instead of pure black so the paper-grain
      SVG overlays still register; foreground uses a warm cream (#ede7d4)
      instead of pure white so it reads quiet, not clinical. The accent stays
-     warm to keep brand identity coherent across themes. */
-  --sericia-paper: #14160f;
-  --sericia-paper-deep: #0e1009;
-  --sericia-paper-card: #1c1f17;
-  --sericia-ink: #ede7d4;
-  --sericia-ink-soft: #c5beac;
-  --sericia-ink-mute: #8e8a7a;
-  --sericia-line: #2c2e26;
-  --sericia-accent: #b8a987;
-  --sericia-heart: #d65060;
+     warm to keep brand identity coherent across themes.
+     Hex: paper #14160f / paper-deep #0e1009 / paper-card #1c1f17
+          ink #ede7d4 / ink-soft #c5beac / ink-mute #8e8a7a
+          line #2c2e26 / accent #b8a987 / heart #d65060 */
+  --sericia-paper: 20 22 15;
+  --sericia-paper-deep: 14 16 9;
+  --sericia-paper-card: 28 31 23;
+  --sericia-ink: 237 231 212;
+  --sericia-ink-soft: 197 190 172;
+  --sericia-ink-mute: 142 138 122;
+  --sericia-line: 44 46 38;
+  --sericia-accent: 184 169 135;
+  --sericia-heart: 214 80 96;
 
-  --background: var(--sericia-paper);
-  --foreground: var(--sericia-ink);
+  --background: rgb(var(--sericia-paper));
+  --foreground: rgb(var(--sericia-ink));
 
   color-scheme: dark;
 }
