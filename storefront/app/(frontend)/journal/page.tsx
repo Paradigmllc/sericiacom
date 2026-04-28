@@ -45,7 +45,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const sp = await searchParams;
   const tag = parseTag(typeof sp.tag === "string" ? sp.tag : undefined);
-  const baseTitle = "Journal — Writing on Japanese craft food | Sericia";
+  // Don't append "| Sericia" — RootLayout's metadata template
+  // (`title.template: "%s | Sericia"`) does that automatically.
+  // Otherwise we get "...Japanese craft food | Sericia | Sericia".
+  const baseTitle = "Journal — Writing on Japanese craft food";
   const baseDesc =
     "Stories, techniques, and country-by-country guides for buying and brewing Japanese craft food. Sencha, matcha, miso, dashi, shiitake, yuzu — written by the team who packs each drop in Kyoto.";
   if (tag === "all") {

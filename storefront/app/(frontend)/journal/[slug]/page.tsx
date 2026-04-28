@@ -27,13 +27,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticle(slug);
-  if (!article) return { title: "Not found — Sericia" };
+  if (!article) return { title: "Not found" };
   const canonical = `https://sericia.com/journal/${slug}`;
   const languages = Object.fromEntries(
     LOCALES.map((l) => [l, canonical])
   );
   return {
-    title: `${article.title} | Sericia Journal`,
+    // Don't append "| Sericia" — RootLayout template does it.
+    // We append "Journal" so the tab signal includes the section.
+    title: `${article.title} — Journal`,
     description: article.lede,
     alternates: {
       canonical,

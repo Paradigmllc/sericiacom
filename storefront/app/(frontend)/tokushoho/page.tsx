@@ -37,7 +37,7 @@ import { Container, PageHero, Rule } from "@/components/ui";
  */
 
 export const metadata: Metadata = {
-  title: "特定商取引法に基づく表記 | Sericia",
+  title: "特定商取引法に基づく表記",
   description:
     "特定商取引法第11条に基づく販売事業者情報・返品・送料・お支払い方法等の表記です。Legal notation required by Japan's Act on Specified Commercial Transactions.",
   alternates: { canonical: "https://sericia.com/tokushoho" },

@@ -7,7 +7,7 @@ import ContentSidebar from "@/components/ContentSidebar";
 import { Container, PageHero, Rule } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Sericia",
+  title: "Privacy Policy",
   description: "How Sericia collects, uses, and protects your personal data.",
   alternates: { canonical: "https://sericia.com/privacy" },
 };

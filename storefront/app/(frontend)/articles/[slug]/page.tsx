@@ -68,12 +68,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const locale = (await getLocale()) as Locale;
   const article = await fetchArticle(slug, locale);
-  if (!article) return { title: "Not found — Sericia", robots: { index: false } };
+  if (!article) return { title: "Not found", robots: { index: false } };
 
   const canonical = `${SITE_URL}/articles/${slug}`;
   const seo = (article.seo ?? {}) as { metaTitle?: string | null; metaDescription?: string | null };
   return {
-    title: seo.metaTitle ?? `${article.title} | Sericia`,
+    // Don't append "| Sericia" — RootLayout's metadata template does it.
+    title: seo.metaTitle ?? article.title,
     description: seo.metaDescription ?? undefined,
     alternates: { canonical },
     openGraph: {

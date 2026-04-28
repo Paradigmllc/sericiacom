@@ -278,5 +278,27 @@
     "not_found": {
       "title": "此頁面已不存在。"
     }
+  },
+  "signup": {
+    "eyebrow": "建立帳戶",
+    "title": "加入 Sericia。",
+    "lede": "建立帳戶後可追蹤訂單、儲存配送地址,並搶先獲得最新限量上架。",
+    "full_name_label": "姓名",
+    "email_address_label": "電子郵件地址",
+    "country_label": "國家",
+    "submit_create": "建立帳戶",
+    "submit_sending": "傳送中…",
+    "fine_already_have": "已經有帳戶?",
+    "fine_sign_in_link": "登入",
+    "fine_no_password": "無需密碼 — 我們將透過電子郵件傳送一鍵登入連結。",
+    "fine_terms_prefix": "繼續即代表您同意我們的",
+    "fine_terms": "服務條款",
+    "fine_and": "與",
+    "fine_privacy": "隱私權政策",
+    "name_required_toast": "請輸入您的姓名。",
+    "country_required_toast": "請選擇國家。",
+    "sent_eyebrow": "請查看您的電子郵件",
+    "sent_title": "我們已將登入連結傳送至 {email}",
+    "sent_explainer": "點擊電子郵件中的連結以完成帳戶建立。您可以關閉此分頁 — 連結會在任何裝置上開啟新的工作階段。"
   }
 }

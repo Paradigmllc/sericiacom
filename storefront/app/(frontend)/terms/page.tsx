@@ -9,7 +9,7 @@ import { Container, Rule } from "@/components/ui";
 import { webPageJsonLd } from "@/lib/page-jsonld";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Sericia",
+  title: "Terms of Service",
   description: "Sericia Terms of Service — rules for using sericia.com and purchasing drops.",
   alternates: { canonical: "https://sericia.com/terms" },
 };

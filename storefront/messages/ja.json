@@ -301,5 +301,27 @@
     "not_found": {
       "title": "このページは見つかりませんでした。"
     }
+  },
+  "signup": {
+    "eyebrow": "アカウント作成",
+    "title": "Sericia へようこそ。",
+    "lede": "アカウント登録で、ご注文の追跡・配送先の保存・新しいドロップへの先行アクセスをご利用いただけます。",
+    "full_name_label": "氏名",
+    "email_address_label": "メールアドレス",
+    "country_label": "国",
+    "submit_create": "アカウントを作成",
+    "submit_sending": "送信中…",
+    "fine_already_have": "すでにアカウントをお持ちですか？",
+    "fine_sign_in_link": "ログイン",
+    "fine_no_password": "パスワード不要 — ワンタップのログインリンクをメールでお送りします。",
+    "fine_terms_prefix": "続けることで以下に同意したものとみなされます：",
+    "fine_terms": "利用規約",
+    "fine_and": "および",
+    "fine_privacy": "プライバシーポリシー",
+    "name_required_toast": "お名前をご入力ください。",
+    "country_required_toast": "国をお選びください。",
+    "sent_eyebrow": "メールをご確認ください",
+    "sent_title": "{email} にログインリンクを送信しました",
+    "sent_explainer": "メール内のリンクをクリックしてアカウント作成を完了してください。このタブは閉じていただいて構いません。リンクからは任意のデバイスで新しいセッションが開きます。"
   }
 }

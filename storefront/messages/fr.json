@@ -278,5 +278,27 @@
     "not_found": {
       "title": "Cette page n'existe plus."
     }
+  },
+  "signup": {
+    "eyebrow": "Créer un compte",
+    "title": "Rejoindre Sericia.",
+    "lede": "Un compte vous permet de suivre vos commandes, sauvegarder vos adresses et accéder en avant-première aux nouveaux drops.",
+    "full_name_label": "Nom complet",
+    "email_address_label": "Adresse e-mail",
+    "country_label": "Pays",
+    "submit_create": "Créer un compte",
+    "submit_sending": "Envoi…",
+    "fine_already_have": "Vous avez déjà un compte ?",
+    "fine_sign_in_link": "Se connecter",
+    "fine_no_password": "Aucun mot de passe requis — nous vous enverrons un lien de connexion par e-mail.",
+    "fine_terms_prefix": "En continuant, vous acceptez nos",
+    "fine_terms": "Conditions",
+    "fine_and": "et notre",
+    "fine_privacy": "Politique de confidentialité",
+    "name_required_toast": "Veuillez saisir votre nom.",
+    "country_required_toast": "Veuillez sélectionner un pays.",
+    "sent_eyebrow": "Vérifiez votre e-mail",
+    "sent_title": "Nous avons envoyé un lien de connexion à {email}",
+    "sent_explainer": "Cliquez sur le lien dans l'e-mail pour terminer la création de votre compte. Vous pouvez fermer cet onglet — le lien ouvrira une nouvelle session sur n'importe quel appareil."
   }
 }

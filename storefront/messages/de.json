@@ -301,5 +301,27 @@
     "not_found": {
       "title": "Diese Seite ist nicht mehr verfügbar."
     }
+  },
+  "signup": {
+    "eyebrow": "Konto erstellen",
+    "title": "Sericia beitreten.",
+    "lede": "Mit einem Konto können Sie Bestellungen verfolgen, Lieferadressen speichern und früher auf neue Drops zugreifen.",
+    "full_name_label": "Vollständiger Name",
+    "email_address_label": "E-Mail-Adresse",
+    "country_label": "Land",
+    "submit_create": "Konto erstellen",
+    "submit_sending": "Senden…",
+    "fine_already_have": "Sie haben bereits ein Konto?",
+    "fine_sign_in_link": "Anmelden",
+    "fine_no_password": "Kein Passwort erforderlich — wir senden Ihnen einen Anmelde-Link per E-Mail.",
+    "fine_terms_prefix": "Wenn Sie fortfahren, stimmen Sie unseren",
+    "fine_terms": "Nutzungsbedingungen",
+    "fine_and": "und der",
+    "fine_privacy": "Datenschutzerklärung",
+    "name_required_toast": "Bitte geben Sie Ihren Namen ein.",
+    "country_required_toast": "Bitte wählen Sie ein Land aus.",
+    "sent_eyebrow": "Prüfen Sie Ihre E-Mails",
+    "sent_title": "Wir haben einen Anmelde-Link an {email} gesendet",
+    "sent_explainer": "Klicken Sie auf den Link in der E-Mail, um die Kontoerstellung abzuschließen. Sie können diesen Tab schließen — der Link öffnet eine neue Sitzung auf jedem Gerät."
   }
 }

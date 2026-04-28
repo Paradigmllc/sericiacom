@@ -10,7 +10,7 @@ import { Container, SectionHeading, Rule } from "@/components/ui";
 import { webPageJsonLd } from "@/lib/page-jsonld";
 
 export const metadata: Metadata = {
-  title: "Shipping Information | Sericia",
+  title: "Shipping Information",
   description: "EMS worldwide shipping from Japan — transit times, customs, and tracking.",
   alternates: { canonical: "https://sericia.com/shipping" },
 };

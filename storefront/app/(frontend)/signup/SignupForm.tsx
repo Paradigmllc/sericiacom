@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabaseBrowser } from "@/lib/supabase-browser";
@@ -22,12 +23,6 @@ import { supabaseBrowser } from "@/lib/supabase-browser";
  *    route would break intent-matched flows even though the auth mechanic is
  *    the same. We keep the form but strip password entirely.
  */
-const Schema = z.object({
-  email: z.string().email("Valid email required"),
-  full_name: z.string().min(1, "Name required"),
-  country_code: z.string().length(2, "Country required"),
-});
-
 const COUNTRIES: [string, string][] = [
   ["US", "United States"], ["GB", "United Kingdom"], ["DE", "Germany"],
   ["FR", "France"], ["AU", "Australia"], ["SG", "Singapore"],
@@ -40,11 +35,19 @@ const COUNTRIES: [string, string][] = [
 ];
 
 export default function SignupForm() {
+  const t = useTranslations("signup");
+  const tAuth = useTranslations("auth");
   const search = useSearchParams();
   const redirect = search.get("redirect") || "/account";
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ email: "", full_name: "", country_code: "US" });
+
+  const Schema = z.object({
+    email: z.string().email(tAuth("email_required_toast")),
+    full_name: z.string().min(1, t("name_required_toast")),
+    country_code: z.string().length(2, t("country_required_toast")),
+  });
 
   const input = "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[15px] placeholder-sericia-ink-mute transition-colors";
   const label = "label block mb-2";
@@ -53,7 +56,7 @@ export default function SignupForm() {
     e.preventDefault();
     const parsed = Schema.safeParse(form);
     if (!parsed.success) {
-      toast.error(parsed.error.issues[0]?.message ?? "Please check the form");
+      toast.error(parsed.error.issues[0]?.message ?? t("name_required_toast"));
       return;
     }
     setLoading(true);
@@ -84,7 +87,9 @@ export default function SignupForm() {
         body: JSON.stringify({ email, full_name: parsed.data.full_name }),
       }).catch((err) => console.error("[signup] welcome email failed", err));
       setSent(true);
-      toast.success("Sign-in link sent. Check your email.");
+      toast.success(tAuth("link_sent_toast"), {
+        description: tAuth("link_sent_toast_desc"),
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[signup] failed", err);
@@ -97,13 +102,12 @@ export default function SignupForm() {
   if (sent) {
     return (
       <div className="border border-sericia-line bg-sericia-paper-card p-10">
-        <p className="label mb-3">Check your email</p>
+        <p className="label mb-3">{t("sent_eyebrow")}</p>
         <h2 className="text-[22px] font-normal mb-4 leading-snug">
-          We sent a sign-in link to {form.email}
+          {t("sent_title", { email: form.email })}
         </h2>
         <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
-          Click the link in the email to finish creating your account. You can
-          close this tab — the link will open a new session on any device.
+          {t("sent_explainer")}
         </p>
       </div>
     );
@@ -112,19 +116,19 @@ export default function SignupForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-7">
       <div>
-        <label className={label}>Full name</label>
+        <label className={label}>{t("full_name_label")}</label>
         <input type="text" required value={form.full_name}
           onChange={(e) => setForm({ ...form, full_name: e.target.value })}
           className={input} autoComplete="name" />
       </div>
       <div>
-        <label className={label}>Email address</label>
+        <label className={label}>{t("email_address_label")}</label>
         <input type="email" required value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           className={input} autoComplete="email" />
       </div>
       <div>
-        <label className={label}>Country</label>
+        <label className={label}>{t("country_label")}</label>
         <select required value={form.country_code}
           onChange={(e) => setForm({ ...form, country_code: e.target.value })}
           className={`${input} cursor-pointer`}>
@@ -134,17 +138,20 @@ export default function SignupForm() {
       <div className="pt-4">
         <button type="submit" disabled={loading}
           className="w-full bg-sericia-ink text-sericia-paper py-5 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40">
-          {loading ? "Sending…" : "Create account"}
+          {loading ? t("submit_sending") : t("submit_create")}
         </button>
         <p className="text-[12px] text-sericia-ink-mute text-center mt-5 leading-relaxed">
-          Already have an account?{" "}
-          <Link href={`/login?redirect=${encodeURIComponent(redirect)}`} className="underline-link">Sign in</Link>
+          {t("fine_already_have")}{" "}
+          <Link href={`/login?redirect=${encodeURIComponent(redirect)}`} className="underline-link">
+            {t("fine_sign_in_link")}
+          </Link>
           <br />
-          No password needed — we&apos;ll email you a one-tap sign-in link.
+          {t("fine_no_password")}
           <br />
-          By continuing you agree to our{" "}
-          <Link href="/terms" className="underline-link">Terms</Link> and{" "}
-          <Link href="/privacy" className="underline-link">Privacy Policy</Link>.
+          {t("fine_terms_prefix")}{" "}
+          <Link href="/terms" className="underline-link">{t("fine_terms")}</Link>{" "}
+          {t("fine_and")}{" "}
+          <Link href="/privacy" className="underline-link">{t("fine_privacy")}</Link>.
         </p>
       </div>
     </form>

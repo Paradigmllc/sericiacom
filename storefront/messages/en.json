@@ -301,5 +301,27 @@
     "not_found": {
       "title": "This page is no longer with us."
     }
+  },
+  "signup": {
+    "eyebrow": "Create account",
+    "title": "Join Sericia.",
+    "lede": "An account lets you track orders, save shipping addresses, and receive early access to new drops.",
+    "full_name_label": "Full name",
+    "email_address_label": "Email address",
+    "country_label": "Country",
+    "submit_create": "Create account",
+    "submit_sending": "Sending…",
+    "fine_already_have": "Already have an account?",
+    "fine_sign_in_link": "Sign in",
+    "fine_no_password": "No password needed — we'll email you a one-tap sign-in link.",
+    "fine_terms_prefix": "By continuing you agree to our",
+    "fine_terms": "Terms",
+    "fine_and": "and",
+    "fine_privacy": "Privacy Policy",
+    "name_required_toast": "Please enter your name.",
+    "country_required_toast": "Please select a country.",
+    "sent_eyebrow": "Check your email",
+    "sent_title": "We sent a sign-in link to {email}",
+    "sent_explainer": "Click the link in the email to finish creating your account. You can close this tab — the link will open a new session on any device."
   }
 }

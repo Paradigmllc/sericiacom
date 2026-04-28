@@ -9,7 +9,7 @@ import { Container, Rule } from "@/components/ui";
 import { webPageJsonLd } from "@/lib/page-jsonld";
 
 export const metadata: Metadata = {
-  title: "Refund & Returns | Sericia",
+  title: "Refund & Returns",
   description: "Sericia refund policy for perishable Japanese craft food drops.",
   alternates: { canonical: "https://sericia.com/refund" },
 };
