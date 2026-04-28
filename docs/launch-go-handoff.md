@@ -43,7 +43,13 @@ $1 smoke test).
 
 <a id="go-2"></a>
 
-## 2. 3 manual steps remaining (≈15 min total)
+## 2. Final manual steps (≈10 min total — F28-F29 reduced this list)
+
+After F28 (tokenLocator + USDC pivot) and F29 (embedded SDK), the
+operator-facing surface narrowed to one Console activation + one wallet
+paste + one CF token + one $1 smoke test.
+
+
 
 ### Step 1 — Crossmint Console (~5 min)
 

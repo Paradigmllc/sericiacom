@@ -65,7 +65,11 @@ export default async function PayPage({ params }: { params: Promise<{ orderId: s
             <p className="text-[28px] font-normal leading-none">${order.amount_usd}.00 USD</p>
           </div>
           <Rule className="mb-8" />
-          <CrossmintPayment orderId={order.id} amountUSD={order.amount_usd} />
+          <CrossmintPayment
+            orderId={order.id}
+            amountUSD={order.amount_usd}
+            receiptEmail={order.email}
+          />
         </div>
         <p className="text-[12px] text-sericia-ink-mute text-center mt-8 tracking-wider uppercase">
           Confirmation will be sent to {order.email}
