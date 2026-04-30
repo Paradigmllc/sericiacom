@@ -30,6 +30,7 @@ import { PressMentions } from "./collections/PressMentions";
 
 import { SiteSettings } from "./globals/SiteSettings";
 import { Homepage } from "./globals/Homepage";
+import { PaymentSettings } from "./globals/PaymentSettings";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -77,7 +78,7 @@ export default buildConfig({
     ],
   }),
   collections: [Users, Articles, Guides, Tools, Media, Testimonials, PressMentions],
-  globals: [SiteSettings, Homepage],
+  globals: [SiteSettings, Homepage, PaymentSettings],
   routes: {
     admin: "/cms/admin",
     api: "/cms/api",

@@ -68,9 +68,23 @@ interface Props {
   orderId: string;
   amountUSD: number;
   receiptEmail: string;
+  /**
+   * Pre-rendered labels from server-side Payload PaymentSettings lookup.
+   * Optional — if not passed, the component falls back to hardcoded
+   * English copy (kept for backward compat with any caller that hasn't
+   * migrated to F55 yet).
+   */
+  payButtonLabel?: string;
+  receiptLine?: string;
 }
 
-export default function HyperswitchPayment({ orderId, amountUSD, receiptEmail }: Props) {
+export default function HyperswitchPayment({
+  orderId,
+  amountUSD,
+  receiptEmail,
+  payButtonLabel,
+  receiptLine,
+}: Props) {
   const router = useRouter();
   const [state, setState] = useState<"loading" | "ready" | "submitting" | "error">("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -244,7 +258,9 @@ export default function HyperswitchPayment({ orderId, amountUSD, receiptEmail }:
             disabled={state === "submitting"}
             className="w-full bg-sericia-ink text-sericia-paper py-4 px-6 text-[14px] tracking-[0.1em] uppercase font-normal transition-opacity hover:opacity-86 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {state === "submitting" ? "Processing…" : `Pay $${amountUSD}.00 USD`}
+            {state === "submitting"
+              ? "Processing…"
+              : (payButtonLabel ?? `Pay $${amountUSD}.00 USD`)}
           </button>
           {errorMessage && (
             <p className="text-[13px] text-[#9b2c2c]" role="alert">
@@ -252,7 +268,7 @@ export default function HyperswitchPayment({ orderId, amountUSD, receiptEmail }:
             </p>
           )}
           <p className="text-[11px] text-sericia-ink-mute tracking-wider uppercase text-center">
-            Receipt to {receiptEmail} · Secured by Hyperswitch
+            {receiptLine ?? `Receipt to ${receiptEmail} · Secured by Hyperswitch`}
           </p>
           {process.env.NODE_ENV !== "production" && methods.length > 0 && (
             <p className="text-[10px] text-sericia-ink-mute font-mono">

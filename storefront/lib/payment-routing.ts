@@ -1,39 +1,28 @@
 /**
- * F54 — Per-country payment method allowlist for Hyperswitch routing.
+ * F54 + F55 — Per-country payment method allowlist (hardcoded fallback).
  *
- * Why this file exists separately from `payment-providers.ts`:
- *   - That file decides WHICH provider (Hyperswitch vs Crossmint vs none)
- *     is mounted into the checkout flow.
- *   - This file decides — once Hyperswitch is mounted — WHICH payment
- *     methods (card / Apple Pay / Google Pay / PayPal / SEPA / etc) to
- *     display for the customer's billing country.
+ * Per the project's content rule (2026-04-30 directive): "全コンテンツは
+ * ハードコードNG、DB化、PayloadCMSで編集可能に".
  *
- * The matrix below is the single source of truth shown to the customer.
- * Editing it requires no other code change — `getEnabledMethods(country)`
- * is consumed by both:
- *   - server: /api/hyperswitch/create-intent → `allowed_payment_method_types`
- *   - client: <HyperswitchPayment> → HyperLoader Element `paymentMethodOrder`
+ * Runtime path:
+ *   storefront → lib/payment-settings.ts → Payload PaymentSettings global
+ *                                       ↓ on Payload outage / cold-start
+ *                                       fallback → constants below
  *
- * Selection rationale (Sericia D2C — luxury Japanese craft food, USD pricing):
+ * The values in this file are NOT the source of truth — they are a
+ * defensive safety net. Editor-facing source of truth is the Payload
+ * PaymentSettings global (`/cms/admin/globals/paymentSettings`). The
+ * Payload schema seeds these same defaults on first save (see
+ * `scripts/seed-payment-settings.ts`).
  *
- *   Universal:    card, apple_pay, google_pay
- *     Apple Pay / Google Pay add ~15% conversion lift for mobile checkout
- *     and require zero merchant ops once Stripe verifies the domain.
- *
- *   PayPal:       en-speaking + EU + JP markets
- *     Penetration: US 78% / UK 70% / DE 56% / FR 47% / AU 60% / SG 40% /
- *     CA 65% / NL 50% / JP 28% (low but rising — D2C trust signal).
- *     Skipped in: AE (PayPal exited UAE retail 2022), TW (low penetration,
- *     local cards dominant), KR (KakaoPay/NaverPay dominant, PayPal weak),
- *     HK (Octopus + Stripe cards covers >85% intent).
- *
- *   SEPA / iDEAL / Alipay / WeChat Pay:  Phase 2.
- *     Adds compliance complexity (currency conversion, refund flows differ)
- *     for marginal lift on Sericia's USD-priced catalogue. Revisit when
- *     monthly EU + APAC volume crosses ~50 orders.
- *
- * Country code = ISO 3166-1 alpha-2 lowercase. Matches lib/pseo-matrix
- * COUNTRIES so anywhere we have a guide page we have a payment matrix.
+ * Why we keep a hardcoded fallback at all:
+ *   1. Build-time safety — Next.js build runs against a dummy DB string
+ *      and Payload returns null. Without a fallback, build-time pages
+ *      that consume the matrix would 500.
+ *   2. Cold-start safety — first deploy to a fresh DB has no global
+ *      saved yet. Without a fallback, the very first checkout fails.
+ *   3. Outage safety — Postgres / Payload restart blip would 500
+ *      checkout otherwise.
  */
 
 /**
@@ -42,9 +31,6 @@
  * pSEO TARGET markets (US/UK/DE/FR/AU/SG/CA/HK/NL/AE/TW/KR), but payment
  * routing must accept ANY country a customer can ship to (notably JP, which
  * is Sericia's home market and therefore not in the pSEO target list).
- *
- * Plain string keying lets us add countries by editing the matrix below
- * without touching type definitions.
  */
 type Iso2 = string;
 
@@ -67,19 +53,26 @@ export type HyperswitchMethod =
   | "we_chat_pay"
   | "konbini";
 
-/** Default fallback set — any country we haven't explicitly listed gets cards only. */
-const DEFAULT_METHODS: readonly HyperswitchMethod[] = [
+/** Hardcoded fallback: any country not in the matrix gets this set. */
+export const HARDCODED_DEFAULT_METHODS: readonly HyperswitchMethod[] = [
   "card",
   "apple_pay",
   "google_pay",
 ] as const;
 
 /**
- * Country → enabled payment methods. The ORDER here is the customer-visible
- * order in the Hyperswitch payment element (first = topmost in the list).
- * Lead with the highest-converting method per market.
+ * Hardcoded fallback matrix — seeded into Payload PaymentSettings on first
+ * deploy via `scripts/seed-payment-settings.ts`. Editing this file does not
+ * change live behaviour after Payload is bootstrapped; the editor must edit
+ * `/cms/admin/globals/paymentSettings`. This file is the safety net only.
+ *
+ * Selection rationale (Sericia D2C — luxury Japanese craft food, USD pricing):
+ *   Universal:   card, apple_pay, google_pay (~95% global coverage)
+ *   PayPal:      en-speaking + EU + JP markets where PayPal penetration > 40%
+ *   Skipped in:  AE (PayPal exited UAE retail 2022), HK/TW/KR (local cards
+ *                 + KakaoPay/NaverPay dominant)
  */
-const PAYMENT_MATRIX: Record<Iso2, readonly HyperswitchMethod[]> = {
+export const HARDCODED_PAYMENT_MATRIX: Record<Iso2, readonly HyperswitchMethod[]> = {
   // North America
   us: ["card", "apple_pay", "google_pay", "paypal"],
   ca: ["card", "apple_pay", "google_pay", "paypal"],
@@ -98,27 +91,34 @@ const PAYMENT_MATRIX: Record<Iso2, readonly HyperswitchMethod[]> = {
   // Asia-Pacific
   jp: ["card", "apple_pay", "google_pay", "paypal"],
   sg: ["card", "apple_pay", "google_pay", "paypal"],
-  hk: ["card", "apple_pay", "google_pay"], // PayPal weak in HK
-  tw: ["card", "apple_pay", "google_pay"], // PayPal weak in TW
-  kr: ["card", "apple_pay", "google_pay"], // KakaoPay/NaverPay dominant; PayPal weak
+  hk: ["card", "apple_pay", "google_pay"],
+  tw: ["card", "apple_pay", "google_pay"],
+  kr: ["card", "apple_pay", "google_pay"],
 
   // Middle East
-  ae: ["card", "apple_pay", "google_pay"], // PayPal exited UAE retail
+  ae: ["card", "apple_pay", "google_pay"],
 };
 
 /**
- * Resolve the enabled payment methods for a given country.
- * Falls back to DEFAULT_METHODS for unknown / missing country codes.
- *
- * Accepts mixed-case input (e.g. "US", "Uk") and normalises to lowercase.
+ * Synchronous fallback resolver. Used ONLY when Payload is unreachable
+ * (build-time, cold-start, outage). Production runtime path goes through
+ * `lib/payment-settings.ts → getEnabledMethodsForCountry()` which reads
+ * the editor-controlled Payload global first.
  */
-export function getEnabledMethods(country: string | null | undefined): readonly HyperswitchMethod[] {
-  if (!country) return DEFAULT_METHODS;
+export function getFallbackEnabledMethods(country: string | null | undefined): readonly HyperswitchMethod[] {
+  if (!country) return HARDCODED_DEFAULT_METHODS;
   const key = country.toLowerCase();
-  return PAYMENT_MATRIX[key] ?? DEFAULT_METHODS;
+  return HARDCODED_PAYMENT_MATRIX[key] ?? HARDCODED_DEFAULT_METHODS;
 }
+
+/**
+ * @deprecated Use `getEnabledMethodsForCountry()` from `lib/payment-settings.ts`.
+ * Kept as an alias for backward compatibility — delegates to the synchronous
+ * fallback. New callers should await the Payload-backed async version.
+ */
+export const getEnabledMethods = getFallbackEnabledMethods;
 
 /** All countries in the matrix (useful for ops dashboards / debug). */
 export function listSupportedCountries(): string[] {
-  return Object.keys(PAYMENT_MATRIX);
+  return Object.keys(HARDCODED_PAYMENT_MATRIX);
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { createPaymentIntent } from "@/lib/hyperswitch";
-import { getEnabledMethods } from "@/lib/payment-routing";
+import { getEnabledMethodsForCountry } from "@/lib/payment-settings";
 
 /**
  * F54 — POST /api/hyperswitch/create-intent
@@ -71,7 +71,11 @@ export async function POST(req: NextRequest) {
     "us"
   ).toLowerCase();
 
-  const methods = getEnabledMethods(country);
+  // F55: Payload-backed lookup with hardcoded fallback. Editor-controlled
+  // matrix (paymentSettings global) takes precedence; the static matrix in
+  // payment-routing.ts is the safety net for build-time / cold-start /
+  // Payload outage paths.
+  const methods = await getEnabledMethodsForCountry(country, "en");
 
   // ── Build the return URL — Hyperswitch redirects here on completion ─
   // Hyperswitch appends ?payment_id=...&status=succeeded|failed to the URL.
