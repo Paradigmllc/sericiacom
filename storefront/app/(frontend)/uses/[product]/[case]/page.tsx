@@ -142,7 +142,7 @@ export default async function UsesPage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading>Why this combination works</SectionHeading>
+          <SectionHeading title="Why this combination works" />
           <p className="text-[16px] leading-relaxed text-sericia-ink-soft max-w-prose mt-6">
             {product.name} brings characteristics that make it a strong
             choice for {useCase.name.toLowerCase()}. See{" "}
@@ -158,7 +158,7 @@ export default async function UsesPage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading>Other uses for {product.name}</SectionHeading>
+          <SectionHeading title={`Other uses for ${product.name}`} />
           <ul className="grid md:grid-cols-2 gap-3 text-[15px] mt-6">
             {USE_CASES.filter((u) => u.slug !== useCase.slug).map((u) => (
               <li key={u.slug}>
@@ -174,7 +174,7 @@ export default async function UsesPage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading>Other products for {useCase.name}</SectionHeading>
+          <SectionHeading title={`Other products for ${useCase.name}`} />
           <ul className="grid md:grid-cols-2 gap-3 text-[15px] mt-6">
             {PRODUCTS.filter((p) => p.slug !== product.slug)
               .slice(0, 8)

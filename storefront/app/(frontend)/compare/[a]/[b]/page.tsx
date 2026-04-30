@@ -139,7 +139,7 @@ export default async function ComparePage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading>At a glance</SectionHeading>
+          <SectionHeading title="At a glance" />
           <div className="grid md:grid-cols-2 gap-px bg-sericia-line my-8">
             <div className="bg-sericia-paper p-8">
               <p className="label mb-3">{a.name}</p>
@@ -173,7 +173,7 @@ export default async function ComparePage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading>How to choose</SectionHeading>
+          <SectionHeading title="How to choose" />
           <p className="text-[16px] leading-relaxed text-sericia-ink-soft max-w-prose">
             The right choice depends on your dish, your time budget, and
             your taste preferences. {a.name} tends to lead in pantries
@@ -188,7 +188,7 @@ export default async function ComparePage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading>Related comparisons</SectionHeading>
+          <SectionHeading title="Related comparisons" />
           <ul className="grid md:grid-cols-2 gap-3 text-[15px]">
             {PRODUCTS.filter((p) => p.slug !== a.slug && p.slug !== b.slug)
               .slice(0, 6)
