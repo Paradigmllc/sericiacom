@@ -37,6 +37,15 @@ export default function RouteProgress() {
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fadeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const safetyRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // F51: timestamp when progress STARTED so finishProgress() can enforce
+  // a minimum visible duration. Without this, a cache-hit navigation
+  // (~30ms TTFB) commits the new route before the spinner has even
+  // appeared visually — the fade-in transition (180ms) overlaps the
+  // commit and the visitor sees nothing. With min display 350ms the
+  // spinner is guaranteed to register on every navigation regardless
+  // of cache state.
+  const startedAtRef = useRef<number>(0);
+  const MIN_DISPLAY_MS = 350;
 
   // ── Detect navigation START via click delegation ─────────────────────
   useEffect(() => {
@@ -102,6 +111,7 @@ export default function RouteProgress() {
 
     setState("running");
     setProgress(8);
+    startedAtRef.current = Date.now();
 
     // Slow asymptotic creep towards 85% — never claims completion until
     // the actual route commit fires. Step shrinks as we approach the cap
@@ -132,12 +142,25 @@ export default function RouteProgress() {
       clearTimeout(safetyRef.current);
       safetyRef.current = null;
     }
-    setProgress(100);
-    setState("done");
-    fadeRef.current = setTimeout(() => {
-      setState("idle");
-      setProgress(0);
-    }, 280);
+    // F51: enforce minimum visible duration. If route committed fast
+    // (cache HIT, ~30ms), the spinner needs to live a bit longer so
+    // the visitor actually registers it. If route was already slow
+    // (>= MIN_DISPLAY_MS), finish immediately so we don't pad the wait.
+    const elapsed = Date.now() - startedAtRef.current;
+    const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
+    const finalize = () => {
+      setProgress(100);
+      setState("done");
+      fadeRef.current = setTimeout(() => {
+        setState("idle");
+        setProgress(0);
+      }, 280);
+    };
+    if (remaining > 0) {
+      fadeRef.current = setTimeout(finalize, remaining);
+    } else {
+      finalize();
+    }
   }
 
   const visible = state !== "idle";

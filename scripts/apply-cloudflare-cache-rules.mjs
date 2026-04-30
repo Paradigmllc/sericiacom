@@ -97,13 +97,11 @@ const rules = [
     enabled: true,
   },
   // Rule 2 — HTML pages (1 hour edge + SWR + 60s browser)
-  // F39: edge TTL pushed from 2min → 1h. Reasoning: pages are now backed
-  // by ISR (revalidate=60 for dynamic, revalidate=3600 for static editorial).
-  // The edge cache + SWR keeps cold renders behind the cache for an entire
-  // hour. Even after a Coolify container restart wipes ISR's in-memory
-  // cache, Cloudflare keeps serving the previous edge copy with SWR
-  // background-fetch. Browser TTL nudged from 0 → 60s so back/forward and
-  // immediate re-clicks don't even revalidate.
+  // F51: added /uses/* and /compare/* (F40 missed them when introducing the
+  // routes). Without those expression matches, /uses and /compare hit the
+  // default (no cache rule) → DYNAMIC every time → origin TTFB 200-1300ms
+  // depending on cold/warm container memory state. With the rule applied
+  // they collapse to <100ms cached HIT after the first hit.
   {
     description: "Storefront HTML — 1h edge cache + SWR + 60s browser",
     expression:
@@ -115,6 +113,8 @@ const rules = [
       '(starts_with(http.request.uri.path, "/articles/")) or ' +
       '(http.request.uri.path eq "/guides") or ' +
       '(starts_with(http.request.uri.path, "/guides/")) or ' +
+      '(starts_with(http.request.uri.path, "/uses/")) or ' +
+      '(starts_with(http.request.uri.path, "/compare/")) or ' +
       '(http.request.uri.path eq "/tools") or ' +
       '(starts_with(http.request.uri.path, "/tools/")) or ' +
       '(http.request.uri.path in {"/about" "/shipping" "/refund" "/terms" "/privacy" "/accessibility" "/faq" "/sitemap" "/tokushoho"})',
