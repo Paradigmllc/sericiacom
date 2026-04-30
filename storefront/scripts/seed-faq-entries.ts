@@ -140,10 +140,10 @@ async function main() {
       pagination: false,
     });
     await Promise.all(
-      existing.docs.map((doc) =>
+      existing.docs.map((doc: { id: string | number }) =>
         payload.delete({
           collection: "faqEntries",
-          id: (doc as { id: string | number }).id,
+          id: doc.id,
         }).catch((e: unknown) => {
           console.error(`[seed-faq] delete failed:`, e);
         }),
