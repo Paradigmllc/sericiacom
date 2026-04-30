@@ -251,11 +251,17 @@ async function fetchFaqSections(locale: string): Promise<FaqSection[]> {
   try {
     const payload = await getPayloadClient();
     const result = await payload.find({
-      collection: "faqEntries",
+      // Cast: payload-types.ts is auto-regenerated only when `payload
+      // generate:types` runs against the live DB. In our worktree-driven
+      // workflow we add new collections to payload.config.ts but the
+      // generated types haven't caught up yet. Casting `as never` here
+      // bypasses the strict slug-union check for newly-added collections.
+      // Phase 2: a CI step regenerates types post-deploy and the cast goes away.
+      collection: "faqEntries" as never,
       depth: 0,
       limit: 200, // generous — never paginate; FAQ is finite
       sort: "displayOrder",
-      where: { active: { equals: true } },
+      where: { active: { equals: true } } as never,
       locale: locale as never,
       fallbackLocale: "en" as never,
     });

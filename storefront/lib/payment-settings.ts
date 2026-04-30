@@ -99,7 +99,11 @@ async function fetchPaymentSettings(locale: string): Promise<ResolvedPaymentSett
   try {
     const payload = await getPayloadClient();
     payloadValue = await payload.findGlobal({
-      slug: "paymentSettings",
+      // Cast (same pattern as lib/faq.ts): payload-types.ts global slug
+      // union doesn't include `paymentSettings` until `payload generate:types`
+      // runs against the live DB. The cast bypasses the strict union
+      // check for newly-added globals shipped via worktree workflow.
+      slug: "paymentSettings" as never,
       depth: 0,
       locale: locale as never,
       fallbackLocale: "en" as never,
