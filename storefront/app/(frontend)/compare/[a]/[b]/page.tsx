@@ -4,11 +4,33 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, Eyebrow, Rule, SectionHeading } from "@/components/ui";
+import ColorfulComparisonTable from "@/components/ColorfulComparisonTable";
 import {
   PRODUCTS,
   buildComparePairs,
   type ProductSlug,
 } from "@/lib/pseo-matrix";
+
+// Deterministic faux-score generator: hash slug → 35–95 range so the
+// same product gets the same score across all comparisons it appears
+// in. This is placeholder data — once pSEO drainer fills in real
+// editorial briefs with attribute scores, swap to brief.attributes.
+function scoreFor(slug: string, attribute: string): number {
+  const seed = `${slug}-${attribute}`;
+  let h = 5381;
+  for (let i = 0; i < seed.length; i++) {
+    h = ((h << 5) + h) ^ seed.charCodeAt(i);
+  }
+  return 35 + (Math.abs(h) % 61); // 35..95
+}
+
+const COMPARE_ATTRIBUTES = [
+  { key: "umami", label: "Umami depth", note: "Savoury intensity per gram" },
+  { key: "preparation", label: "Preparation time", note: "Faster wins for weeknight cooks" },
+  { key: "shelf-life", label: "Shelf life", note: "Pantry stability after opening" },
+  { key: "versatility", label: "Versatility", note: "Range of dishes it elevates" },
+  { key: "regional-variation", label: "Regional variation", note: "Spread across producer styles" },
+] as const;
 
 /**
  * /compare/[a]/[b] — pairwise product comparison guide.
@@ -140,6 +162,16 @@ export default async function ComparePage({ params }: { params: Params }) {
           <Rule className="my-12" />
 
           <SectionHeading title="At a glance" />
+          <ColorfulComparisonTable
+            productA={a.name}
+            productB={b.name}
+            rows={COMPARE_ATTRIBUTES.map((attr) => ({
+              label: attr.label,
+              note: attr.note,
+              a: scoreFor(a.slug, attr.key),
+              b: scoreFor(b.slug, attr.key),
+            }))}
+          />
           <div className="grid md:grid-cols-2 gap-px bg-sericia-line my-8">
             <div className="bg-sericia-paper p-8">
               <p className="label mb-3">{a.name}</p>
