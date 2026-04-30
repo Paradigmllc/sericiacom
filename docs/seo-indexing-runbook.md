@@ -5,6 +5,7 @@
 | 1 | [Indexing strategy overview](#seo-1) |
 | 2 | [Google Search Console — first-time setup](#seo-2) |
 | 3 | [IndexNow — Bing/Yandex/Naver instant submission](#seo-3) |
+| 3b | [Google Indexing API — service account setup + bulk submit](#seo-3b) |
 | 4 | [Sitemap submission flow](#seo-4) |
 | 5 | [pSEO matrix — running the bulk generator](#seo-5) |
 | 6 | [Content quality checklist (GEO + traditional SEO)](#seo-6) |
@@ -159,6 +160,123 @@ https://sericia.com/f55bbec16474b7c82fe2582eb4d349be.txt
 Don't delete that file. If you rotate the key, update both
 `/api/indexnow/route.ts` (`INDEXNOW_KEY` constant) and the
 `public/<key>.txt` filename.
+
+<a id="seo-3b"></a>
+
+## 3b. Google Indexing API — service account setup + bulk submit
+
+IndexNow does NOT cover Google. For Google we use the separate Google
+Indexing API at `indexing.googleapis.com/v3/urlNotifications:publish`,
+authenticated via a Google Cloud service account.
+
+Officially Google supports only `JobPosting` and `BroadcastEvent`
+schemas, but in practice `urlNotifications:publish` accepts any URL
+on a verified domain and Google's crawler picks them up faster than
+sitemap discovery alone. The 200/day quota is enough for incremental
+publishing of new pSEO articles + occasional sitewide refresh.
+
+### One-time operator setup (15 minutes)
+
+1. **Google Cloud Console** — https://console.cloud.google.com
+   - Click the project picker (top bar) → **New project**
+   - Name: `sericia-seo` (or any) → Create
+
+2. **Enable Indexing API**
+   - Sidebar → **APIs & Services** → **Library**
+   - Search "Indexing API" → click → **Enable**
+
+3. **Create Service Account**
+   - Sidebar → **IAM & Admin** → **Service Accounts** → **Create**
+   - Name: `sericia-indexing` → Continue
+   - Skip the "Grant this service account access to project" step
+     (no project roles needed; the permission lives in Search Console)
+   - **Done**
+
+4. **Download JSON key**
+   - Click the new service account → **Keys** tab → **Add key** →
+     **Create new key** → **JSON** → **Create**
+   - Browser downloads `sericia-seo-<id>.json`. Treat it like a
+     password — don't commit, don't email.
+
+5. **Verify domain in Search Console** (skip if already done in §2)
+   - https://search.google.com/search-console
+   - Add property → URL prefix → `https://sericia.com`
+   - Use HTML tag method, paste verification code into Coolify env
+     `NEXT_PUBLIC_GSC_VERIFICATION` → redeploy → click **Verify**
+
+6. **Grant the service account Owner permission in Search Console**
+   - Search Console → property `https://sericia.com` →
+     **Settings** (gear icon, sidebar) → **Users and permissions**
+   - **Add user** → email = the `client_email` field from your
+     downloaded JSON key (looks like
+     `sericia-indexing@sericia-seo.iam.gserviceaccount.com`)
+   - **Permission: Owner** ← this is mandatory; "Full" or "Restricted"
+     will cause the API to reject with PERMISSION_DENIED
+
+7. **Paste the JSON into Coolify env**
+   - Open the downloaded JSON file in any text editor
+   - Copy the entire JSON content (including curly braces)
+   - Coolify → storefront → Environment Variables → Add
+   - Name: `GOOGLE_INDEXING_SA_JSON`
+   - Value: paste the entire JSON
+   - Mark **Runtime only** (not buildtime — it's never read at build)
+   - Save → redeploy storefront
+
+### Verification
+
+```bash
+# Endpoint should return ok:true and sa_configured:true
+curl -sS https://sericia.com/api/google-indexing
+```
+
+Expected:
+```json
+{"ok":true,"api":"Google Indexing API v3 ...","sa_configured":true,...}
+```
+
+### Manual single-URL submission
+
+```bash
+curl -X POST https://sericia.com/api/google-indexing \
+  -H "Content-Type: application/json" \
+  -H "X-Admin-Secret: $SERICIA_ADMIN_SECRET" \
+  -d '{"urls":["https://sericia.com/products/sencha"],"type":"URL_UPDATED"}'
+```
+
+### Bulk submission (after major content drops)
+
+```bash
+SERICIA_ADMIN_SECRET=xxx \
+  npx tsx storefront/scripts/google-indexing-bulk.ts
+```
+
+Defaults to first 200 URLs (Google's daily quota). To continue the
+next day:
+
+```bash
+SERICIA_ADMIN_SECRET=xxx \
+  npx tsx storefront/scripts/google-indexing-bulk.ts --offset=200
+```
+
+### Quota & rate limits
+
+- **200 publishes per day** per project
+- **600 publishes per minute** per project
+- Sericia's 372-URL sitemap covers ~2 days of submission (200 + 172)
+- The bulk script paces 30s between batches to stay under per-minute
+
+### When to use Google vs IndexNow
+
+| Scenario | Google API | IndexNow |
+|----------|-----------|----------|
+| New article published | ✅ | ✅ |
+| Article meta_description updated | ✅ | ✅ |
+| Article URL deleted | ✅ (`type:"URL_DELETED"`) | ✅ |
+| Sitewide refresh after content sweep | ✅ (200/day) | ✅ (no daily limit) |
+| Real-time SEO experimentation | quota-limited | preferred |
+
+Run BOTH on every major content change — they cover different search
+engines.
 
 <a id="seo-4"></a>
 
