@@ -39,11 +39,16 @@ export type DeepSeekMessage = {
 
 export type DeepSeekChatOptions = {
   /**
-   * Model id. Defaults to `deepseek-chat` (V3). Only override for eval runs
-   * against `deepseek-reasoner` — it's 3–5× slower and ~10× more expensive,
-   * which we do not want in the pSEO hot path.
+   * Model id. F43 migration 2026-04-30: DeepSeek deprecated the V3
+   * `deepseek-chat` / `deepseek-reasoner` aliases when V4 shipped.
+   * Only V4 endpoints accept new requests now. The mapping:
+   *   deepseek-chat (V3 default)    → deepseek-v4-flash (V4 default)
+   *   deepseek-reasoner (V3 reasoning) → deepseek-v4-pro (V4 reasoning)
+   * Context Caching (the 90%-OFF discount on identical prefix prefixes)
+   * carries over to V4 and remains the cost lever for our pSEO matrix
+   * generator.
    */
-  model?: "deepseek-chat" | "deepseek-reasoner";
+  model?: "deepseek-v4-flash" | "deepseek-v4-pro";
   /**
    * If true, enforces JSON-parseable output. When used, the caller MUST include
    * the word "JSON" in their prompt — DeepSeek refuses the request otherwise.
@@ -127,7 +132,7 @@ export async function deepseekChat(
     );
   }
 
-  const model = opts.model ?? "deepseek-chat";
+  const model = opts.model ?? "deepseek-v4-flash";
   const timeoutMs = opts.timeoutMs ?? 60_000;
   const maxRetries = opts.maxRetries ?? 2;
 

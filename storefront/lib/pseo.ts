@@ -256,7 +256,7 @@ export async function generatePseoArticle(
       { role: "user", content: userMessage },
     ],
     {
-      model: "deepseek-chat",
+      model: "deepseek-v4-flash",
       temperature: 0.6, // lower than default — the voice is strict
       max_tokens: 3800, // body up to ~1300 words + JSON overhead
       timeoutMs: 90_000, // long articles can run up to ~60s on cold cache
@@ -277,7 +277,7 @@ export async function generatePseoArticle(
     faq: data.faq,
     telemetry: {
       prompt_version: PSEO_PROMPT_VERSION,
-      model: "deepseek-chat",
+      model: "deepseek-v4-flash",
       usage,
       elapsed_ms,
     },
