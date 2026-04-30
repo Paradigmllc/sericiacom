@@ -168,7 +168,7 @@ async function deepseekTranslate(targetLocale, target) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "deepseek-chat",
+      model: "deepseek-v4-flash",
       temperature: 0.2,
       response_format: { type: "json_object" },
       messages: [
