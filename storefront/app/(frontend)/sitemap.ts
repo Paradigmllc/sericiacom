@@ -1,5 +1,10 @@
 import type { MetadataRoute } from "next";
-import { COUNTRIES, PRODUCTS } from "@/lib/pseo-matrix";
+import {
+  COUNTRIES,
+  PRODUCTS,
+  USE_CASES,
+  buildComparePairs,
+} from "@/lib/pseo-matrix";
 import { JOURNAL } from "@/lib/journal";
 import { listActiveProducts } from "@/lib/products";
 
@@ -97,6 +102,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.4,
   }));
 
+  // F40 — Zapier-style pSEO permutation routes.
+  //  /compare/[a]/[b]  pairwise product comparisons (66 base URLs)
+  //  /uses/[product]/[case] use-case guides (12 × 6 = 72 base URLs)
+  // Both render server-side from generateStaticParams, no Payload needed
+  // at build time, no Postgres, no Crossmint. Pure permutation pages
+  // designed to flood AI search engines with long-tail "X vs Y" /
+  // "X for Y" intent matches.
+  const compares = buildComparePairs().map(([a, b]) => ({
+    url: `${base}/compare/${a}/${b}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+  const uses = PRODUCTS.flatMap((p) =>
+    USE_CASES.map((u) => ({
+      url: `${base}/uses/${p.slug}/${u.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  );
+
   return [
     { url: base, lastModified: now, changeFrequency: "daily", priority: 1.0 },
     { url: `${base}/products`, lastModified: now, changeFrequency: "daily", priority: 0.95 },
@@ -106,6 +133,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...productEntries,
     ...tools,
     ...guides,
+    ...compares,
+    ...uses,
     ...journal,
     ...staticBrand,
     ...staticLegal,

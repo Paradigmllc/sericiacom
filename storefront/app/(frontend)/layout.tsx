@@ -124,6 +124,19 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   category: "food & beverage",
+  // F40: Search-engine ownership verification meta tags. Operator pastes
+  // the actual codes into Coolify env (NEXT_PUBLIC_GSC_VERIFICATION,
+  // NEXT_PUBLIC_BING_VERIFICATION, NEXT_PUBLIC_YANDEX_VERIFICATION) once
+  // they generate them in the respective consoles. Empty values render
+  // as empty meta tags which the consoles still accept; populated values
+  // unlock indexing in 24–48h.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION ?? undefined,
+    other: {
+      "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION ?? "",
+      "yandex-verification": process.env.NEXT_PUBLIC_YANDEX_VERIFICATION ?? "",
+    },
+  },
 };
 
 export const viewport: Viewport = {
