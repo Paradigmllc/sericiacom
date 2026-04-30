@@ -34,8 +34,9 @@ export default function RefundRequestForm() {
     description: "",
   });
 
+  // 16px prevents iOS Safari auto-zoom on input focus.
   const inputCls =
-    "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[15px] placeholder-sericia-ink-mute transition-colors";
+    "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[16px] placeholder-sericia-ink-mute transition-colors";
   const labelCls = "label block mb-2";
 
   // Map enum values to localized labels — keep enum stable (it's stored

@@ -70,7 +70,11 @@ export default function CartCheckoutForm({
 
   useEffect(() => setMounted(true), []);
 
-  const inputCls = "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[15px] placeholder-sericia-ink-mute transition-colors";
+  // text-[16px] is intentional — iOS Safari auto-zooms inputs whose computed
+  // font-size is < 16px on focus, which makes mobile checkout jank visibly
+  // (page zooms to fit the input, user has to manually zoom back). 16px
+  // suppresses this behaviour without visibly changing the desktop layout.
+  const inputCls = "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[16px] placeholder-sericia-ink-mute transition-colors";
   const labelCls = "label block mb-2";
 
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>

@@ -114,8 +114,15 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: "/favicon.svg",
+    // iOS Safari uses apple-touch-icon when adding to home screen.
+    apple: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Sericia",
+    statusBarStyle: "black-translucent",
+  },
   category: "food & beverage",
 };
 

@@ -43,7 +43,8 @@ export default function AddressForm({
     phone: initialPhone ?? "",
   });
 
-  const input = "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[15px] placeholder-sericia-ink-mute transition-colors";
+  // 16px prevents iOS Safari auto-zoom on input focus.
+  const input = "w-full px-0 py-3 bg-transparent border-b border-sericia-line focus:border-sericia-ink focus:outline-none text-[16px] placeholder-sericia-ink-mute transition-colors";
   const label = "label block mb-2";
 
   async function onSubmit(e: React.FormEvent) {

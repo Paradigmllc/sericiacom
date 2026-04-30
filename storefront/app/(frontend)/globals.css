@@ -104,6 +104,26 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: inherit;
   text-decoration: none;
+  transition: color 160ms ease, opacity 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Tactile click feedback — visitor sees the link "depress" the moment
+   they tap, so even on slow navigations there is instant visual
+   confirmation that the click registered. Pairs with RouteProgress
+   (top hairline + corner ring) and loading.tsx (centered spinner). */
+a:active {
+  color: #807c70;
+  opacity: 0.72;
+}
+@media (hover: hover) {
+  a:hover {
+    opacity: 0.78;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  a {
+    transition: none;
+  }
 }
 
 button {
