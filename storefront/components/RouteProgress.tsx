@@ -163,10 +163,15 @@ export default function RouteProgress() {
         />
       </div>
 
-      {/* くるくる ring spinner — bare, no logo */}
+      {/* くるくる ring spinner — centered (F42: was top-right corner).
+          Per user directive 2026-04-30「ローディングアニメーションの
+          くるくるが右上ではなく画面中央で全ページ統一」— always render
+          at the centre of the viewport, matching LuxuryLoader's first-
+          paint position so visitors see one consistent loading idiom
+          across cold-paint, route-change, and slow-data states. */}
       <div
         aria-hidden
-        className="fixed top-4 right-4 md:top-5 md:right-5 z-[99] pointer-events-none"
+        className="fixed inset-0 z-[99] pointer-events-none flex items-center justify-center"
         style={{
           opacity: visible ? (fading ? 0 : 1) : 0,
           transform: visible ? "scale(1)" : "scale(0.85)",
@@ -176,7 +181,7 @@ export default function RouteProgress() {
         }}
       >
         <div
-          className={`w-5 h-5 md:w-6 md:h-6 rounded-full ${
+          className={`w-8 h-8 md:w-10 md:h-10 rounded-full ${
             visible && !fading ? "route-kuru-loop" : ""
           }`}
           style={{

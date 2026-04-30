@@ -61,10 +61,14 @@ export default function LuxuryLoader() {
     <div
       aria-hidden
       role="presentation"
-      // Corner-floating, no backdrop. Page content remains fully visible
-      // through the loader — user can scroll, tap, read while it's still
-      // resolving. pointer-events:none so it never intercepts clicks.
-      className="fixed top-4 right-4 md:top-5 md:right-5 z-[200] pointer-events-none"
+      // F42: centered overlay (was top-right corner). User directive
+      // 2026-04-30「ローディングアニメーションのくるくるが右上ではなく
+      // 画面中央で全ページ統一」— the spinner should always appear at
+      // the visual centre of the viewport so the eye lands on the same
+      // spot regardless of which page or surface is loading.
+      // pointer-events:none keeps the loader non-interactive so it
+      // never blocks clicks or scrolls underneath.
+      className="fixed inset-0 z-[200] pointer-events-none flex items-center justify-center"
       style={{
         opacity: fading ? 0 : 1,
         transform: fading ? "scale(0.85)" : "scale(1)",
@@ -73,11 +77,11 @@ export default function LuxuryLoader() {
       }}
     >
       <svg
-        width="22"
-        height="22"
+        width="32"
+        height="32"
         viewBox="0 0 22 22"
         fill="none"
-        className="luxury-kuru md:w-6 md:h-6"
+        className="luxury-kuru md:w-10 md:h-10"
         aria-hidden
       >
         {/* Faint track — keeps the ring shape readable on light backgrounds

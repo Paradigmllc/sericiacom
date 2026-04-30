@@ -4,12 +4,7 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, Eyebrow, Rule, SectionHeading } from "@/components/ui";
-import {
-  PRODUCTS,
-  USE_CASES,
-  type ProductSlug,
-  type UseCaseSlug,
-} from "@/lib/pseo-matrix";
+import { PRODUCTS, USE_CASES } from "@/lib/pseo-matrix";
 
 /**
  * /uses/[product]/[case] — "X for Y" use-case guide.
@@ -43,15 +38,12 @@ function resolve(rawProduct: string, rawCase: string) {
   return { product: p, useCase: u };
 }
 
-export function generateStaticParams() {
-  const out: Array<{ product: ProductSlug; case: UseCaseSlug }> = [];
-  for (const p of PRODUCTS) {
-    for (const u of USE_CASES) {
-      out.push({ product: p.slug, case: u.slug });
-    }
-  }
-  return out;
-}
+// F41 hotfix: removed generateStaticParams — Hetzner CPX22 OOM-kills
+// the build when 72 uses + 66 compare pages are statically generated
+// alongside the existing 144 guides + Payload + Crossmint SDK. Pages
+// now render dynamically on first visit and Cloudflare edge-caches
+// the response per the 1h HTML cache rule. From the second visitor's
+// perspective the route is indistinguishable from a static build.
 
 export async function generateMetadata({
   params,

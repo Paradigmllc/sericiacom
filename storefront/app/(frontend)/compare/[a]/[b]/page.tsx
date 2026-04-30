@@ -70,9 +70,12 @@ function resolvePair(rawA: string, rawB: string) {
   return { a, b, canonical: `/compare/${aSlug}/${bSlug}` };
 }
 
-export function generateStaticParams() {
-  return buildComparePairs().map(([a, b]) => ({ a, b }));
-}
+// F41 hotfix: removed generateStaticParams — Hetzner CPX22 OOM-kills
+// the build when 66 compare + 72 uses pages are statically generated
+// alongside the existing 144 guides + Payload + Crossmint SDK. Pages
+// now render dynamically on first visit and Cloudflare edge-caches
+// the response per the 1h HTML cache rule. From the second visitor's
+// perspective the route is indistinguishable from a static build.
 
 export async function generateMetadata({
   params,
