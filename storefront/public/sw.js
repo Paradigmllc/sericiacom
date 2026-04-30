@@ -29,7 +29,19 @@
  * See docs/pwa.md for a longer architectural walkthrough.
  */
 
-const VERSION = "v1";
+// F52: bumped from v1 → v2 to invalidate every cached HTML response
+// from the v1 era. Reason: v1 cached navigation responses in
+// CACHE_SHELL (see networkFirstNavigation pre-F52). Each cached HTML
+// referenced /_next/static/chunks/<hash>.js URLs from that build.
+// After a deploy, those chunk hashes no longer exist on origin, so a
+// transient network blip during navigation made the SW fall back to
+// stale cached HTML → React tried to load missing chunks → white
+// page. v2 deletes the v1 caches on activate AND no longer caches
+// navigation responses (see the rewritten networkFirstNavigation
+// below — only /offline.html is cached, served only when truly
+// offline). Future deploys do NOT need to bump VERSION further unless
+// the SW logic itself changes.
+const VERSION = "v2";
 const CACHE_SHELL = `sericia-shell-${VERSION}`;
 const CACHE_STATIC = `sericia-static-${VERSION}`;
 const CACHE_RUNTIME = `sericia-runtime-${VERSION}`;
@@ -98,20 +110,27 @@ self.addEventListener("fetch", (event) => {
 });
 
 async function networkFirstNavigation(request) {
+  // F52: removed navigation response caching. Pre-F52 we cached every 2xx
+  // navigation response into CACHE_SHELL on the assumption that it would
+  // be a useful offline fallback. In practice it caused white-page
+  // outages: the cached HTML referenced /_next/static/chunks/<hash>.js
+  // URLs from THAT build, and after the next deploy those hashes no
+  // longer existed on origin. Any transient network blip during
+  // navigation made the SW fall back to stale HTML → missing chunk
+  // requests → React failed to hydrate → blank page. Symptom users saw:
+  // "白くなる時や何回も読み込まないと表示されない".
+  //
+  // F52 fix: navigation always passes through to network. Offline
+  // fallback is the pre-cached /offline.html only — it's static, has
+  // no chunk dependencies, so it can never go stale. The trade-off is
+  // we lose the "open recently-visited page while offline" capability
+  // for routes that aren't /offline.html, which we accept because the
+  // luxury-UX cost of intermittent white pages on live deploys is far
+  // higher than the offline-revisit feature it bought us.
   try {
-    const response = await fetch(request);
-    // Only cache 2xx — avoids pinning 404 / 500 pages into the shell cache,
-    // which would then get served when the user is offline and revisit the
-    // same URL. Nothing worse than "offline fallback" being a stale 500.
-    if (response.ok) {
-      const shell = await caches.open(CACHE_SHELL);
-      shell.put(request, response.clone());
-    }
-    return response;
+    return await fetch(request);
   } catch {
     const cache = await caches.open(CACHE_SHELL);
-    const cached = await cache.match(request);
-    if (cached) return cached;
     const offline = await cache.match("/offline.html");
     return offline ?? new Response("Offline", {
       status: 503,
