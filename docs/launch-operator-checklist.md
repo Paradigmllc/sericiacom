@@ -61,13 +61,23 @@ Highlights:
 ---
 
 <a id="op-cf-bots"></a>
-## 2. 🚨 Cloudflare AI bot toggle (GEO blocker — fix BEFORE launch)
+## 2. 🚨 Cloudflare AI Crawl Control (GEO blocker — fix BEFORE launch)
 
-**Why this is critical**: Cloudflare's "Block AI Bots" Managed Content
-feature, when enabled, rewrites `/robots.txt` at the edge with `Disallow: /`
-for **every AI search agent** Sericia depends on (GPTBot, ClaudeBot, CCBot,
-Google-Extended, PerplexityBot, anthropic-ai). This **invalidates the entire
-GEO playbook** — Drop #1 will be invisible to AI search engines.
+**Why this is critical**: Cloudflare has TWO separate AI bot controls that
+both override `/robots.txt` at the edge. Our 2026-04-30 incident proved that
+disabling the simpler "Block AI Bots" toggle is **not enough** — the deeper
+"AI Crawl Control" feature also writes Content Signals + per-bot Disallow
+rules into the managed `/robots.txt` and must be reconfigured separately.
+
+If left default, /robots.txt serves:
+```
+Content-Signal: search=yes,ai-train=no
++ Disallow: /  for GPTBot, ClaudeBot, CCBot, Google-Extended,
+                 Applebot-Extended, Amazonbot, Bytespider, meta-externalagent
+```
+
+This **invalidates the entire GEO playbook** — Drop #1 invisible to AI
+search engines (Perplexity / ChatGPT / Gemini / Claude).
 
 ### Verify current state
 
@@ -75,24 +85,57 @@ GEO playbook** — Drop #1 will be invisible to AI search engines.
 curl -sS https://sericia.com/robots.txt | grep -A1 "User-agent: GPTBot"
 ```
 
-If you see `Disallow: /` → BLOCKED, fix immediately.
-If you see `Allow: /` (or no Disallow line) → OK.
+- `Disallow: /` → BLOCKED (fix below)
+- `Allow: /` or GPTBot line absent → OK
 
-### Fix
+### Fix — TWO settings must both be touched
 
-1. Cloudflare dashboard → `sericia.com` zone
-2. **Security → Bots** (or **Security → Settings** depending on plan)
-3. Locate **"Block AI Bots"** or **"AI Audit"** toggle in Managed Content
-4. **Turn OFF**
-5. Save
-6. Re-run verify command above; should now show origin's `app/robots.ts` output
+**Setting A: Block AI Bots** (Security → Settings → AIボットをブロックする)
+
+1. Modal opens with three radios
+2. Select **"ブロックしない (クローラーを許可する)"**
+3. **Click 保存** (the modal stays open until you click save — selecting the
+   radio alone does nothing)
+4. Confirm parent text changes to "AIボットをブロックする範囲: ブロックしない（オフ）"
+
+**Setting B: AI Crawl Control** (left sidebar, top — separate top-level item,
+just below "最近" / above "調査"). This is the deeper one that controls the
+actual robots.txt Content Signals + per-bot rules.
+
+1. Click "AI Crawl Control" in left sidebar
+2. Find Content Signals section. Either:
+   - Disable AI Crawl Control entirely, OR
+   - Change `ai-train` from `no` to `yes` (or remove the signal so no
+     restriction is asserted)
+3. Find the Per-bot rules / Bot list section. For each AI search bot
+   (GPTBot, ClaudeBot, CCBot, Google-Extended, PerplexityBot,
+   Applebot-Extended, anthropic-ai), set rule to **Allow** (not Block)
+4. Save
+
+### Verify both settings
+
+After **both** A and B are saved, wait 30-60s for edge propagation, then:
+
+```bash
+# Should show Allow: / or no GPTBot line at all
+curl -sS https://sericia.com/robots.txt | grep -A1 "User-agent: GPTBot"
+
+# Top-level should be Content-Signal absent or with ai-train=yes
+curl -sS https://sericia.com/robots.txt | grep -A1 "^User-agent: \*"
+```
+
+If still showing the bot blocklist 5+ minutes after save, both settings are
+managed at edge and no origin / API workaround exists from current
+Cache Rules.Edit token scope. The dashboard is the only fix path.
 
 ### Why we don't fight CF at origin
 
 We DO ship explicit `Allow: /` rules for every AI bot in
-`storefront/app/(frontend)/robots.ts` — but Cloudflare's edge override wins.
-Origin intent is documented for clarity and for the case where CF Managed
-Content gets disabled.
+`storefront/app/(frontend)/robots.ts` — but Cloudflare's edge AI Crawl
+Control overrides the origin response entirely (the request never reaches
+Next.js for GET /robots.txt when AI Crawl Control is enabled).
+Origin intent is documented for clarity and for the case where AI Crawl
+Control gets disabled in dashboard.
 
 ---
 
