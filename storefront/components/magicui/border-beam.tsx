@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { motion, MotionStyle, Transition } from "framer-motion";
+import { motion, type Transition } from "framer-motion";
+import type { CSSProperties } from "react";
 
 /**
  * Magic UI BorderBeam — animated border highlight.
@@ -49,7 +50,7 @@ export function BorderBeam({
 }: BorderBeamProps) {
   return (
     <div className="pointer-events-none absolute inset-0 rounded-[inherit] [border:calc(var(--border-width)*1px)_solid_transparent] ![mask-clip:padding-box,border-box] ![mask-composite:intersect] [mask:linear-gradient(transparent,transparent),linear-gradient(white,white)]"
-      style={{ "--border-width": borderWidth } as MotionStyle}
+      style={{ "--border-width": borderWidth } as CSSProperties}
     >
       <motion.div
         className={cn(
@@ -62,7 +63,7 @@ export function BorderBeam({
           offsetPath: `rect(0 auto auto 0 round ${size}px)`,
           "--color-from": colorFrom,
           "--color-to": colorTo,
-        } as MotionStyle}
+        } as CSSProperties}
         initial={{ offsetDistance: `${initialOffset}%` }}
         animate={{
           offsetDistance: reverse
