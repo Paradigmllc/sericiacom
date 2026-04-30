@@ -2,6 +2,8 @@
 import { useState, useMemo } from "react";
 import ToolPageShell from "@/components/ToolPageShell";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 type Style = "ichiban" | "niban" | "awase" | "kombu" | "iriko" | "shiitake";
 
 const STYLES: Record<Style, { label: string; kombu: number; katsuo: number; iriko: number; shiitake: number; note: string; best: string }> = {

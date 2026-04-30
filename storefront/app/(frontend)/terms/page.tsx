@@ -8,6 +8,8 @@ import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
 import { Container, Rule } from "@/components/ui";
 import { webPageJsonLd } from "@/lib/page-jsonld";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Sericia Terms of Service — rules for using sericia.com and purchasing drops.",

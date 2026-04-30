@@ -5,6 +5,8 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, PageHero } from "@/components/ui";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 export const metadata: Metadata = {
   title:
     "Japanese Food Tools — EMS Calculator, Matcha Grader, Dashi Ratio | Sericia",

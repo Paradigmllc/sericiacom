@@ -39,18 +39,29 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const country = (await cookies()).get("country")?.value ?? "us";
-  const locale = (await getLocale()) as Locale;
-  // Cached per-request — same instance the layout's SettingsProvider got.
-  const settings = await getSiteSettings(locale);
-  const hc = settings?.homepageCopy;
+  // F39: parallelise independent awaits. Pre-F39 these were 6 sequential
+  // awaits costing ~4.8s cold render (each network/IO round-trip stacked
+  // serially). cookies() and getLocale() can run together; once locale is
+  // known, the four data fetches (settings, translations, drop, products)
+  // are independent and run together via Promise.all. Result: cold render
+  // bounded by the slowest single fetch (~1s) instead of the sum.
+  const [cookieStore, localeRaw] = await Promise.all([cookies(), getLocale()]);
+  const country = cookieStore.get("country")?.value ?? "us";
+  const locale = localeRaw as Locale;
+
   // Three-tier resolution: CMS (editor) → next-intl messages (locale) →
   // hardcoded English (emergency). `getTranslations("home_sections")` is
   // the second tier and is required for /ja /fr /ar etc. to render local
   // copy when the editor hasn't filled CMS yet.
-  const tHome = await getTranslations("home_sections");
-  const drop = await getCurrentDrop();
-  const products = await listActiveProducts();
+  // `getSiteSettings` is cached per-request — same instance the layout's
+  // SettingsProvider got, so this is free if layout already resolved it.
+  const [settings, tHome, drop, products] = await Promise.all([
+    getSiteSettings(locale),
+    getTranslations("home_sections"),
+    getCurrentDrop(),
+    listActiveProducts(),
+  ]);
+  const hc = settings?.homepageCopy;
   const currentDropProducts = products.slice(0, 3);
   const mostLoved = products.slice(3, 6);
 

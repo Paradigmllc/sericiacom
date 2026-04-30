@@ -96,9 +96,16 @@ const rules = [
     },
     enabled: true,
   },
-  // Rule 2 — HTML pages (2 min edge + 1h SWR)
+  // Rule 2 — HTML pages (1 hour edge + SWR + 60s browser)
+  // F39: edge TTL pushed from 2min → 1h. Reasoning: pages are now backed
+  // by ISR (revalidate=60 for dynamic, revalidate=3600 for static editorial).
+  // The edge cache + SWR keeps cold renders behind the cache for an entire
+  // hour. Even after a Coolify container restart wipes ISR's in-memory
+  // cache, Cloudflare keeps serving the previous edge copy with SWR
+  // background-fetch. Browser TTL nudged from 0 → 60s so back/forward and
+  // immediate re-clicks don't even revalidate.
   {
-    description: "Storefront HTML — 2min cache + 1h stale-while-revalidate",
+    description: "Storefront HTML — 1h edge cache + SWR + 60s browser",
     expression:
       '(http.request.uri.path eq "/") or ' +
       '(http.request.uri.path eq "/products") or ' +
@@ -114,8 +121,8 @@ const rules = [
     action: "set_cache_settings",
     action_parameters: {
       cache: true,
-      edge_ttl: { mode: "override_origin", default: 120 }, // 2min
-      browser_ttl: { mode: "override_origin", default: 0 },
+      edge_ttl: { mode: "override_origin", default: 3600 }, // 1h
+      browser_ttl: { mode: "override_origin", default: 60 }, // 60s
       serve_stale: { disable_stale_while_updating: false },
       // SWR is implicit via Cache Rules SDK — Cloudflare uses this
       // automatically when serve_stale.disable_stale_while_updating is false.

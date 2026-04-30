@@ -2,6 +2,8 @@
 import { useState, useMemo } from "react";
 import ToolPageShell from "@/components/ToolPageShell";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 type Method = "cold-overnight" | "cold-6h" | "warm-30min" | "boiling-15min";
 
 const METHOD_NOTES: Record<Method, { label: string; hours: number; waterRatio: number; note: string; score: string }> = {

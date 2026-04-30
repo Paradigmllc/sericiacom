@@ -2,6 +2,8 @@
 import { useState } from "react";
 import ToolPageShell from "@/components/ToolPageShell";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 type MisoType = "shiro" | "aka" | "awase" | "hatcho" | "saikyo";
 
 const DISHES = [

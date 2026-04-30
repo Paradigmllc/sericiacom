@@ -6,6 +6,8 @@ import SiteFooter from "@/components/SiteFooter";
 import ContentSidebar from "@/components/ContentSidebar";
 import { Container, PageHero, Rule } from "@/components/ui";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 /**
  * 特定商取引法に基づく表記 — Japanese Commercial Transactions Law notation.
  *

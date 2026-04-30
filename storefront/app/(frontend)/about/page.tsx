@@ -8,6 +8,8 @@ import ArticleBlocks from "@/components/ArticleBlocks";
 import type { ArticleBlock } from "@/lib/article-blocks";
 import { webPageJsonLd } from "@/lib/page-jsonld";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 /**
  * /about — Aesop-tier brand narrative.
  *

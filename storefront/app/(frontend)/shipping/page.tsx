@@ -9,6 +9,8 @@ import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
 import { Container, SectionHeading, Rule } from "@/components/ui";
 import { webPageJsonLd } from "@/lib/page-jsonld";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Shipping Information",
   description: "EMS worldwide shipping from Japan — transit times, customs, and tracking.",

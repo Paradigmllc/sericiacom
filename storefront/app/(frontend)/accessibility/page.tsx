@@ -8,6 +8,8 @@ import CategoryHero, { Breadcrumb } from "@/components/CategoryHero";
 import { Container, Rule } from "@/components/ui";
 import { webPageJsonLd } from "@/lib/page-jsonld";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 /**
  * /accessibility — Accessibility Statement.
  *

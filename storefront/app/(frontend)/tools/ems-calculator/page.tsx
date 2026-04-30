@@ -3,6 +3,8 @@ import { useState, useMemo } from "react";
 import { calcEms } from "@/lib/ems";
 import ToolPageShell from "@/components/ToolPageShell";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 const COUNTRY_LIST = [
   ["us", "United States"], ["uk", "United Kingdom"], ["de", "Germany"],
   ["fr", "France"], ["au", "Australia"], ["sg", "Singapore"],

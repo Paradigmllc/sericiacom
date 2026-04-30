@@ -2,6 +2,8 @@
 import { useState } from "react";
 import ToolPageShell from "@/components/ToolPageShell";
 
+// 1-hour ISR — page is mostly static editorial / brand copy.
+export const revalidate = 3600;
 const ITEMS = [
   { val: "sencha", label: "Sencha — sealed", pantry: 730, open: 90, note: "Nitrogen-flushed vacuum packs hold for two years unopened. Once opened, oxidation accelerates — finish within three months for peak flavour." },
   { val: "matcha", label: "Matcha powder — sealed", pantry: 365, open: 30, note: "Once opened, matcha loses vibrancy within weeks. Refrigerate to slow oxidation, but warm to room temperature before whisking." },
