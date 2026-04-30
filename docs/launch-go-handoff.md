@@ -37,8 +37,8 @@ $1 smoke test).
 | Rate limiter (60/min default, 20/min for `/api/dify-chat`) | ✅ Live | F16 |
 | Tailwind RGB-channel tokens (WCAG eyebrow contrast fixed) | ✅ Live | F20 |
 | Coolify cron: `docker builder prune` every 6h | ✅ Live (F24) | `crontab -l \| grep sericia-prune` on 46.62.217.172 |
-| Crossmint payment **code** (multi-line cart, env name, graceful states) | ✅ Live (F24) | `/api/pay/create` returns scope-aware errors |
-| **Crossmint payment runs** | ⚠️ Blocked on Crossmint Console scope (Step 1 below) | Step 4 below |
+| Crossmint payment **code** (multi-line cart, env name, graceful states) | ✅ Live (F24/F28/F29/F33) | `/api/pay/create` returns scope-aware errors |
+| **Crossmint payment runs** | ⚠️ Blocked on Crossmint **Sales Onramp activation** (Step 1 below — superseded crossmint-operator-runbook scope theory) | 2026-04-30 production probe returned: "Onramp is not yet enabled for production use" → see [crossmint-sales-activation.md](./crossmint-sales-activation.md) |
 | **Cloudflare cache rules** | ⚠️ Blocked on scoped CF token (Step 2 below) | `curl -sI / \| grep cf-cache` returns DYNAMIC currently |
 
 <a id="go-2"></a>
@@ -51,24 +51,48 @@ paste + one CF token + one $1 smoke test.
 
 
 
-### Step 1 — Crossmint Console (~5 min)
+### Step 1 — Crossmint **Sales** Onramp activation (~10 min hands-on, then 1–3 business days SLA)
 
-Detailed in [crossmint-operator-runbook.md](./crossmint-operator-runbook.md).
+**Updated 2026-04-30**: a production API probe today returned the
+project-level message *"Onramp is not yet enabled for production use…
+please contact our team at crossmint.com/contact/sales to enable
+production access."* This is a Crossmint-side **sales-gated** capability,
+not a self-serve Console toggle. The earlier
+[crossmint-operator-runbook.md](./crossmint-operator-runbook.md) scope
+theory is superseded by this finding — the SK is valid, scopes are fine,
+the gate is partnerships team approval.
+
+Full runbook: [crossmint-sales-activation.md](./crossmint-sales-activation.md).
 Tldr:
 
-1. https://www.crossmint.com/console → Sericia production project
-2. Developer settings → API keys → find `sk_production_23uQ1...`
-3. Confirm scopes: `orders.create`, `orders.read`, `orders.update`, `payments.read`
-4. Payments tab → ensure Credit/debit card is "Enabled" (not "Pending verification")
-5. Re-test:
-   ```bash
-   SK="<bare key from Coolify env CROSSMINT_SERVER_SK>"
-   curl -sS -X POST https://www.crossmint.com/api/2022-06-09/orders \
-     -H "X-API-KEY: $SK" -H "Content-Type: application/json" \
-     -d '{"payment":{"method":"stripe-payment-element","currency":"usd","receiptEmail":"t@s.com"},"lineItems":{"callData":{"totalPrice":"1.00","quantity":1}}}' \
-     -w "\nHTTP %{http_code}\n"
-   ```
-   Expect `HTTP 200` with `clientSecret` + `order.orderId` in the body.
+1. Open https://www.crossmint.com/contact/sales in a new tab
+2. Paste the "Section 3 — sales inquiry copy" from the runbook (already
+   includes project ID, SK prefix, treasury wallet, business profile,
+   target geos, expected volume — Crossmint's partnerships team uses
+   these to look up the project without round-tripping)
+3. Run "Section 4 — Console pre-flight" (~2 min) so the project state
+   looks complete when sales reviews
+4. Hit submit. Expected acknowledgement: <24 hours. Expected approval:
+   1–3 business days.
+
+Re-probe to detect approval (run any time):
+```bash
+ssh -i ~/.ssh/coolify_localhost_key root@46.62.217.172 \
+  'docker exec em2luzsfjoxb77jo3rxl4c9c-042814139042 node -e "
+    fetch(\"https://www.crossmint.com/api/2022-06-09/orders\",{
+      method:\"POST\",
+      headers:{\"X-API-KEY\":process.env.CROSSMINT_SERVER_SK,\"Content-Type\":\"application/json\"},
+      body:JSON.stringify({
+        lineItems:[{tokenLocator:\"base:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913\",
+                    executionParameters:{mode:\"exact-in\",amount:\"1.00\"}}],
+        payment:{method:\"card\",receiptEmail:\"smoke@sericia.com\"},
+        recipient:{walletAddress:process.env.SERICIA_TREASURY_WALLET_ADDRESS}
+      })
+    }).then(r=>r.text()).then(t=>console.log(t.slice(0,500)))
+  "'
+```
+- Still gated → response body contains "Onramp is not yet enabled"
+- Approved → response body contains `"orderId":"ord_…"` + `"clientSecret"` → proceed to Step 3 ($1 smoke test)
 
 ### Step 2 — Cloudflare Cache Rules (~3 min)
 
@@ -118,19 +142,34 @@ Per [crossmint-operator-runbook.md §5](./crossmint-operator-runbook.md#cm-5):
 
 ## 3. Recommended launch sequence
 
+Updated 2026-04-30 to reflect Crossmint sales SLA. The end-to-end
+critical path is **submit-form → wait → smoke-test**, not
+"all-three-steps in 15 minutes":
+
 ```
-T+0    : Step 1 — Crossmint Console scopes (5 min)
-T+5    : Step 1 verify curl returns 200 ✓
-T+5    : Step 2 — CF Cache Rules apply (3 min)
-T+8    : Step 2 verify cf-cache-status: HIT ✓
-T+8    : Step 3 — $1 smoke test (5 min)
-T+13   : Step 3 verify webhook + email + DB ✓
-T+13   : Refund the $1, hide test product
-T+15   : Internal final-look pass on https://sericia.com
-T+30   : Activate Dify KB if desired (~10 min, see docs/dify-kb-activation.md)
-T+60   : Send to 3-5 friends to do real purchases ("soft launch")
+DAY 0
+T+0    : Step 1 — Submit Crossmint sales form (10 min, see crossmint-sales-activation.md §3)
+T+10   : Step 2 — Apply CF Cache Rules (3 min, can run in parallel with Crossmint waiting period)
+T+13   : Step 2 verify cf-cache-status: HIT ✓
+T+13   : Optional pre-launch polish (CMS sample content, Dify KB activation)
+
+DAY 1–3 (Crossmint sales review)
+       : Watch inbox for Crossmint partnerships reply
+       : Re-probe daily via the curl in §1 above to detect approval
+
+WHEN APPROVED (typically email arrives 1–3 business days after submit)
+T+0    : Re-probe production → expect HTTP 200 + clientSecret ✓
+T+0    : Real-card $1 smoke test on sericia.com (5 min)
+T+5    : Verify webhook + email + DB row paid=true ✓
+T+5    : Refund the $1 in Crossmint Console, hide test product
+T+10   : Internal final-look pass on https://sericia.com
+T+30   : Send to 3-5 friends to do real purchases ("soft launch")
 T+24h  : If no incidents, post to Reddit / X / Instagram
 ```
+
+**Net wall-clock from "store-open intent" to "first dollar accepted":
+1–3 business days bounded by Crossmint sales SLA, with everything else
+parallelised into the wait period.**
 
 <a id="go-4"></a>
 
