@@ -44,20 +44,32 @@ export {};
  *   2 = ERROR (network / auth / unexpected response — needs human triage)
  */
 
-const API_KEY = process.env.CROSSMINT_PRODUCTION_API_KEY?.trim();
-const TREASURY = process.env.CROSSMINT_TREASURY_WALLET?.trim();
 const ENDPOINT = "https://www.crossmint.com/api/2022-06-09/orders";
 
-if (!API_KEY) {
-  console.error("[onramp-probe] CROSSMINT_PRODUCTION_API_KEY env required.");
-  console.error("  Get it from https://www.crossmint.com/console (Integrate → API keys).");
-  process.exit(2);
+// Helper: validate env and narrow `string | undefined` → `string` in a way
+// the Next.js production tsconfig respects. Plain `if (!X) process.exit()`
+// narrowing depends on `@types/node` declaring `process.exit` with return
+// type `never`, which is configuration-dependent. An explicit `throw` after
+// the exit call guarantees narrowing in every TS strict mode.
+function requireEnv(name: string, hint?: string): string {
+  const val = process.env[name]?.trim();
+  if (!val) {
+    console.error(`[onramp-probe] ${name} env required.`);
+    if (hint) console.error(`  ${hint}`);
+    process.exit(2);
+    throw new Error("unreachable");
+  }
+  return val;
 }
-if (!TREASURY) {
-  console.error("[onramp-probe] CROSSMINT_TREASURY_WALLET env required.");
-  console.error("  This is the Polygon address that real orders pay USDC to.");
-  process.exit(2);
-}
+
+const API_KEY = requireEnv(
+  "CROSSMINT_PRODUCTION_API_KEY",
+  "Get it from https://www.crossmint.com/console (Integrate → API keys).",
+);
+const TREASURY = requireEnv(
+  "CROSSMINT_TREASURY_WALLET",
+  "This is the Polygon address that real orders pay USDC to.",
+);
 
 // Canonical "small probe" payload. $1 USDC on Polygon, mirrors the F35 probe
 // exactly. tokenLocator format = "polygon:USDC" per Crossmint docs 2024-06.
