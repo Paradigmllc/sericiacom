@@ -127,14 +127,14 @@ async function main() {
   if (RESET) {
     console.log("[seed-faq] --reset specified, deleting existing entries...");
     const existing = await payload.find({
-      collection: "faqEntries",
+      collection: "faqEntries" as never,
       limit: 1000,
       pagination: false,
     });
     await Promise.all(
       existing.docs.map((doc) =>
         payload.delete({
-          collection: "faqEntries",
+          collection: "faqEntries" as never,
           id: (doc as { id: string | number }).id,
         }).catch((e: unknown) => {
           console.error(`[seed-faq] delete failed:`, e);
@@ -149,7 +149,7 @@ async function main() {
   let skipped = 0;
   for (const entry of SEED_ENTRIES) {
     const dupe = await payload.find({
-      collection: "faqEntries",
+      collection: "faqEntries" as never,
       where: {
         and: [
           { section: { equals: entry.section } },
@@ -164,7 +164,7 @@ async function main() {
     }
 
     await payload.create({
-      collection: "faqEntries",
+      collection: "faqEntries" as never,
       data: {
         section: entry.section,
         sectionLabel: entry.sectionLabel,

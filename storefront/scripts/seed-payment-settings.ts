@@ -61,7 +61,7 @@ async function main() {
 
   console.log("[seed-payment-settings] reading current global state...");
   const current = await payload.findGlobal({
-    slug: "paymentSettings",
+    slug: "paymentSettings" as never,
     depth: 0,
   }).catch((err: unknown) => {
     console.error("[seed-payment-settings] findGlobal failed:", err);
@@ -93,7 +93,7 @@ async function main() {
   );
 
   const result = await payload.updateGlobal({
-    slug: "paymentSettings",
+    slug: "paymentSettings" as never,
     data: {
       countryMethods,
       defaultMethods: [...HARDCODED_DEFAULT_METHODS],
