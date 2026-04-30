@@ -51,6 +51,27 @@ export default {
       maxWidth: {
         prose: "62ch",
       },
+      // F44 — Magic UI keyframes/animations.
+      // The custom Marquee component (`components/magicui/marquee.tsx`)
+      // uses `animate-marquee` / `animate-marquee-vertical` — these
+      // class hooks need matching `keyframes:` / `animation:` declarations
+      // here so Tailwind's JIT picks them up. `--duration` / `--gap` are
+      // CSS variables exposed via inline style on each Marquee instance.
+      keyframes: {
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+        "marquee-vertical": {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(calc(-100% - var(--gap)))" },
+        },
+      },
+      animation: {
+        marquee: "marquee var(--duration, 35s) linear infinite",
+        "marquee-vertical":
+          "marquee-vertical var(--duration, 35s) linear infinite",
+      },
     },
   },
   plugins: [],
