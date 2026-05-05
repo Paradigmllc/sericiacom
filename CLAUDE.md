@@ -473,7 +473,7 @@ USDC着金(数分)
 ```
 
 **Stripe/Shopifyを採用しない理由**:
-- Stripe: 7日ローリング入金 → キャッシュフロー問題
+- Stripe: 週次固定曜日入金（JP口座デフォルト）→ キャッシュフロー問題 / Instant Payoutsは日本未対応
 - Shopify: Crossmint(外部決済)に2%追加手数料
 - Crossmint: 2.5%のみ・チャージバック低減・グローバル対応
 
