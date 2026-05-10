@@ -38,7 +38,7 @@
 
 | 完了日 | Owner | Task | Commit |
 |--------|-------|------|--------|
-| 2026-05-10 | claude-code | **F58 Stripe direct primary rail** (Crossmint Sales review 停滞のため Stripe live を primary に昇格・lib/stripe.ts + 2 routes + StripePayment.tsx + payment-providers.ts + pay/[orderId] switch + docs/stripe-launch-runbook.md・operator setup 待ち) | (本コミット) |
+| 2026-05-10 | claude-code | **F58 Stripe direct primary rail (fully autonomous)** — Crossmint Sales 停滞対応で Stripe live を primary に昇格. コード + Stripe API webhook 登録 (`we_1TVMW2EU4EEn0nZ8JE0Vrof1` / `whsec_qBB6CD...`) + Apple Pay/Google Pay/Link/PayPal/Klarna/Amazon Pay 全 method `sericia.com` + `www.sericia.com` 自動 verify (CF proxy 経由) + Coolify API で 3 envs 注入 (`STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` / `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`) + smoke test スクリプト (`storefront/scripts/smoke-test-stripe.sh` 5 assertion HTTP-only) + runbook + memory 永続化. **operator 操作ゼロで完遂**. 残: deploy 2 (envs build-time inline 用) finish 監視 + smoke test 実行. | `6cddf3e3` (F58 code) → `cc89c5ff` (smoke test) on main |
 | 2026-05-08 | claude-code | **Task.md 新規作成** (TEAM-DEV protocol 適用) | (TEAM-DEV commit) |
 
 > 過去履歴は `git log` 参照. 14 日経過で `docs/handoff-archive/` に自動移動 (post-task-md-auto-archive hook).
