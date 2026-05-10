@@ -130,7 +130,7 @@ export default function SiteHeader() {
     <>
       <AnnouncementBar />
       <HeaderShell>
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-5 flex items-center justify-between gap-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 py-5 flex items-center justify-between gap-3 md:gap-6">
           {/*
             Left side: hamburger (mobile only) + wordmark.
             On md+ the hamburger is hidden via `md:hidden` inside MobileMenu,
