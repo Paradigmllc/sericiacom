@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Eyebrow, Rule } from "@/components/ui";
 import PushOptIn from "@/components/PushOptIn";
 import { supabaseServer } from "@/lib/supabase-server";
@@ -11,49 +12,74 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Locale tag mapping: convert next-intl locale ids to BCP-47 tags so
+// toLocaleDateString picks the right month/year format per locale.
+const LOCALE_DATE_MAP: Record<string, string> = {
+  en: "en-US",
+  ja: "ja-JP",
+  de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
+  it: "it-IT",
+  ko: "ko-KR",
+  "zh-TW": "zh-TW",
+  ru: "ru-RU",
+  ar: "ar-AE",
+};
+
 export default async function AccountOverviewPage() {
   const supa = await supabaseServer();
   const { data: { user } } = await supa.auth.getUser();
   if (!user) redirect("/login?redirect=/account");
 
-  const { data: profile } = await supabaseAdmin
-    .from("sericia_profiles")
-    .select("full_name, email, created_at, default_address")
-    .eq("id", user.id)
-    .maybeSingle();
+  // F63 — locale-aware account overview. All visible copy comes from the
+  // `account.overview_page` namespace; member-since date uses the customer's
+  // active locale for proper "April 2026" / "2026年4月" / "Avril 2026" format.
+  const locale = await getLocale();
+  const t = await getTranslations("account.overview_page");
 
-  const { count: orderCount } = await supabaseAdmin
-    .from("sericia_orders")
-    .select("id", { count: "exact", head: true })
-    .eq("email", user.email?.toLowerCase() ?? "");
+  const [{ data: profile }, { count: orderCount }] = await Promise.all([
+    supabaseAdmin
+      .from("sericia_profiles")
+      .select("full_name, email, created_at, default_address")
+      .eq("id", user.id)
+      .maybeSingle(),
+    supabaseAdmin
+      .from("sericia_orders")
+      .select("id", { count: "exact", head: true })
+      .eq("email", user.email?.toLowerCase() ?? ""),
+  ]);
 
   const memberSince = profile?.created_at
-    ? new Date(profile.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })
-    : "today";
+    ? new Date(profile.created_at).toLocaleDateString(LOCALE_DATE_MAP[locale] ?? "en-US", {
+        month: "long",
+        year: "numeric",
+      })
+    : t("label_member_since_today");
 
   return (
     <div>
-      <Eyebrow>Account</Eyebrow>
+      <Eyebrow>{t("eyebrow")}</Eyebrow>
       <h1 className="text-[36px] md:text-[44px] leading-[1.1] font-normal tracking-tight">
-        {profile?.full_name || "Welcome"}.
+        {profile?.full_name || t("welcome_default")}.
       </h1>
       <p className="text-[15px] text-sericia-ink-soft mt-5 leading-relaxed max-w-prose">
-        Manage your orders, shipping addresses and preferences. Your drops ship EMS from Kyoto within 48 hours of payment.
+        {t("lede")}
       </p>
 
       <Rule className="my-12" />
 
       <div className="grid md:grid-cols-3 gap-px bg-sericia-line">
         <div className="bg-sericia-paper p-8">
-          <p className="label mb-3">Email</p>
+          <p className="label mb-3">{t("label_email")}</p>
           <p className="text-[15px] break-all">{profile?.email || user.email}</p>
         </div>
         <div className="bg-sericia-paper p-8">
-          <p className="label mb-3">Member since</p>
+          <p className="label mb-3">{t("label_member_since")}</p>
           <p className="text-[15px]">{memberSince}</p>
         </div>
         <div className="bg-sericia-paper p-8">
-          <p className="label mb-3">Orders</p>
+          <p className="label mb-3">{t("label_orders_count")}</p>
           <p className="text-[15px]">{orderCount ?? 0}</p>
         </div>
       </div>
@@ -62,19 +88,19 @@ export default async function AccountOverviewPage() {
 
       <div className="grid md:grid-cols-3 gap-8">
         <Link href="/account/orders" className="block border border-sericia-line p-8 hover:border-sericia-ink transition">
-          <p className="label mb-3">Orders</p>
-          <h2 className="text-[22px] font-normal leading-snug mb-3">Track and download receipts</h2>
-          <p className="text-[13px] text-sericia-ink-soft">View order history and tracking numbers.</p>
+          <p className="label mb-3">{t("card_orders_label")}</p>
+          <h2 className="text-[22px] font-normal leading-snug mb-3">{t("card_orders_title")}</h2>
+          <p className="text-[13px] text-sericia-ink-soft">{t("card_orders_lede")}</p>
         </Link>
         <Link href="/account/addresses" className="block border border-sericia-line p-8 hover:border-sericia-ink transition">
-          <p className="label mb-3">Addresses</p>
-          <h2 className="text-[22px] font-normal leading-snug mb-3">Default shipping</h2>
-          <p className="text-[13px] text-sericia-ink-soft">Keep your ship-to address up to date.</p>
+          <p className="label mb-3">{t("card_addresses_label")}</p>
+          <h2 className="text-[22px] font-normal leading-snug mb-3">{t("card_addresses_title")}</h2>
+          <p className="text-[13px] text-sericia-ink-soft">{t("card_addresses_lede")}</p>
         </Link>
         <Link href="/account/settings" className="block border border-sericia-line p-8 hover:border-sericia-ink transition">
-          <p className="label mb-3">Settings</p>
-          <h2 className="text-[22px] font-normal leading-snug mb-3">Profile, email & language</h2>
-          <p className="text-[13px] text-sericia-ink-soft">Edit your name, language, email or delete your account.</p>
+          <p className="label mb-3">{t("card_settings_label")}</p>
+          <h2 className="text-[22px] font-normal leading-snug mb-3">{t("card_settings_title")}</h2>
+          <p className="text-[13px] text-sericia-ink-soft">{t("card_settings_lede")}</p>
         </Link>
       </div>
 

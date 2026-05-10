@@ -177,7 +177,44 @@
     "order_number": "Commande",
     "status": "Statut",
     "total": "Total",
-    "date": "Date"
+    "date": "Date",
+    "overview_page": {
+      "eyebrow": "Compte",
+      "welcome_default": "Bienvenue",
+      "lede": "Gérez vos commandes, adresses de livraison et préférences. Vos drops sont expédiés par EMS depuis Kyoto sous 48 heures après paiement.",
+      "label_email": "E-mail",
+      "label_member_since": "Membre depuis",
+      "label_member_since_today": "aujourd'hui",
+      "label_orders_count": "Commandes",
+      "card_orders_label": "Commandes",
+      "card_orders_title": "Suivi et téléchargement des reçus",
+      "card_orders_lede": "Consultez l'historique des commandes et les numéros de suivi.",
+      "card_addresses_label": "Adresses",
+      "card_addresses_title": "Adresse de livraison par défaut",
+      "card_addresses_lede": "Tenez votre adresse de livraison à jour.",
+      "card_settings_label": "Paramètres",
+      "card_settings_title": "Profil, e-mail et langue",
+      "card_settings_lede": "Modifiez votre nom, votre langue, votre e-mail ou supprimez votre compte."
+    },
+    "addresses_page": {
+      "eyebrow": "Adresses",
+      "title": "Adresse de livraison par défaut.",
+      "lede": "Utilisée pour préremplir le paiement. Vous pouvez toujours la modifier pour une commande particulière.",
+      "form_full_name": "Nom complet",
+      "form_address_line1": "Adresse ligne 1",
+      "form_address_line2": "Adresse ligne 2",
+      "form_address_line2_optional": "facultatif",
+      "form_city": "Ville",
+      "form_region": "État / Région",
+      "form_postal_code": "Code postal",
+      "form_country": "Pays",
+      "form_phone": "Téléphone",
+      "form_phone_hint": "pour la douane",
+      "submit_save": "Enregistrer l'adresse",
+      "submit_saving": "Enregistrement…",
+      "toast_saved": "Adresse enregistrée",
+      "toast_not_signed_in": "Non connecté"
+    }
   },
   "thank_you": {
     "title": "Merci",
@@ -383,5 +420,22 @@
     "init_error_title": "We couldn''t start the payment process just now. This is on our side, not yours.",
     "init_error_concierge_prefix": "Reach our concierge directly at",
     "init_error_concierge_suffix": "and we''ll process the order by hand."
+  },
+  "common": {
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "cancel": "Annuler",
+    "submit": "Envoyer",
+    "submitting": "Envoi en cours…",
+    "loading": "Chargement…",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "continue": "Continuer",
+    "copied": "Copié",
+    "empty_state": "Rien ici pour l'instant.",
+    "error_generic": "Une erreur est survenue. Veuillez réessayer.",
+    "error_network": "Impossible de joindre le serveur. Veuillez réessayer dans un instant.",
+    "sign_in_required": "Veuillez vous connecter pour continuer."
   }
 }

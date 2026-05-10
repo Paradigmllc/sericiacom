@@ -200,7 +200,44 @@
     "order_number": "Bestellung",
     "status": "Status",
     "total": "Gesamt",
-    "date": "Datum"
+    "date": "Datum",
+    "overview_page": {
+      "eyebrow": "Konto",
+      "welcome_default": "Willkommen",
+      "lede": "Verwalten Sie Ihre Bestellungen, Versandadressen und Präferenzen. Ihre Drops werden per EMS innerhalb von 48 Stunden nach Zahlungseingang aus Kyōto versandt.",
+      "label_email": "E-Mail",
+      "label_member_since": "Mitglied seit",
+      "label_member_since_today": "heute",
+      "label_orders_count": "Bestellungen",
+      "card_orders_label": "Bestellungen",
+      "card_orders_title": "Sendungsverfolgung und Quittungen herunterladen",
+      "card_orders_lede": "Bestellhistorie und Sendungsnummern einsehen.",
+      "card_addresses_label": "Adressen",
+      "card_addresses_title": "Standardversand",
+      "card_addresses_lede": "Halten Sie Ihre Lieferadresse auf dem neuesten Stand.",
+      "card_settings_label": "Einstellungen",
+      "card_settings_title": "Profil, E-Mail und Sprache",
+      "card_settings_lede": "Bearbeiten Sie Ihren Namen, Ihre Sprache, Ihre E-Mail-Adresse oder löschen Sie Ihr Konto."
+    },
+    "addresses_page": {
+      "eyebrow": "Adressen",
+      "title": "Standard-Lieferadresse.",
+      "lede": "Wird verwendet, um die Kasse vorauszufüllen. Sie können sie für jede einzelne Bestellung noch ändern.",
+      "form_full_name": "Vollständiger Name",
+      "form_address_line1": "Adresszeile 1",
+      "form_address_line2": "Adresszeile 2",
+      "form_address_line2_optional": "optional",
+      "form_city": "Stadt",
+      "form_region": "Bundesland / Region",
+      "form_postal_code": "Postleitzahl",
+      "form_country": "Land",
+      "form_phone": "Telefon",
+      "form_phone_hint": "für den Zoll",
+      "submit_save": "Adresse speichern",
+      "submit_saving": "Speichern…",
+      "toast_saved": "Adresse gespeichert",
+      "toast_not_signed_in": "Nicht angemeldet"
+    }
   },
   "thank_you": {
     "title": "Vielen Dank",
@@ -406,5 +443,22 @@
     "init_error_title": "We couldn''t start the payment process just now. This is on our side, not yours.",
     "init_error_concierge_prefix": "Reach our concierge directly at",
     "init_error_concierge_suffix": "and we''ll process the order by hand."
+  },
+  "common": {
+    "save": "Speichern",
+    "saving": "Speichern…",
+    "cancel": "Abbrechen",
+    "submit": "Absenden",
+    "submitting": "Absenden…",
+    "loading": "Laden…",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "continue": "Weiter",
+    "copied": "Kopiert",
+    "empty_state": "Noch nichts hier.",
+    "error_generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "error_network": "Wir konnten den Server nicht erreichen. Bitte versuchen Sie es in einem Moment erneut.",
+    "sign_in_required": "Bitte melden Sie sich an, um fortzufahren."
   }
 }
