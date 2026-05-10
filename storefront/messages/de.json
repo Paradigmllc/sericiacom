@@ -237,6 +237,34 @@
       "submit_saving": "Speichern…",
       "toast_saved": "Adresse gespeichert",
       "toast_not_signed_in": "Nicht angemeldet"
+    },
+    "orders_page": {
+      "eyebrow": "Bestellungen",
+      "title": "Bestellverlauf.",
+      "lede_fmt": "Alle Bestellungen für {email}.",
+      "empty_label": "Noch keine Bestellungen",
+      "empty_lede": "Wenn Sie Ihre erste Bestellung aufgeben, erscheint sie hier mit Sendungsverfolgung und Belegen.",
+      "browse_collection": "Durchstöbern Sie die Kollektion",
+      "table_status_tracked": "Verfolgt",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "Wunschliste",
+      "empty_title": "Ihre Wunschliste ist leer.",
+      "empty_lede": "Bewahren Sie die Dinge, die Sie lieben, indem Sie auf das Herz bei jedem Produkt tippen — sie warten hier auf Sie, bis Sie bereit sind.",
+      "browse_collection": "Kollektion durchstöbern",
+      "saved_for_later": "Für später gespeichert",
+      "clear_button": "Leeren",
+      "add_all_button": "Alle in den Warenkorb",
+      "add_to_cart_button": "In den Warenkorb",
+      "saved_at_fmt": "Gespeichert am {date}",
+      "remove_aria_fmt": "{name} von der Wunschliste entfernen",
+      "toast_added_to_cart_fmt": "In den Warenkorb gelegt — {name}",
+      "toast_added_all_singular": "1 Artikel in den Warenkorb gelegt",
+      "toast_added_all_plural_fmt": "{count} Artikel in den Warenkorb gelegt",
+      "toast_removed_fmt": "Entfernt — {name}",
+      "toast_cleared": "Wunschliste geleert",
+      "confirm_clear": "Ihre gesamte Wunschliste leeren?"
     }
   },
   "thank_you": {

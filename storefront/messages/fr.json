@@ -214,6 +214,34 @@
       "submit_saving": "Enregistrement…",
       "toast_saved": "Adresse enregistrée",
       "toast_not_signed_in": "Non connecté"
+    },
+    "orders_page": {
+      "eyebrow": "Commandes",
+      "title": "Historique des commandes.",
+      "lede_fmt": "Toutes les commandes liées à {email}.",
+      "empty_label": "Aucune commande pour l'instant",
+      "empty_lede": "Lorsque vous passerez votre première commande, elle apparaîtra ici avec le suivi et les reçus.",
+      "browse_collection": "Parcourir la collection",
+      "table_status_tracked": "Suivi",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "Liste de souhaits",
+      "empty_title": "Votre liste de souhaits est vide.",
+      "empty_lede": "Sauvegardez les choses que vous aimez en touchant le cœur sur tout produit — elles vous attendront ici jusqu'à ce que vous soyez prêt.",
+      "browse_collection": "Parcourir la collection",
+      "saved_for_later": "Sauvegardé pour plus tard",
+      "clear_button": "Effacer",
+      "add_all_button": "Tout ajouter au panier",
+      "add_to_cart_button": "Ajouter au panier",
+      "saved_at_fmt": "Sauvegardé le {date}",
+      "remove_aria_fmt": "Supprimer {name} de la liste de souhaits",
+      "toast_added_to_cart_fmt": "Ajouté au panier — {name}",
+      "toast_added_all_singular": "1 article ajouté au panier",
+      "toast_added_all_plural_fmt": "{count} articles ajoutés au panier",
+      "toast_removed_fmt": "Supprimé — {name}",
+      "toast_cleared": "Liste de souhaits effacée",
+      "confirm_clear": "Effacer toute votre liste de souhaits ?"
     }
   },
   "thank_you": {

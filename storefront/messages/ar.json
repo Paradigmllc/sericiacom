@@ -199,10 +199,10 @@
     "addresses_page": {
       "eyebrow": "العناوين",
       "title": "عنوان الشحن الافتراضي.",
-      "lede": "يُستخدم لملء صفحة الدفع مسبقًا. يمكنك تغييره لأي طلب فردي.",
+      "lede": "يُستخدم لملء الخانات مسبقًا أثناء الدفع. يمكنك تغييره لأي طلب فردي.",
       "form_full_name": "الاسم الكامل",
-      "form_address_line1": "السطر الأول من العنوان",
-      "form_address_line2": "السطر الثاني من العنوان",
+      "form_address_line1": "سطر العنوان 1",
+      "form_address_line2": "سطر العنوان 2",
       "form_address_line2_optional": "اختياري",
       "form_city": "المدينة",
       "form_region": "الولاية / المنطقة",
@@ -214,6 +214,34 @@
       "submit_saving": "جارٍ الحفظ…",
       "toast_saved": "تم حفظ العنوان",
       "toast_not_signed_in": "غير مسجل الدخول"
+    },
+    "orders_page": {
+      "eyebrow": "الطلبات",
+      "title": "سجل الطلبات.",
+      "lede_fmt": "جميع الطلبات المرتبطة بـ {email}.",
+      "empty_label": "لا طلبات بعد",
+      "empty_lede": "عند تقديم طلبك الأول سيظهر هنا مع التتبع والإيصالات.",
+      "browse_collection": "تصفح المجموعة",
+      "table_status_tracked": "متتبع",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "قائمة الأمنيات",
+      "empty_title": "قائمة أمنياتك فارغة.",
+      "empty_lede": "احفظ الأشياء التي تحبها بالنقر على القلب على أي منتج — ستنتظرك هنا حتى تكون مستعدًا.",
+      "browse_collection": "تصفح المجموعة",
+      "saved_for_later": "محفوظ لوقت لاحق",
+      "clear_button": "مسح",
+      "add_all_button": "إضافة الكل إلى السلة",
+      "add_to_cart_button": "إضافة إلى السلة",
+      "saved_at_fmt": "محفوظ {date}",
+      "remove_aria_fmt": "إزالة {name} من قائمة الأمنيات",
+      "toast_added_to_cart_fmt": "أضيف إلى السلة — {name}",
+      "toast_added_all_singular": "تمت إضافة عنصر واحد إلى السلة",
+      "toast_added_all_plural_fmt": "تمت إضافة {count} عناصر إلى السلة",
+      "toast_removed_fmt": "تمت الإزالة — {name}",
+      "toast_cleared": "تم مسح قائمة الأمنيات",
+      "confirm_clear": "هل تريد مسح قائمة أمنياتك بالكامل؟"
     }
   },
   "thank_you": {
@@ -425,17 +453,17 @@
     "save": "حفظ",
     "saving": "جارٍ الحفظ…",
     "cancel": "إلغاء",
-    "submit": "إرسال",
-    "submitting": "جارٍ الإرسال…",
+    "submit": "تقديم",
+    "submitting": "جارٍ التقديم…",
     "loading": "جارٍ التحميل…",
     "delete": "حذف",
     "edit": "تعديل",
     "back": "رجوع",
     "continue": "متابعة",
     "copied": "تم النسخ",
-    "empty_state": "لا يوجد شيء هنا بعد‏.",
-    "error_generic": "حدث خطأ ما‏. يرجى المحاولة مرة أخرى‏.",
-    "error_network": "لم نتمكن من الوصول إلى الخادم‏. يرجى إعادة المحاولة بعد لحظة‏.",
-    "sign_in_required": "يرجى تسجيل الدخول للمتابعة‏."
+    "empty_state": "لا يوجد شيء هنا بعد.",
+    "error_generic": "حدث خطأ ما. يُرجى المحاولة مرة أخرى.",
+    "error_network": "تعذر الوصول إلى الخادم. يُرجى إعادة المحاولة بعد لحظة.",
+    "sign_in_required": "يرجى تسجيل الدخول للمتابعة."
   }
 }

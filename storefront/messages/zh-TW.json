@@ -199,21 +199,49 @@
     "addresses_page": {
       "eyebrow": "地址",
       "title": "預設收件地址。",
-      "lede": "用於預填結帳流程。您仍可為任一訂單變更地址。",
+      "lede": "用於預填結帳資訊。您仍可為任一訂單更改地址。",
       "form_full_name": "全名",
       "form_address_line1": "地址第一行",
       "form_address_line2": "地址第二行",
       "form_address_line2_optional": "選填",
       "form_city": "城市",
-      "form_region": "州 / 區域",
+      "form_region": "州 / 地區",
       "form_postal_code": "郵遞區號",
       "form_country": "國家",
       "form_phone": "電話",
-      "form_phone_hint": "供海關使用",
+      "form_phone_hint": "用於海關",
       "submit_save": "儲存地址",
       "submit_saving": "儲存中…",
       "toast_saved": "地址已儲存",
       "toast_not_signed_in": "未登入"
+    },
+    "orders_page": {
+      "eyebrow": "訂單",
+      "title": "訂單歷史。",
+      "lede_fmt": "所有與 {email} 相關的訂單。",
+      "empty_label": "尚無訂單",
+      "empty_lede": "當您下達第一筆訂單時，它將與追蹤資訊和收據一同顯示於此。",
+      "browse_collection": "瀏覽系列",
+      "table_status_tracked": "已追蹤",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "願望清單",
+      "empty_title": "您的願望清單是空的。",
+      "empty_lede": "點擊任何產品上的心形圖案，即可收藏您喜愛的商品——它們會在此等候，直到您準備就緒。",
+      "browse_collection": "瀏覽系列商品",
+      "saved_for_later": "稍後再買",
+      "clear_button": "清空",
+      "add_all_button": "全部加入購物車",
+      "add_to_cart_button": "加入購物車",
+      "saved_at_fmt": "已於 {date} 儲存",
+      "remove_aria_fmt": "從願望清單中移除 {name}",
+      "toast_added_to_cart_fmt": "已加入購物車 — {name}",
+      "toast_added_all_singular": "已將 1 項商品加入購物車",
+      "toast_added_all_plural_fmt": "已將 {count} 項商品加入購物車",
+      "toast_removed_fmt": "已移除 — {name}",
+      "toast_cleared": "願望清單已清空",
+      "confirm_clear": "要清空整個願望清單嗎？"
     }
   },
   "thank_you": {
@@ -433,9 +461,9 @@
     "back": "返回",
     "continue": "繼續",
     "copied": "已複製",
-    "empty_state": "暫時沒有內容。",
-    "error_generic": "發生錯誤，請重試。",
-    "error_network": "無法連接伺服器，請稍後重試。",
+    "empty_state": "尚無內容。",
+    "error_generic": "發生錯誤。請再試一次。",
+    "error_network": "無法連線至伺服器。請稍後重試。",
     "sign_in_required": "請登入以繼續。"
   }
 }

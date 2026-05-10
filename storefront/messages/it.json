@@ -214,6 +214,34 @@
       "submit_saving": "Salvataggio in corso…",
       "toast_saved": "Indirizzo salvato",
       "toast_not_signed_in": "Non hai effettuato l'accesso"
+    },
+    "orders_page": {
+      "eyebrow": "Ordini",
+      "title": "Cronologia ordini.",
+      "lede_fmt": "Tutti gli ordini associati a {email}.",
+      "empty_label": "Nessun ordine ancora",
+      "empty_lede": "Quando effettui il tuo primo ordine, apparirà qui con tracciamento e ricevute.",
+      "browse_collection": "Sfoglia la collezione",
+      "table_status_tracked": "Tracciato",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "Lista desideri",
+      "empty_title": "La tua lista desideri è vuota.",
+      "empty_lede": "Salva le cose che ami toccando il cuore su qualsiasi prodotto — ti aspetteranno qui finché non sarai pronto.",
+      "browse_collection": "Sfoglia la collezione",
+      "saved_for_later": "Salvato per dopo",
+      "clear_button": "Cancella",
+      "add_all_button": "Aggiungi tutto al carrello",
+      "add_to_cart_button": "Aggiungi al carrello",
+      "saved_at_fmt": "Salvato il {date}",
+      "remove_aria_fmt": "Rimuovi {name} dalla lista desideri",
+      "toast_added_to_cart_fmt": "Aggiunto al carrello — {name}",
+      "toast_added_all_singular": "1 articolo aggiunto al carrello",
+      "toast_added_all_plural_fmt": "{count} articoli aggiunti al carrello",
+      "toast_removed_fmt": "Rimosso — {name}",
+      "toast_cleared": "Lista desideri cancellata",
+      "confirm_clear": "Cancellare l'intera lista desideri?"
     }
   },
   "thank_you": {
@@ -423,11 +451,11 @@
   },
   "common": {
     "save": "Salva",
-    "saving": "Salvataggio…",
+    "saving": "Salvataggio in corso…",
     "cancel": "Annulla",
     "submit": "Invia",
     "submitting": "Invio in corso…",
-    "loading": "Caricamento…",
+    "loading": "Caricamento in corso…",
     "delete": "Elimina",
     "edit": "Modifica",
     "back": "Indietro",

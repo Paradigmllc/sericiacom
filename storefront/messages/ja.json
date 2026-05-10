@@ -237,6 +237,34 @@
       "submit_saving": "保存中…",
       "toast_saved": "住所を保存しました",
       "toast_not_signed_in": "ログインしていません"
+    },
+    "orders_page": {
+      "eyebrow": "注文",
+      "title": "注文履歴。",
+      "lede_fmt": "{email}に紐づくすべての注文。",
+      "empty_label": "まだご注文はありません",
+      "empty_lede": "初めてのご注文をいただくと、こちらに追跡情報や領収書と共に表示されます。",
+      "browse_collection": "コレクションを見る",
+      "table_status_tracked": "追跡中",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "ウィッシュリスト",
+      "empty_title": "ウィッシュリストは空です。",
+      "empty_lede": "好きな商品にハートをタップして保存してください — 準備ができるまでここでお待ちしています。",
+      "browse_collection": "コレクションを閲覧する",
+      "saved_for_later": "後で保存",
+      "clear_button": "クリア",
+      "add_all_button": "すべてをカートに追加",
+      "add_to_cart_button": "カートに追加",
+      "saved_at_fmt": "{date} に保存",
+      "remove_aria_fmt": "ウィッシュリストから {name} を削除",
+      "toast_added_to_cart_fmt": "カートに追加しました — {name}",
+      "toast_added_all_singular": "1点をカートに追加しました",
+      "toast_added_all_plural_fmt": "{count}点をカートに追加しました",
+      "toast_removed_fmt": "削除しました — {name}",
+      "toast_cleared": "ウィッシュリストをクリアしました",
+      "confirm_clear": "ウィッシュリストをすべてクリアしますか？"
     }
   },
   "thank_you": {
