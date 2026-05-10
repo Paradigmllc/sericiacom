@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, Rule } from "@/components/ui";
@@ -40,10 +41,13 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function ProductDetailPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const [p, all, drop] = await Promise.all([
+  // F60 — Server-side i18n. Pulls translations alongside data fetches in
+  // the same Promise.all so cold render cost stays at one round-trip.
+  const [p, all, drop, tPdp] = await Promise.all([
     getProductBySlug(slug),
     listActiveProducts(),
     getCurrentDrop(),
+    getTranslations("pdp"),
   ]);
   if (!p) notFound();
 
@@ -186,9 +190,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
             <FadeIn>
               <div className="flex items-end justify-between mb-10">
                 <div>
-                  <p className="label mb-3">Recommended pairings</p>
+                  <p className="label mb-3">{tPdp("recommended_pairings_eyebrow")}</p>
                   <h2 className="text-[26px] md:text-[32px] font-normal leading-tight">
-                    You may also like
+                    {tPdp("you_may_also_like")}
                   </h2>
                 </div>
                 <Link
