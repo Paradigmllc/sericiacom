@@ -55,8 +55,11 @@ export function getStripe(): Stripe {
   }
   _client = new Stripe(apiKey, {
     // Pin API version — Stripe ships breaking changes silently if you
-    // don't pin. Bump deliberately when migrating, with regression tests.
-    apiVersion: "2025-09-30.clover",
+    // don't pin. The literal type accepted here is locked to whatever
+    // `stripe@22.x` ships as `Stripe.LatestApiVersion` ("2026-04-22.dahlia").
+    // Bumping the SDK requires updating this string in lockstep with a
+    // regression test pass on /pay/{orderId} flow.
+    apiVersion: "2026-04-22.dahlia",
     typescript: true,
     // Auto-retry idempotent requests on network errors (Stripe SDK
     // default = 0). Sericia's checkout is single-attempt UX, so failed

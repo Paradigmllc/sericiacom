@@ -100,7 +100,7 @@ export default function LocaleSwitcher() {
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-label={`Change language (current: ${LOCALE_LABELS[current]})`}
-        className="inline-flex items-center gap-1.5 p-1.5 hover:text-sericia-ink transition"
+        className="inline-flex items-center gap-1 md:gap-1.5 p-1 md:p-1.5 hover:text-sericia-ink transition"
       >
         <span
           aria-hidden

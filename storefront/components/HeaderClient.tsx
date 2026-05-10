@@ -64,7 +64,7 @@ export default function HeaderClient() {
   const authed = session.status === "authed";
 
   return (
-    <div className="flex items-center gap-5 md:gap-6 text-[13px] tracking-wider text-sericia-ink-soft">
+    <div className="flex items-center gap-1.5 sm:gap-3 md:gap-6 text-[13px] tracking-wider text-sericia-ink-soft">
       <button
         type="button"
         onClick={openSearch}
@@ -167,7 +167,18 @@ export default function HeaderClient() {
         )}
       </button>
 
-      <ThemeToggle />
+      {/*
+        ThemeToggle: hidden on mobile to keep the right cluster within
+        small-viewport width (360px+). On desktop (md+) the full row of
+        5 controls fits comfortably; on mobile we drop the theme toggle
+        because dark mode is the lowest-priority secondary preference
+        compared to search / account / cart / language. Users who want
+        dark mode can still get it via OS-level Auto setting (which the
+        store respects out of the box) or by enlarging the viewport.
+      */}
+      <span className="hidden md:inline-flex">
+        <ThemeToggle />
+      </span>
 
       <LocaleSwitcher />
     </div>
