@@ -536,6 +536,10 @@
     "you_may_also_like": "こちらもおすすめ"
   },
   "pay": {
+    "eyebrow": "ステップ 2/2 — お支払い",
+    "heading": "お支払いを完了してください。",
+    "subhead": "ご注文は15分間お取り置きしています。USDで安全に決済されます。",
+    "confirmation_line_fmt": "確認メールを {email} へ送信します",
     "amount_due": "お支払い金額",
     "loading_form": "決済フォームを読み込んでいます…",
     "processing": "処理中…",

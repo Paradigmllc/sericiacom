@@ -513,14 +513,18 @@
     "you_may_also_like": "You may also like"
   },
   "pay": {
-    "amount_due": "Amount due",
-    "loading_form": "Loading payment form…",
-    "processing": "Processing…",
-    "pay_button_fmt": "Pay ${amount} USD",
-    "receipt_to_fmt": "Receipt to {email} · Secured by Stripe",
-    "init_error_title": "We couldn''t start the payment process just now. This is on our side, not yours.",
-    "init_error_concierge_prefix": "Reach our concierge directly at",
-    "init_error_concierge_suffix": "and we''ll process the order by hand."
+    "eyebrow": "Passo 2 di 2 — Pagamento",
+    "heading": "Completa il tuo pagamento.",
+    "subhead": "Il tuo ordine è riservato per quindici minuti. Il pagamento viene elaborato in modo sicuro in USD.",
+    "confirmation_line_fmt": "La conferma sarà inviata a {email}",
+    "amount_due": "Importo dovuto",
+    "loading_form": "Caricamento modulo di pagamento…",
+    "processing": "Elaborazione…",
+    "pay_button_fmt": "Paga ${amount} USD",
+    "receipt_to_fmt": "Ricevuta a {email} · Protetto da Stripe",
+    "init_error_title": "Non siamo riusciti ad avviare il pagamento in questo momento. È un problema nostro, non tuo.",
+    "init_error_concierge_prefix": "Contatta direttamente il nostro concierge a",
+    "init_error_concierge_suffix": "e processeremo l'ordine a mano."
   },
   "common": {
     "save": "Salva",

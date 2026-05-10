@@ -536,6 +536,10 @@
     "you_may_also_like": "You may also like"
   },
   "pay": {
+    "eyebrow": "Step 2 of 2 — Payment",
+    "heading": "Complete your payment.",
+    "subhead": "Your order is reserved for fifteen minutes. Payment is processed securely in USD.",
+    "confirmation_line_fmt": "Confirmation will be sent to {email}",
     "amount_due": "Amount due",
     "loading_form": "Loading payment form…",
     "processing": "Processing…",
