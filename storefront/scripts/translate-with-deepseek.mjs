@@ -224,6 +224,44 @@ const TARGETS = [
       sign_in_required: "Please sign in to continue.",
     },
   },
+  {
+    name: "account_orders",
+    keyPath: "account.orders_page",
+    enValues: {
+      eyebrow: "Orders",
+      title: "Order history.",
+      lede_fmt: "All orders attached to {email}.",
+      empty_label: "No orders yet",
+      empty_lede:
+        "When you place your first order it will appear here with tracking and receipts.",
+      browse_collection: "Browse the collection",
+      table_status_tracked: "Tracked",
+      table_status_dash: "—",
+    },
+  },
+  {
+    name: "account_wishlist",
+    keyPath: "account.wishlist_page",
+    enValues: {
+      eyebrow: "Wishlist",
+      empty_title: "Your wishlist is empty.",
+      empty_lede:
+        "Save the things you love by tapping the heart on any product — they'll wait for you here until you're ready.",
+      browse_collection: "Browse the collection",
+      saved_for_later: "Saved for later",
+      clear_button: "Clear",
+      add_all_button: "Add all to cart",
+      add_to_cart_button: "Add to cart",
+      saved_at_fmt: "Saved {date}",
+      remove_aria_fmt: "Remove {name} from wishlist",
+      toast_added_to_cart_fmt: "Added to cart — {name}",
+      toast_added_all_singular: "Added 1 item to cart",
+      toast_added_all_plural_fmt: "Added {count} items to cart",
+      toast_removed_fmt: "Removed — {name}",
+      toast_cleared: "Wishlist cleared",
+      confirm_clear: "Clear your whole wishlist?",
+    },
+  },
 ];
 
 async function deepseekTranslate(targetLocale, target) {

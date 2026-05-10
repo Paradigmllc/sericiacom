@@ -214,6 +214,34 @@
       "submit_saving": "Guardando…",
       "toast_saved": "Dirección guardada",
       "toast_not_signed_in": "No ha iniciado sesión"
+    },
+    "orders_page": {
+      "eyebrow": "Pedidos",
+      "title": "Historial de pedidos.",
+      "lede_fmt": "Todos los pedidos asociados a {email}.",
+      "empty_label": "Aún no hay pedidos",
+      "empty_lede": "Cuando realice su primer pedido, aparecerá aquí con el seguimiento y los recibos.",
+      "browse_collection": "Explorar la colección",
+      "table_status_tracked": "Rastreado",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "Lista de deseos",
+      "empty_title": "Tu lista de deseos está vacía.",
+      "empty_lede": "Guarda lo que amas tocando el corazón en cualquier producto — te esperarán aquí hasta que estés listo.",
+      "browse_collection": "Explorar la colección",
+      "saved_for_later": "Guardado para después",
+      "clear_button": "Limpiar",
+      "add_all_button": "Agregar todo al carrito",
+      "add_to_cart_button": "Agregar al carrito",
+      "saved_at_fmt": "Guardado {date}",
+      "remove_aria_fmt": "Eliminar {name} de la lista de deseos",
+      "toast_added_to_cart_fmt": "Agregado al carrito — {name}",
+      "toast_added_all_singular": "Se agregó 1 artículo al carrito",
+      "toast_added_all_plural_fmt": "Se agregaron {count} artículos al carrito",
+      "toast_removed_fmt": "Eliminado — {name}",
+      "toast_cleared": "Lista de deseos limpiada",
+      "confirm_clear": "¿Limpiar toda tu lista de deseos?"
     }
   },
   "thank_you": {
@@ -430,12 +458,12 @@
     "loading": "Cargando…",
     "delete": "Eliminar",
     "edit": "Editar",
-    "back": "Atrás",
+    "back": "Volver",
     "continue": "Continuar",
     "copied": "Copiado",
     "empty_state": "Nada aquí todavía.",
     "error_generic": "Algo salió mal. Inténtalo de nuevo.",
-    "error_network": "No pudimos conectar con el servidor. Vuelve a intentarlo en un momento.",
-    "sign_in_required": "Por favor, inicia sesión para continuar."
+    "error_network": "No pudimos conectar con el servidor. Inténtalo de nuevo en un momento.",
+    "sign_in_required": "Inicia sesión para continuar."
   }
 }

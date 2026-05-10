@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -16,9 +17,22 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
   seasoning: "from-[#e0d4a8] to-[#8a7a2c]",
 };
 
-function formatDate(ts: number) {
+const LOCALE_DATE_MAP: Record<string, string> = {
+  en: "en-US",
+  ja: "ja-JP",
+  de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
+  it: "it-IT",
+  ko: "ko-KR",
+  "zh-TW": "zh-TW",
+  ru: "ru-RU",
+  ar: "ar-AE",
+};
+
+function formatDate(ts: number, locale: string) {
   try {
-    return new Date(ts).toLocaleDateString(undefined, {
+    return new Date(ts).toLocaleDateString(LOCALE_DATE_MAP[locale] ?? "en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -29,6 +43,10 @@ function formatDate(ts: number) {
 }
 
 export default function WishlistClient() {
+  // F63 — i18n. Wishlist UI + toasts + saved-date all locale-aware.
+  const t = useTranslations("account.wishlist_page");
+  const locale = useLocale();
+
   const items = useWishlist((s) => s.items);
   const remove = useWishlist((s) => s.remove);
   const clear = useWishlist((s) => s.clear);
@@ -57,7 +75,11 @@ export default function WishlistClient() {
           image: null,
         });
       }
-      toast.success(`Added ${items.length} item${items.length === 1 ? "" : "s"} to cart`);
+      toast.success(
+        items.length === 1
+          ? t("toast_added_all_singular")
+          : t("toast_added_all_plural_fmt", { count: items.length }),
+      );
       setTimeout(() => openCart(), 150);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -76,7 +98,7 @@ export default function WishlistClient() {
         quantity: 1,
         image: null,
       });
-      toast.success(`Added to cart — ${it.name}`);
+      toast.success(t("toast_added_to_cart_fmt", { name: it.name }));
       setTimeout(() => openCart(), 150);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -88,7 +110,7 @@ export default function WishlistClient() {
   function handleRemove(it: WishlistItem) {
     try {
       remove(it.productId);
-      toast.success(`Removed — ${it.name}`);
+      toast.success(t("toast_removed_fmt", { name: it.name }));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[wishlist] remove", err);
@@ -98,10 +120,10 @@ export default function WishlistClient() {
 
   function handleClear() {
     if (items.length === 0) return;
-    if (!confirm("Clear your whole wishlist?")) return;
+    if (!confirm(t("confirm_clear"))) return;
     try {
       clear();
-      toast.success("Wishlist cleared");
+      toast.success(t("toast_cleared"));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[wishlist] clear", err);
@@ -112,7 +134,7 @@ export default function WishlistClient() {
   if (!mounted) {
     return (
       <div>
-        <p className="label mb-3">Wishlist</p>
+        <p className="label mb-3">{t("eyebrow")}</p>
         <div className="h-8 w-48 bg-sericia-paper-card animate-pulse" />
       </div>
     );
@@ -121,18 +143,18 @@ export default function WishlistClient() {
   if (items.length === 0) {
     return (
       <div>
-        <p className="label mb-3">Wishlist</p>
+        <p className="label mb-3">{t("eyebrow")}</p>
         <h1 ref={titleRef} className="text-[28px] md:text-[32px] font-normal leading-tight mb-6">
-          Your wishlist is empty.
+          {t("empty_title")}
         </h1>
         <p className="text-[14px] text-sericia-ink-soft leading-relaxed max-w-md mb-10">
-          Save the things you love by tapping the heart on any product — they&apos;ll wait for you here until you&apos;re ready.
+          {t("empty_lede")}
         </p>
         <Link
           href="/products"
           className="inline-block bg-sericia-ink text-sericia-paper py-4 px-8 text-[13px] tracking-[0.18em] uppercase hover:bg-sericia-accent transition-colors"
         >
-          Browse the collection
+          {t("browse_collection")}
         </Link>
       </div>
     );
@@ -142,9 +164,9 @@ export default function WishlistClient() {
     <div>
       <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
         <div>
-          <p className="label mb-3">Wishlist</p>
+          <p className="label mb-3">{t("eyebrow")}</p>
           <h1 className="text-[28px] md:text-[32px] font-normal leading-tight">
-            Saved for later
+            {t("saved_for_later")}
             <span className="ml-3 text-[16px] text-sericia-ink-mute tabular-nums">
               · {items.length}
             </span>
@@ -156,7 +178,7 @@ export default function WishlistClient() {
             onClick={handleClear}
             className="text-[12px] tracking-[0.18em] uppercase text-sericia-ink-mute hover:text-sericia-ink transition"
           >
-            Clear
+            {t("clear_button")}
           </button>
           <button
             type="button"
@@ -164,7 +186,7 @@ export default function WishlistClient() {
             className="flex items-center gap-2 bg-sericia-ink text-sericia-paper py-3 px-5 text-[12px] tracking-[0.18em] uppercase hover:bg-sericia-accent transition-colors"
           >
             <BagIcon className="h-4 w-4" />
-            Add all to cart
+            {t("add_all_button")}
           </button>
         </div>
       </div>
@@ -181,7 +203,7 @@ export default function WishlistClient() {
               <button
                 type="button"
                 onClick={() => handleRemove(it)}
-                aria-label={`Remove ${it.name} from wishlist`}
+                aria-label={t("remove_aria_fmt", { name: it.name })}
                 className="absolute top-3 right-3 p-2 text-sericia-ink-mute hover:text-sericia-ink transition"
               >
                 <CloseIcon className="h-4 w-4" />
@@ -204,7 +226,7 @@ export default function WishlistClient() {
                 <p className="label mb-2">{it.category}</p>
                 <h3 className="text-[17px] font-normal leading-snug mb-2">{it.name}</h3>
                 <p className="text-[12px] text-sericia-ink-mute mb-4">
-                  Saved {formatDate(it.addedAt)}
+                  {t("saved_at_fmt", { date: formatDate(it.addedAt, locale) })}
                 </p>
                 <p className="text-[14px] tabular-nums">${it.price_usd} USD</p>
               </Link>
@@ -213,7 +235,7 @@ export default function WishlistClient() {
                 onClick={() => handleAddOne(it)}
                 className="mt-5 w-full border border-sericia-ink py-3 text-[12px] tracking-[0.18em] uppercase hover:bg-sericia-ink hover:text-sericia-paper transition-colors"
               >
-                Add to cart
+                {t("add_to_cart_button")}
               </button>
             </motion.div>
           );

@@ -237,6 +237,34 @@
       "submit_saving": "저장 중…",
       "toast_saved": "주소가 저장되었습니다",
       "toast_not_signed_in": "로그인되지 않음"
+    },
+    "orders_page": {
+      "eyebrow": "주문",
+      "title": "주문 내역.",
+      "lede_fmt": "{email}에 연결된 모든 주문.",
+      "empty_label": "아직 주문이 없습니다",
+      "empty_lede": "첫 주문을 하면 추적 정보와 영수증과 함께 여기에 표시됩니다.",
+      "browse_collection": "컬렉션 둘러보기",
+      "table_status_tracked": "추적 중",
+      "table_status_dash": "—"
+    },
+    "wishlist_page": {
+      "eyebrow": "위시리스트",
+      "empty_title": "위시리스트가 비어 있습니다.",
+      "empty_lede": "좋아하는 제품의 하트를 탭하여 저장하세요 — 준비될 때까지 여기서 기다립니다.",
+      "browse_collection": "컬렉션 둘러보기",
+      "saved_for_later": "나중에 저장됨",
+      "clear_button": "비우기",
+      "add_all_button": "모두 장바구니에 담기",
+      "add_to_cart_button": "장바구니에 담기",
+      "saved_at_fmt": "{date}에 저장됨",
+      "remove_aria_fmt": "위시리스트에서 {name} 제거",
+      "toast_added_to_cart_fmt": "장바구니에 추가됨 — {name}",
+      "toast_added_all_singular": "장바구니에 1개 항목 추가됨",
+      "toast_added_all_plural_fmt": "장바구니에 {count}개 항목 추가됨",
+      "toast_removed_fmt": "제거됨 — {name}",
+      "toast_cleared": "위시리스트 비워짐",
+      "confirm_clear": "전체 위시리스트를 비우시겠습니까?"
     }
   },
   "thank_you": {
