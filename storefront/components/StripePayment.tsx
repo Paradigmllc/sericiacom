@@ -178,12 +178,23 @@ function PaymentForm({ orderId, amountUSD, receiptEmail, payButtonLabel, receipt
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // F59 — track PaymentElement DOM-mount completion separately from
+  // useStripe()/useElements() readiness. The hooks return non-null as soon
+  // as the <Elements> provider mounts, but the inner <PaymentElement> takes
+  // an extra round-trip to fetch country-specific methods + render the
+  // tabs. If the user clicks Pay during that window, Stripe throws
+  //   "Invalid value for stripe.confirmPayment(): elements should have a
+  //    mounted Payment Element or Express Checkout Element"
+  // Reported by Daisy on iPhone 2026-05-10 (3rd screenshot in F58 review).
+  // Fix: gate the Pay button on `paymentElementReady` set by the
+  // PaymentElement.onReady callback.
+  const [paymentElementReady, setPaymentElementReady] = useState(false);
 
-  const ready = stripe !== null && elements !== null;
+  const ready = stripe !== null && elements !== null && paymentElementReady;
 
   async function handlePay(e: React.FormEvent) {
     e.preventDefault();
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || !paymentElementReady) return;
     setSubmitting(true);
     setErrorMessage(null);
     try {
@@ -222,6 +233,17 @@ function PaymentForm({ orderId, amountUSD, receiptEmail, payButtonLabel, receipt
 
   return (
     <form onSubmit={handlePay} className="space-y-6">
+      {/* While the PaymentElement loads its iframe + fetches available
+          payment methods, show a brand-matched paper skeleton so the
+          customer doesn't see a sudden empty space below "AMOUNT DUE".
+          Skeleton is hidden as soon as onReady fires. */}
+      {!paymentElementReady && (
+        <div className="space-y-3" aria-live="polite" aria-busy="true">
+          <div className="h-10 bg-sericia-line/40 animate-pulse" />
+          <div className="h-10 bg-sericia-line/40 animate-pulse" />
+          <div className="h-10 bg-sericia-line/40 animate-pulse" />
+        </div>
+      )}
       <PaymentElement
         options={{
           layout: "tabs",
@@ -229,13 +251,25 @@ function PaymentForm({ orderId, amountUSD, receiptEmail, payButtonLabel, receipt
           // we pre-fill via confirmParams so the customer doesn't re-type.
           defaultValues: { billingDetails: { email: receiptEmail } },
         }}
+        onReady={() => setPaymentElementReady(true)}
+        onLoadError={(e) => {
+          // Surface mount errors inline (rare: corrupt clientSecret,
+          // expired PaymentIntent, country has no enabled methods).
+          const msg = (e?.error?.message as string | undefined) ?? "Payment form failed to load";
+          console.error("[StripePayment] PaymentElement onLoadError", e);
+          setErrorMessage(msg);
+        }}
       />
       <button
         type="submit"
         disabled={!ready || submitting}
         className="w-full bg-sericia-ink text-sericia-paper py-4 px-6 text-[14px] tracking-[0.1em] uppercase font-normal transition-opacity hover:opacity-86 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {submitting ? "Processing…" : (payButtonLabel ?? `Pay $${amountUSD}.00 USD`)}
+        {submitting
+          ? "Processing…"
+          : !paymentElementReady
+            ? "Loading payment form…"
+            : (payButtonLabel ?? `Pay $${amountUSD}.00 USD`)}
       </button>
       {errorMessage && (
         <p className="text-[13px] text-[#9b2c2c]" role="alert">
