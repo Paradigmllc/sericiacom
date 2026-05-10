@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import type { Metadata } from "next";
+import StripePayment from "@/components/StripePayment";
 import HyperswitchPayment from "@/components/HyperswitchPayment";
 import CrossmintPayment from "@/components/CrossmintPayment";
 import SiteHeader from "@/components/SiteHeader";
@@ -8,6 +9,7 @@ import SiteFooter from "@/components/SiteFooter";
 import { Container, Eyebrow, Button, Rule } from "@/components/ui";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getPaymentSettings } from "@/lib/payment-settings";
+import { getActiveProviders } from "@/lib/payment-providers";
 
 export const metadata: Metadata = {
   title: "Payment",
@@ -69,6 +71,11 @@ export default async function PayPage({ params }: { params: Promise<{ orderId: s
     email: order.email,
   });
 
+  // F58 — primary rail switch. Stripe is the launch default; Hyperswitch
+  // is the legacy fallback (kept for OSS self-host migration). Crossmint
+  // remains the optional crypto accordion regardless of primary rail.
+  const providers = getActiveProviders();
+
   return (
     <>
       <SiteHeader />
@@ -92,13 +99,23 @@ export default async function PayPage({ params }: { params: Promise<{ orderId: s
           </div>
           <Rule className="mb-8" />
 
-          <HyperswitchPayment
-            orderId={order.id}
-            amountUSD={order.amount_usd}
-            receiptEmail={order.email}
-            payButtonLabel={payButtonLabel}
-            receiptLine={receiptLine}
-          />
+          {providers.mode === "hyperswitch_legacy" ? (
+            <HyperswitchPayment
+              orderId={order.id}
+              amountUSD={order.amount_usd}
+              receiptEmail={order.email}
+              payButtonLabel={payButtonLabel}
+              receiptLine={receiptLine}
+            />
+          ) : (
+            <StripePayment
+              orderId={order.id}
+              amountUSD={order.amount_usd}
+              receiptEmail={order.email}
+              payButtonLabel={payButtonLabel}
+              receiptLine={receiptLine}
+            />
+          )}
 
           {settings.alternativeProviders.crossmintEnabled && (
             <details className="mt-12 border-t border-sericia-line pt-8">

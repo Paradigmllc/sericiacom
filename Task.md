@@ -38,7 +38,8 @@
 
 | 完了日 | Owner | Task | Commit |
 |--------|-------|------|--------|
-| 2026-05-08 | claude-code | **Task.md 新規作成** (TEAM-DEV protocol 適用) | (本コミット) |
+| 2026-05-10 | claude-code | **F58 Stripe direct primary rail** (Crossmint Sales review 停滞のため Stripe live を primary に昇格・lib/stripe.ts + 2 routes + StripePayment.tsx + payment-providers.ts + pay/[orderId] switch + docs/stripe-launch-runbook.md・operator setup 待ち) | (本コミット) |
+| 2026-05-08 | claude-code | **Task.md 新規作成** (TEAM-DEV protocol 適用) | (TEAM-DEV commit) |
 
 > 過去履歴は `git log` 参照. 14 日経過で `docs/handoff-archive/` に自動移動 (post-task-md-auto-archive hook).
 
