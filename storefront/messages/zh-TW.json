@@ -513,14 +513,18 @@
     "you_may_also_like": "You may also like"
   },
   "pay": {
-    "amount_due": "Amount due",
-    "loading_form": "Loading payment form…",
-    "processing": "Processing…",
-    "pay_button_fmt": "Pay ${amount} USD",
-    "receipt_to_fmt": "Receipt to {email} · Secured by Stripe",
-    "init_error_title": "We couldn''t start the payment process just now. This is on our side, not yours.",
-    "init_error_concierge_prefix": "Reach our concierge directly at",
-    "init_error_concierge_suffix": "and we''ll process the order by hand."
+    "eyebrow": "第 2 步 / 共 2 步 — 付款",
+    "heading": "完成您的付款。",
+    "subhead": "您的訂單已保留十五分鐘。付款以美元安全處理。",
+    "confirmation_line_fmt": "確認郵件將寄送至 {email}",
+    "amount_due": "應付金額",
+    "loading_form": "正在載入付款表單…",
+    "processing": "處理中…",
+    "pay_button_fmt": "支付 ${amount} USD",
+    "receipt_to_fmt": "收據寄送至 {email} · 由 Stripe 安全處理",
+    "init_error_title": "目前無法啟動付款流程。這是我們的問題,不是您的問題。",
+    "init_error_concierge_prefix": "請直接聯絡我們的禮賓專員:",
+    "init_error_concierge_suffix": "我們將親手處理您的訂單。"
   },
   "common": {
     "save": "儲存",

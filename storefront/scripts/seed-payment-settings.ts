@@ -103,21 +103,28 @@ async function main() {
     data: {
       countryMethods,
       defaultMethods: [...HARDCODED_DEFAULT_METHODS],
+      // Localised copy fields are seeded EMPTY on purpose. The runtime
+      // resolver in `lib/payment-settings.ts` falls back to next-intl
+      // `messages/<locale>.json` (pay namespace) when a CMS field is blank
+      // — and those JSON files have proper translations for all 10 supported
+      // locales. Pre-filling English here would (1) overwrite for EN users
+      // with potentially-stale copy on every container boot, and (2) make
+      // "blank means use messages" architecturally inconsistent. Editors
+      // can still override per-locale via /cms/admin/globals/paymentSettings.
       checkoutCopy: {
-        eyebrow: "Step 2 of 2 — Payment",
-        heading: "Complete your payment.",
-        subhead:
-          "Your order is reserved for fifteen minutes. Payment is processed securely in USD.",
+        eyebrow: "",
+        heading: "",
+        subhead: "",
         reservationMinutes: 15,
       },
       receiptCopy: {
-        receiptLine: "Receipt to {email} · Secured by Hyperswitch",
-        confirmationLine: "Confirmation will be sent to {email}",
-        payButtonLabel: "Pay ${amount} USD",
+        receiptLine: "",
+        confirmationLine: "",
+        payButtonLabel: "",
       },
       alternativeProviders: {
         crossmintEnabled: false,
-        crossmintLabel: "Pay with crypto (USDC) instead",
+        crossmintLabel: "", // empty = use next-intl pay.* fallback
       },
     },
   });

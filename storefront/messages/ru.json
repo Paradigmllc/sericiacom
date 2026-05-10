@@ -513,14 +513,18 @@
     "you_may_also_like": "You may also like"
   },
   "pay": {
-    "amount_due": "Amount due",
-    "loading_form": "Loading payment form…",
-    "processing": "Processing…",
-    "pay_button_fmt": "Pay ${amount} USD",
-    "receipt_to_fmt": "Receipt to {email} · Secured by Stripe",
-    "init_error_title": "We couldn''t start the payment process just now. This is on our side, not yours.",
-    "init_error_concierge_prefix": "Reach our concierge directly at",
-    "init_error_concierge_suffix": "and we''ll process the order by hand."
+    "eyebrow": "Шаг 2 из 2 — Оплата",
+    "heading": "Завершите оплату.",
+    "subhead": "Ваш заказ зарезервирован на пятнадцать минут. Оплата обрабатывается безопасно в долларах США.",
+    "confirmation_line_fmt": "Подтверждение будет отправлено на {email}",
+    "amount_due": "Сумма к оплате",
+    "loading_form": "Загрузка формы оплаты…",
+    "processing": "Обработка…",
+    "pay_button_fmt": "Оплатить ${amount} USD",
+    "receipt_to_fmt": "Чек отправлен на {email} · Защищено Stripe",
+    "init_error_title": "Не удалось начать процесс оплаты. Это наша проблема, а не ваша.",
+    "init_error_concierge_prefix": "Свяжитесь с нашим консьержем напрямую:",
+    "init_error_concierge_suffix": "и мы обработаем ваш заказ вручную."
   },
   "common": {
     "save": "Сохранить",

@@ -27,6 +27,7 @@
  */
 
 import { cache } from "react";
+import { getTranslations } from "next-intl/server";
 import { getPayloadClient } from "./payload";
 import {
   HARDCODED_DEFAULT_METHODS,
@@ -67,6 +68,21 @@ export interface ResolvedPaymentSettings {
   };
 }
 
+/**
+ * Hybrid resolve priority chain (highest → lowest):
+ *   1. Payload PaymentSettings global, localized field for `locale`
+ *      (editor saved a per-locale override) — `cmsValue?.trim()` truthy wins
+ *   2. next-intl `pay` namespace via `getTranslations({ locale })`
+ *      — translated for all 10 supported locales, git-tracked, CI-checkable
+ *   3. Last-resort hardcoded English (only fires if next-intl itself errors —
+ *      e.g. corrupt messages file at build time)
+ *
+ * The whole point of this layer: editors keep CMS flexibility (override copy
+ * without a deploy, A/B test conversion lines), AND the storefront never
+ * shows English fallback for a non-English locale just because nobody seeded
+ * the Payload global yet. Drift between admin description and runtime
+ * behavior was the recurring "i18n only partially switches" bug.
+ */
 const HARDCODED_CHECKOUT_COPY = {
   eyebrow: "Step 2 of 2 — Payment",
   heading: "Complete your payment.",
@@ -76,7 +92,7 @@ const HARDCODED_CHECKOUT_COPY = {
 } as const;
 
 const HARDCODED_RECEIPT_COPY = {
-  receiptLine: "Receipt to {email} · Secured by Hyperswitch",
+  receiptLine: "Receipt to {email} · Secured by Stripe",
   confirmationLine: "Confirmation will be sent to {email}",
   payButtonLabel: "Pay ${amount} USD",
 } as const;
@@ -96,20 +112,59 @@ const HARDCODED_ALTERNATIVE_PROVIDERS = {
 async function fetchPaymentSettings(locale: string): Promise<ResolvedPaymentSettings> {
   let payloadValue: unknown = null;
 
-  try {
-    const payload = await getPayloadClient();
-    payloadValue = await payload.findGlobal({
-      // Cast (same pattern as lib/faq.ts): payload-types.ts global slug
-      // union doesn't include `paymentSettings` until `payload generate:types`
-      // runs against the live DB. The cast bypasses the strict union
-      // check for newly-added globals shipped via worktree workflow.
-      slug: "paymentSettings" as never,
-      depth: 0,
-      locale: locale as never,
-      fallbackLocale: "en" as never,
-    });
-  } catch (err) {
-    console.error("[payment-settings] fetch failed, hardcoded defaults will render", err);
+  // Fetch Payload global + next-intl messages in parallel. Both are
+  // independent — neither depends on the other's result, so no waterfall.
+  // `getTranslations({ locale, namespace: "pay" })` returns a `t` function
+  // scoped to the pay namespace; `t.raw(key)` returns the literal template
+  // string with `{email}` / `{amount}` placeholders intact, matching the
+  // Payload field convention so a single `fillTemplate()` call downstream
+  // works for either source.
+  const [payloadResult, t] = await Promise.allSettled([
+    (async () => {
+      const payload = await getPayloadClient();
+      return payload.findGlobal({
+        // Cast (same pattern as lib/faq.ts): payload-types.ts global slug
+        // union doesn't include `paymentSettings` until `payload generate:types`
+        // runs against the live DB. The cast bypasses the strict union
+        // check for newly-added globals shipped via worktree workflow.
+        slug: "paymentSettings" as never,
+        depth: 0,
+        locale: locale as never,
+        // CRITICAL: do NOT fall back to "en" here. If we did, JA/DE/FR/etc.
+        // requests would silently inherit the editor's English text whenever
+        // a per-locale field is blank — which defeats the whole hybrid
+        // resolver. By setting fallbackLocale = false, a missing localised
+        // value returns undefined, causing the resolver below to fall
+        // through to next-intl messages (which DO have proper translations
+        // for all 10 supported locales).
+        fallbackLocale: false as never,
+      });
+    })(),
+    getTranslations({ locale, namespace: "pay" }),
+  ]);
+
+  if (payloadResult.status === "fulfilled") {
+    payloadValue = payloadResult.value;
+  } else {
+    console.error(
+      "[payment-settings] Payload fetch failed, next-intl will render copy",
+      payloadResult.reason,
+    );
+  }
+
+  // Helper: read a `pay.<key>` raw template if next-intl resolved, else
+  // fall back to the hardcoded English template. Defensive against an
+  // unlikely messages-load failure (corrupt file in CI / build).
+  function tRaw(key: string, fallback: string): string {
+    if (t.status !== "fulfilled") return fallback;
+    try {
+      // `t.raw` returns the message without ICU interpolation so `{email}` /
+      // `{amount}` survive intact for downstream `fillTemplate()`.
+      const v = (t.value as unknown as { raw: (k: string) => string }).raw(key);
+      return typeof v === "string" && v.length > 0 ? v : fallback;
+    } catch {
+      return fallback;
+    }
   }
 
   // ── Resolve countryMethods ────────────────────────────────────────
@@ -132,7 +187,7 @@ async function fetchPaymentSettings(locale: string): Promise<ResolvedPaymentSett
     ? (cmsDefaults as HyperswitchMethod[])
     : HARDCODED_DEFAULT_METHODS;
 
-  // ── Resolve checkoutCopy ──────────────────────────────────────────
+  // ── Resolve checkoutCopy (CMS > next-intl > hardcoded) ────────────
   const cmsCheckoutCopy = (payloadValue as { checkoutCopy?: {
     eyebrow?: string;
     heading?: string;
@@ -140,22 +195,34 @@ async function fetchPaymentSettings(locale: string): Promise<ResolvedPaymentSett
     reservationMinutes?: number;
   } })?.checkoutCopy;
   const checkoutCopy = {
-    eyebrow: cmsCheckoutCopy?.eyebrow?.trim() || HARDCODED_CHECKOUT_COPY.eyebrow,
-    heading: cmsCheckoutCopy?.heading?.trim() || HARDCODED_CHECKOUT_COPY.heading,
-    subhead: cmsCheckoutCopy?.subhead?.trim() || HARDCODED_CHECKOUT_COPY.subhead,
+    eyebrow:
+      cmsCheckoutCopy?.eyebrow?.trim() ||
+      tRaw("eyebrow", HARDCODED_CHECKOUT_COPY.eyebrow),
+    heading:
+      cmsCheckoutCopy?.heading?.trim() ||
+      tRaw("heading", HARDCODED_CHECKOUT_COPY.heading),
+    subhead:
+      cmsCheckoutCopy?.subhead?.trim() ||
+      tRaw("subhead", HARDCODED_CHECKOUT_COPY.subhead),
     reservationMinutes: cmsCheckoutCopy?.reservationMinutes ?? HARDCODED_CHECKOUT_COPY.reservationMinutes,
   };
 
-  // ── Resolve receiptCopy ───────────────────────────────────────────
+  // ── Resolve receiptCopy (CMS > next-intl > hardcoded) ─────────────
   const cmsReceiptCopy = (payloadValue as { receiptCopy?: {
     receiptLine?: string;
     confirmationLine?: string;
     payButtonLabel?: string;
   } })?.receiptCopy;
   const receiptCopy = {
-    receiptLine: cmsReceiptCopy?.receiptLine?.trim() || HARDCODED_RECEIPT_COPY.receiptLine,
-    confirmationLine: cmsReceiptCopy?.confirmationLine?.trim() || HARDCODED_RECEIPT_COPY.confirmationLine,
-    payButtonLabel: cmsReceiptCopy?.payButtonLabel?.trim() || HARDCODED_RECEIPT_COPY.payButtonLabel,
+    receiptLine:
+      cmsReceiptCopy?.receiptLine?.trim() ||
+      tRaw("receipt_to_fmt", HARDCODED_RECEIPT_COPY.receiptLine),
+    confirmationLine:
+      cmsReceiptCopy?.confirmationLine?.trim() ||
+      tRaw("confirmation_line_fmt", HARDCODED_RECEIPT_COPY.confirmationLine),
+    payButtonLabel:
+      cmsReceiptCopy?.payButtonLabel?.trim() ||
+      tRaw("pay_button_fmt", HARDCODED_RECEIPT_COPY.payButtonLabel),
   };
 
   // ── Resolve alternativeProviders ──────────────────────────────────

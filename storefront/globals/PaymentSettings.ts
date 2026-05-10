@@ -137,7 +137,7 @@ export const PaymentSettings: GlobalConfig = {
       label: "Checkout page copy",
       admin: {
         description:
-          "Localised copy on /pay/[orderId]. If left empty, the storefront falls back to the strings defined in next-intl messages.",
+          "Localised copy on /pay/[orderId]. Priority chain at request time: (1) this CMS field if you've set it for the active locale, otherwise (2) the matching key in messages/<locale>.json (pay namespace), otherwise (3) hardcoded English. Leave any field blank to use the next-intl translation — that's the recommended path for locales you haven't hand-tuned here.",
       },
       fields: [
         {
@@ -187,7 +187,7 @@ export const PaymentSettings: GlobalConfig = {
       label: "Receipt + footer disclaimers",
       admin: {
         description:
-          "Lines that appear under the payment element (privacy, security badge, receipt destination).",
+          "Lines that appear under the payment element (privacy, security badge, receipt destination). Leave any field empty to use the localised default from messages/<locale>.json (pay namespace) — that's the safe path for any locale you haven't translated by hand here.",
       },
       fields: [
         {
@@ -196,7 +196,7 @@ export const PaymentSettings: GlobalConfig = {
           localized: true,
           admin: {
             description:
-              'Pattern with {email} placeholder. Default: "Receipt to {email} · Secured by Hyperswitch".',
+              'Pattern with {email} placeholder. Default (next-intl pay.receipt_to_fmt): "Receipt to {email} · Secured by Stripe".',
           },
         },
         {

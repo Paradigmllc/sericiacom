@@ -536,14 +536,18 @@
     "you_may_also_like": "You may also like"
   },
   "pay": {
-    "amount_due": "Amount due",
-    "loading_form": "Loading payment form…",
-    "processing": "Processing…",
-    "pay_button_fmt": "Pay ${amount} USD",
-    "receipt_to_fmt": "Receipt to {email} · Secured by Stripe",
-    "init_error_title": "We couldn''t start the payment process just now. This is on our side, not yours.",
-    "init_error_concierge_prefix": "Reach our concierge directly at",
-    "init_error_concierge_suffix": "and we''ll process the order by hand."
+    "eyebrow": "2단계 / 2 — 결제",
+    "heading": "결제를 완료해 주세요.",
+    "subhead": "주문이 15분 동안 예약되어 있습니다. USD로 안전하게 결제됩니다.",
+    "confirmation_line_fmt": "확인 메일이 {email} 로 전송됩니다",
+    "amount_due": "결제 금액",
+    "loading_form": "결제 양식을 불러오는 중…",
+    "processing": "처리 중…",
+    "pay_button_fmt": "${amount} USD 결제하기",
+    "receipt_to_fmt": "영수증 송신: {email} · Stripe로 안전하게 처리",
+    "init_error_title": "지금 결제를 시작할 수 없습니다. 고객님이 아닌 저희 측 문제입니다.",
+    "init_error_concierge_prefix": "컨시어지로 직접 연락 주세요:",
+    "init_error_concierge_suffix": "수작업으로 주문을 처리해 드립니다."
   },
   "common": {
     "save": "저장",
