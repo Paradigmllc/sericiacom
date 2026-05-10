@@ -200,7 +200,44 @@
     "order_number": "注文番号",
     "status": "ステータス",
     "total": "合計",
-    "date": "日付"
+    "date": "日付",
+    "overview_page": {
+      "eyebrow": "アカウント",
+      "welcome_default": "ようこそ",
+      "lede": "ご注文、発送先住所、設定の管理。ドロップは京都からEMSにてご入金後48時間以内に出荷されます。",
+      "label_email": "メールアドレス",
+      "label_member_since": "会員登録日",
+      "label_member_since_today": "本日",
+      "label_orders_count": "注文数",
+      "card_orders_label": "注文",
+      "card_orders_title": "領収書の追跡とダウンロード",
+      "card_orders_lede": "注文履歴と追跡番号を表示します。",
+      "card_addresses_label": "住所",
+      "card_addresses_title": "デフォルトの発送先",
+      "card_addresses_lede": "発送先住所を最新の状態に保ちます。",
+      "card_settings_label": "設定",
+      "card_settings_title": "プロフィール、メール、言語",
+      "card_settings_lede": "名前、言語、メールアドレスの編集、またはアカウントの削除ができます。"
+    },
+    "addresses_page": {
+      "eyebrow": "住所",
+      "title": "デフォルトの配送先住所。",
+      "lede": "ご注文手続きの事前入力に使用されます。個別の注文ごとに変更することもできます。",
+      "form_full_name": "氏名",
+      "form_address_line1": "住所1",
+      "form_address_line2": "住所2",
+      "form_address_line2_optional": "任意",
+      "form_city": "市区町村",
+      "form_region": "都道府県",
+      "form_postal_code": "郵便番号",
+      "form_country": "国",
+      "form_phone": "電話番号",
+      "form_phone_hint": "税関用",
+      "submit_save": "住所を保存",
+      "submit_saving": "保存中…",
+      "toast_saved": "住所を保存しました",
+      "toast_not_signed_in": "ログインしていません"
+    }
   },
   "thank_you": {
     "title": "ありがとうございます",
@@ -406,5 +443,22 @@
     "init_error_title": "決済処理を開始できませんでした。お客様側ではなく、当社側の問題です。",
     "init_error_concierge_prefix": "コンシェルジュまでご連絡ください:",
     "init_error_concierge_suffix": "ご注文を手作業で承ります。"
+  },
+  "common": {
+    "save": "保存",
+    "saving": "保存中…",
+    "cancel": "キャンセル",
+    "submit": "送信",
+    "submitting": "送信中…",
+    "loading": "読み込み中…",
+    "delete": "削除",
+    "edit": "編集",
+    "back": "戻る",
+    "continue": "続ける",
+    "copied": "コピーしました",
+    "empty_state": "まだ何もありません。",
+    "error_generic": "問題が発生しました。もう一度お試しください。",
+    "error_network": "サーバーに接続できませんでした。しばらくしてからもう一度お試しください。",
+    "sign_in_required": "続けるにはサインインしてください。"
   }
 }

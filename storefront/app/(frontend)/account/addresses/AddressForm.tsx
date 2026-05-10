@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
@@ -31,6 +32,8 @@ export default function AddressForm({
   initialAddress: Address | null;
   initialPhone: string;
 }) {
+  // F63 — i18n. Form labels + button + toast all locale-aware.
+  const t = useTranslations("account.addresses_page");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<Address & { phone: string }>({
     full_name: initialAddress?.full_name ?? "",
@@ -53,7 +56,7 @@ export default function AddressForm({
     try {
       const supa = supabaseBrowser();
       const { data: { user } } = await supa.auth.getUser();
-      if (!user) throw new Error("Not signed in");
+      if (!user) throw new Error(t("toast_not_signed_in"));
       const { phone, ...address } = form;
       const { error } = await supa
         .from("sericia_profiles")
@@ -64,7 +67,7 @@ export default function AddressForm({
         })
         .eq("id", user.id);
       if (error) throw error;
-      toast.success("Address saved");
+      toast.success(t("toast_saved"));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[addresses] save failed", err);
@@ -81,47 +84,53 @@ export default function AddressForm({
   return (
     <form onSubmit={onSubmit} className="space-y-7 max-w-xl">
       <div>
-        <label className={label}>Full name</label>
+        <label className={label}>{t("form_full_name")}</label>
         <input type="text" value={form.full_name ?? ""} onChange={set("full_name")} className={input} autoComplete="name" />
       </div>
       <div>
-        <label className={label}>Address line 1</label>
+        <label className={label}>{t("form_address_line1")}</label>
         <input type="text" value={form.address_line1 ?? ""} onChange={set("address_line1")} className={input} autoComplete="address-line1" />
       </div>
       <div>
-        <label className={label}>Address line 2 <span className="text-sericia-ink-mute normal-case tracking-normal">— optional</span></label>
+        <label className={label}>
+          {t("form_address_line2")}{" "}
+          <span className="text-sericia-ink-mute normal-case tracking-normal">— {t("form_address_line2_optional")}</span>
+        </label>
         <input type="text" value={form.address_line2 ?? ""} onChange={set("address_line2")} className={input} autoComplete="address-line2" />
       </div>
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <label className={label}>City</label>
+          <label className={label}>{t("form_city")}</label>
           <input type="text" value={form.city ?? ""} onChange={set("city")} className={input} autoComplete="address-level2" />
         </div>
         <div>
-          <label className={label}>State / Region</label>
+          <label className={label}>{t("form_region")}</label>
           <input type="text" value={form.region ?? ""} onChange={set("region")} className={input} autoComplete="address-level1" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <label className={label}>Postal code</label>
+          <label className={label}>{t("form_postal_code")}</label>
           <input type="text" value={form.postal_code ?? ""} onChange={set("postal_code")} className={input} autoComplete="postal-code" />
         </div>
         <div>
-          <label className={label}>Country</label>
+          <label className={label}>{t("form_country")}</label>
           <select value={form.country_code ?? "US"} onChange={set("country_code")} className={`${input} cursor-pointer`}>
             {COUNTRIES.map(([c, n]) => <option key={c} value={c}>{n}</option>)}
           </select>
         </div>
       </div>
       <div>
-        <label className={label}>Phone <span className="text-sericia-ink-mute normal-case tracking-normal">— for customs</span></label>
+        <label className={label}>
+          {t("form_phone")}{" "}
+          <span className="text-sericia-ink-mute normal-case tracking-normal">— {t("form_phone_hint")}</span>
+        </label>
         <input type="tel" value={form.phone} onChange={set("phone")} className={input} autoComplete="tel" />
       </div>
       <div className="pt-4">
         <button type="submit" disabled={loading}
           className="bg-sericia-ink text-sericia-paper py-4 px-10 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40">
-          {loading ? "Saving…" : "Save address"}
+          {loading ? t("submit_saving") : t("submit_save")}
         </button>
       </div>
     </form>

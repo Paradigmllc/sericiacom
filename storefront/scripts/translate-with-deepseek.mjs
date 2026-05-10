@@ -149,6 +149,81 @@ const TARGETS = [
       email_concierge: "Email concierge",
     },
   },
+  // ─────────────────────────────────────────────────────────────────
+  // F63 — customer account pages full i18n coverage. Each TARGET ships
+  // ~10-15 keys to keep DeepSeek output focused (smaller batches = fewer
+  // misses per request) and to let editors review per-page.
+  // ─────────────────────────────────────────────────────────────────
+  {
+    name: "account_overview",
+    keyPath: "account.overview_page",
+    enValues: {
+      eyebrow: "Account",
+      welcome_default: "Welcome",
+      lede: "Manage your orders, shipping addresses and preferences. Your drops ship EMS from Kyoto within 48 hours of payment.",
+      label_email: "Email",
+      label_member_since: "Member since",
+      label_member_since_today: "today",
+      label_orders_count: "Orders",
+      card_orders_label: "Orders",
+      card_orders_title: "Track and download receipts",
+      card_orders_lede: "View order history and tracking numbers.",
+      card_addresses_label: "Addresses",
+      card_addresses_title: "Default shipping",
+      card_addresses_lede: "Keep your ship-to address up to date.",
+      card_settings_label: "Settings",
+      card_settings_title: "Profile, email & language",
+      card_settings_lede: "Edit your name, language, email or delete your account.",
+    },
+  },
+  {
+    name: "account_addresses",
+    keyPath: "account.addresses_page",
+    enValues: {
+      eyebrow: "Addresses",
+      title: "Default shipping address.",
+      lede: "Used to pre-fill checkout. You can still change it for any single order.",
+      form_full_name: "Full name",
+      form_address_line1: "Address line 1",
+      form_address_line2: "Address line 2",
+      form_address_line2_optional: "optional",
+      form_city: "City",
+      form_region: "State / Region",
+      form_postal_code: "Postal code",
+      form_country: "Country",
+      form_phone: "Phone",
+      form_phone_hint: "for customs",
+      submit_save: "Save address",
+      submit_saving: "Saving…",
+      toast_saved: "Address saved",
+      toast_not_signed_in: "Not signed in",
+    },
+  },
+  // Common form/UI labels reused across multiple customer pages so they
+  // pick up consistent translations (e.g. Japanese 保存 not 保存する vs
+  // セーブ inconsistency). Add to this set sparingly — only strings used
+  // in 3+ places benefit from being shared.
+  {
+    name: "common_ui",
+    keyPath: "common",
+    enValues: {
+      save: "Save",
+      saving: "Saving…",
+      cancel: "Cancel",
+      submit: "Submit",
+      submitting: "Submitting…",
+      loading: "Loading…",
+      delete: "Delete",
+      edit: "Edit",
+      back: "Back",
+      continue: "Continue",
+      copied: "Copied",
+      empty_state: "Nothing here yet.",
+      error_generic: "Something went wrong. Please try again.",
+      error_network: "We couldn't reach the server. Please retry in a moment.",
+      sign_in_required: "Please sign in to continue.",
+    },
+  },
 ];
 
 async function deepseekTranslate(targetLocale, target) {
