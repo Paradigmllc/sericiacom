@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
@@ -52,12 +53,15 @@ type Props = {
 
 export default function SettingsForm({ initialEmail, initialProfile }: Props) {
   const router = useRouter();
+  // F65 — i18n. Renamed local `locale` state to `preferredLocale` to avoid
+  // shadowing future useLocale() reads from next-intl.
+  const t = useTranslations("account.settings_page");
 
   // Profile section state — name + preferred locale. Default locale falls
   // back to "en" (matches the DB default and the ja-rich Sericia footer copy
   // already covering JP-leaning users via locale switcher).
   const [fullName, setFullName] = useState(initialProfile.full_name ?? "");
-  const [locale, setLocale] = useState(initialProfile.locale ?? "en");
+  const [preferredLocale, setPreferredLocale] = useState(initialProfile.locale ?? "en");
   const [loadingProfile, setLoadingProfile] = useState(false);
 
   const [email, setEmail] = useState(initialEmail);
@@ -78,7 +82,7 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
       const {
         data: { user },
       } = await supa.auth.getUser();
-      if (!user) throw new Error("Not signed in");
+      if (!user) throw new Error(t("toast_not_signed_in"));
       // RLS: profiles_self_update policy lets the row owner update directly
       // without going through a server route. We trim to avoid invisible
       // whitespace differences masquerading as edits.
@@ -86,12 +90,12 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
         .from("sericia_profiles")
         .update({
           full_name: fullName.trim(),
-          locale,
+          locale: preferredLocale,
           updated_at: new Date().toISOString(),
         })
         .eq("id", user.id);
       if (error) throw error;
-      toast.success("Profile updated");
+      toast.success(t("toast_profile_updated"));
       // Refresh the route so the account overview header (which reads
       // profile.full_name as the H1) reflects the new name on next render.
       router.refresh();
@@ -112,7 +116,7 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
         email: email.toLowerCase().trim(),
       });
       if (error) throw error;
-      toast.success("Email change requested. Check both inboxes to confirm.");
+      toast.success(t("toast_email_change_requested"));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[settings] email", err);
@@ -125,7 +129,7 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
   async function deleteAccount(e: React.FormEvent) {
     e.preventDefault();
     if (confirmDelete !== "DELETE") {
-      toast.error("Type DELETE to confirm");
+      toast.error(t("toast_delete_confirm"));
       return;
     }
     setLoadingDelete(true);
@@ -136,7 +140,7 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
         throw new Error((j as { error?: string }).error || "delete_failed");
       }
       await supabaseBrowser().auth.signOut();
-      toast.success("Account deleted");
+      toast.success(t("toast_account_deleted"));
       router.push("/");
       router.refresh();
     } catch (err) {
@@ -151,27 +155,23 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
     <div className="space-y-16 max-w-xl">
       {/* ── Profile ───────────────────────────────────────────────── */}
       <form onSubmit={updateProfile} className="space-y-5">
-        <h2 className="text-[22px] font-normal">Profile</h2>
-        <p className="text-[13px] text-sericia-ink-soft leading-relaxed">
-          The name we use on order receipts and customs declarations. Pick the
-          language we should email you in.
-        </p>
+        <h2 className="text-[22px] font-normal">{t("section_profile")}</h2>
         <div>
-          <label className={label}>Full name</label>
+          <label className={label}>{t("form_full_name")}</label>
           <input
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             className={input}
             autoComplete="name"
-            placeholder="e.g. Hana Sato"
+            placeholder={t("form_full_name_placeholder")}
           />
         </div>
         <div>
-          <label className={label}>Preferred language</label>
+          <label className={label}>{t("form_preferred_language")}</label>
           <select
-            value={locale}
-            onChange={(e) => setLocale(e.target.value)}
+            value={preferredLocale}
+            onChange={(e) => setPreferredLocale(e.target.value)}
             className={`${input} cursor-pointer`}
           >
             {LOCALE_OPTIONS.map(([code, name]) => (
@@ -186,19 +186,15 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
           disabled={loadingProfile}
           className="bg-sericia-ink text-sericia-paper py-4 px-10 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40"
         >
-          {loadingProfile ? "Saving…" : "Save profile"}
+          {loadingProfile ? t("submit_saving") : t("submit_save_profile")}
         </button>
       </form>
 
       {/* ── Email ─────────────────────────────────────────────────── */}
       <form onSubmit={updateEmail} className="space-y-5">
-        <h2 className="text-[22px] font-normal">Email</h2>
-        <p className="text-[13px] text-sericia-ink-soft leading-relaxed">
-          Sign-in uses passwordless email links — no password to manage.
-          Changing your email sends a confirmation to both addresses.
-        </p>
+        <h2 className="text-[22px] font-normal">{t("section_email")}</h2>
         <div>
-          <label className={label}>Email address</label>
+          <label className={label}>{t("form_email_address")}</label>
           <input
             type="email"
             required
@@ -213,52 +209,40 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
           disabled={loadingEmail}
           className="bg-sericia-ink text-sericia-paper py-4 px-10 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40"
         >
-          {loadingEmail ? "Sending…" : "Update email"}
+          {loadingEmail ? t("submit_sending") : t("submit_update_email")}
         </button>
       </form>
 
       {/* ── Shipping address shortcut ─────────────────────────────── */}
       <div className="space-y-3">
-        <h2 className="text-[22px] font-normal">Shipping address &amp; phone</h2>
+        <h2 className="text-[22px] font-normal">{t("section_address")}</h2>
         <p className="text-[13px] text-sericia-ink-soft leading-relaxed">
-          Edit your default shipping address and customs phone number on the
-          dedicated addresses page.
+          {t("address_redirect_lede")}
         </p>
         <Link
           href="/account/addresses"
           className="inline-flex items-center gap-2 text-[13px] tracking-wider uppercase text-sericia-ink underline-link"
         >
-          Manage addresses →
+          {t("address_redirect_link")}
         </Link>
       </div>
 
       {/* ── Payment information disclosure ────────────────────────── */}
       <div className="space-y-3 border border-sericia-line p-8 bg-sericia-paper-card">
-        <h2 className="text-[22px] font-normal">Payment information</h2>
+        <h2 className="text-[22px] font-normal">{t("section_payment")}</h2>
         <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
-          We do not store your card. Card details are entered each time at
-          checkout on a secure, PCI-compliant iframe hosted by our payment
-          partner — Sericia&apos;s servers never see the full card number,
-          expiry or CVC. There is nothing to manage here.
-        </p>
-        <p className="text-[12px] text-sericia-ink-mute leading-relaxed">
-          If you spot an unrecognised charge, write to{" "}
-          <a href="mailto:contact@sericia.com" className="underline-link">
-            contact@sericia.com
-          </a>{" "}
-          and we&apos;ll investigate the same day.
+          {t("payment_info_lede")}
         </p>
       </div>
 
       {/* ── Delete account ────────────────────────────────────────── */}
       <form onSubmit={deleteAccount} className="space-y-5 border border-sericia-line p-8">
-        <h2 className="text-[22px] font-normal">Delete account</h2>
+        <h2 className="text-[22px] font-normal">{t("section_delete")}</h2>
         <p className="text-[14px] text-sericia-ink-soft leading-relaxed">
-          Permanently delete your profile and addresses. Orders are retained
-          for legal and tax reasons. This cannot be undone.
+          {t("delete_warning")}
         </p>
         <div>
-          <label className={label}>Type DELETE to confirm</label>
+          <label className={label}>{t("form_delete_confirm")}</label>
           <input
             type="text"
             value={confirmDelete}
@@ -271,7 +255,7 @@ export default function SettingsForm({ initialEmail, initialProfile }: Props) {
           disabled={loadingDelete || confirmDelete !== "DELETE"}
           className="border border-sericia-ink py-4 px-10 text-[14px] tracking-wider hover:bg-sericia-ink hover:text-sericia-paper transition-colors disabled:opacity-40"
         >
-          {loadingDelete ? "Deleting…" : "Delete account"}
+          {loadingDelete ? t("submit_deleting") : t("submit_delete_account")}
         </button>
       </form>
     </div>
