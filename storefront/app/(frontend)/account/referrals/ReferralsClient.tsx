@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Rule, StatBlock } from "@/components/ui";
 import type { ReferralStats } from "@/lib/referrals";
@@ -25,6 +26,9 @@ type FetchState =
   | { status: "ready"; data: ReferralStats };
 
 export default function ReferralsClient() {
+  // F65 — i18n. error.message resolved against translated keys when server
+  // signals well-known auth states; falls back to server-supplied detail.
+  const t = useTranslations("account.referrals_page");
   const [state, setState] = useState<FetchState>({ status: "loading" });
 
   useEffect(() => {
@@ -34,14 +38,10 @@ export default function ReferralsClient() {
         const res = await fetch("/api/referrals/me", { cache: "no-store" });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
-          // Belt-and-suspenders: even though /api/referrals/me now uses
-          // stringifyUnknownError on the server side (lib/error.ts),
-          // we still force `detail` to be a string before render so a future
-          // contract drift can't re-introduce the "[object Object]" toast.
           const detail = typeof body?.detail === "string" ? body.detail : "";
           const message = body?.error === "not_authenticated"
-            ? "Please sign in to view your referral code."
-            : detail || "Could not load your referral code.";
+            ? t("error_sign_in")
+            : detail || t("error_default");
           if (!cancelled) setState({ status: "error", message });
           return;
         }
@@ -56,12 +56,12 @@ export default function ReferralsClient() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   if (state.status === "loading") {
     return (
       <div>
-        <p className="label mb-3">Referrals</p>
+        <p className="label mb-3">{t("eyebrow")}</p>
         <div className="h-10 w-64 bg-sericia-paper-card animate-pulse mb-10" />
         <div className="h-32 w-full bg-sericia-paper-card animate-pulse" />
       </div>
@@ -71,9 +71,9 @@ export default function ReferralsClient() {
   if (state.status === "error") {
     return (
       <div>
-        <p className="label mb-3">Referrals</p>
+        <p className="label mb-3">{t("eyebrow")}</p>
         <h1 className="text-[28px] md:text-[32px] font-normal leading-tight mb-6">
-          Something went wrong.
+          {t("error_title")}
         </h1>
         <p className="text-[14px] text-sericia-ink-soft leading-relaxed max-w-md">
           {state.message}
@@ -86,13 +86,14 @@ export default function ReferralsClient() {
 }
 
 function ReferralsReady({ data }: { data: ReferralStats }) {
+  const t = useTranslations("account.referrals_page");
   const { code, shareUrl, discountAmountUsd, referrerRewardUsd,
     redemptionCount, earningsIssuedUsd, earningsPendingUsd } = data;
 
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(shareUrl);
-      toast.success("Link copied to clipboard");
+      toast.success(t("toast_link_copied"));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[referrals] copy", err);
@@ -102,8 +103,8 @@ function ReferralsReady({ data }: { data: ReferralStats }) {
 
   async function handleShare() {
     const shareData = {
-      title: "Sericia",
-      text: `I've been loving Sericia — here's $${discountAmountUsd} off your first drop.`,
+      title: t("share_title"),
+      text: t("share_text_default"),
       url: shareUrl,
     };
     if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
@@ -118,36 +119,32 @@ function ReferralsReady({ data }: { data: ReferralStats }) {
       }
       return;
     }
-    // Desktop fallback: copy to clipboard.
     await handleCopy();
   }
 
-  const messageText = encodeURIComponent(
-    `I've been loving Sericia — here's $${discountAmountUsd} off your first drop: ${shareUrl}`,
-  );
+  const messageText = encodeURIComponent(`${t("share_text_default")}: ${shareUrl}`);
   const twitterUrl = `https://twitter.com/intent/tweet?text=${messageText}`;
   const whatsappUrl = `https://wa.me/?text=${messageText}`;
   const emailUrl = `mailto:?subject=${encodeURIComponent(
-    "Something you'll like — Sericia",
+    t("share_text_default"),
   )}&body=${messageText}`;
 
   return (
     <div>
       <div className="mb-10">
-        <p className="label mb-3">Referrals</p>
+        <p className="label mb-3">{t("eyebrow")}</p>
         <h1 className="text-[28px] md:text-[32px] font-normal leading-tight mb-4">
-          Give ${discountAmountUsd}, get ${referrerRewardUsd}.
+          {t("title_with_code")}
         </h1>
         <p className="text-[14px] text-sericia-ink-soft leading-relaxed max-w-md">
-          Share your code. Your friends get ${discountAmountUsd} off their first drop.
-          When they order, ${referrerRewardUsd} lands in your Sericia credits.
+          {t("lede")}
         </p>
       </div>
 
       {/* Code + share row */}
       <div className="border border-sericia-line bg-sericia-paper-card mb-12">
         <div className="p-8 md:p-10">
-          <p className="label mb-4">Your code</p>
+          <p className="label mb-4">{t("label_your_code")}</p>
           <div className="flex items-end justify-between flex-wrap gap-6 mb-8">
             <div className="font-serif text-[40px] md:text-[52px] tracking-[0.05em] leading-none">
               {code}
@@ -156,9 +153,9 @@ function ReferralsReady({ data }: { data: ReferralStats }) {
               type="button"
               onClick={handleCopy}
               className="text-[12px] tracking-[0.18em] uppercase text-sericia-ink-mute hover:text-sericia-ink transition border-b border-sericia-line hover:border-sericia-ink py-1"
-              aria-label="Copy referral link"
+              aria-label={t("copy_link_aria")}
             >
-              Copy link
+              {t("copy_link_button")}
             </button>
           </div>
 
@@ -174,7 +171,7 @@ function ReferralsReady({ data }: { data: ReferralStats }) {
               onClick={handleShare}
               className="bg-sericia-ink text-sericia-paper py-3 px-6 text-[12px] tracking-[0.18em] uppercase hover:bg-sericia-accent transition-colors"
             >
-              Share
+              {t("share_button")}
             </button>
             <a
               href={twitterUrl}
@@ -182,7 +179,7 @@ function ReferralsReady({ data }: { data: ReferralStats }) {
               rel="noopener noreferrer"
               className="border border-sericia-line py-3 px-6 text-[12px] tracking-[0.18em] uppercase text-sericia-ink-soft hover:text-sericia-ink hover:border-sericia-ink transition-colors"
             >
-              Post to X
+              X
             </a>
             <a
               href={whatsappUrl}
@@ -203,56 +200,43 @@ function ReferralsReady({ data }: { data: ReferralStats }) {
       </div>
 
       {/* Stats */}
-      <p className="label mb-6">Your earnings</p>
+      <p className="label mb-6">{t("label_your_earnings")}</p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-sericia-line border border-sericia-line mb-12">
         <div className="bg-sericia-paper p-8">
-          <StatBlock value={redemptionCount} label="Friends redeemed" />
+          <StatBlock value={redemptionCount} label={t("stat_friends_redeemed")} />
         </div>
         <div className="bg-sericia-paper p-8">
           <StatBlock
             value={<span className="tabular-nums">${earningsIssuedUsd}</span>}
-            label="Credits issued"
+            label={t("stat_credits_issued")}
           />
         </div>
         <div className="bg-sericia-paper p-8">
           <StatBlock
             value={<span className="tabular-nums">${earningsPendingUsd}</span>}
-            label="Pending"
+            label={t("stat_pending")}
           />
         </div>
       </div>
 
       {/* How it works */}
-      <p className="label mb-6">How it works</p>
+      <p className="label mb-6">{t("label_how_it_works")}</p>
       <ol className="space-y-5 max-w-prose text-[14px] text-sericia-ink-soft leading-relaxed">
         <li className="flex gap-5">
           <span className="font-serif text-[18px] text-sericia-ink tabular-nums w-6 shrink-0">01</span>
-          <span>
-            Share your link. Your friend lands on Sericia with ${discountAmountUsd} off
-            their first drop automatically applied.
-          </span>
+          <span>{t("step_one")}</span>
         </li>
         <li className="flex gap-5">
           <span className="font-serif text-[18px] text-sericia-ink tabular-nums w-6 shrink-0">02</span>
           <span>
-            They order. You see it here as{" "}
-            <span className="text-sericia-ink">Pending</span> — the reward clears
-            after the drop ships, so refunds don&rsquo;t create a debt.
+            <span className="text-sericia-ink">{t("stat_pending")}</span> — {t("step_pending_lede")}
           </span>
         </li>
         <li className="flex gap-5">
           <span className="font-serif text-[18px] text-sericia-ink tabular-nums w-6 shrink-0">03</span>
-          <span>
-            ${referrerRewardUsd} in credits lands in your account. Spend it on
-            the next drop — credits auto-apply at checkout.
-          </span>
+          <span>{t("step_three")}</span>
         </li>
       </ol>
-
-      <p className="text-[12px] text-sericia-ink-mute mt-10 leading-relaxed max-w-prose">
-        Fair play: self-referrals and fake accounts are voided. We reserve the
-        right to pause rewards on suspected abuse.
-      </p>
     </div>
   );
 }
