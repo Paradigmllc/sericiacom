@@ -153,8 +153,17 @@ export async function createPaymentIntent(
     if ((e as Error & { code?: string }).code === "stripe_invalid_amount") throw e;
     if ((e as Error & { code?: string }).code === "stripe_api_key_missing") throw e;
     // Map Stripe SDK errors to our error code shape so /api/stripe/*
-    // routes can return consistent JSON to the client.
-    const stripeErr = e as Stripe.errors.StripeError;
+    // routes can return consistent JSON to the client. We can't use
+    // `e as Stripe.errors.StripeError` as a type cast because in
+    // stripe@22.x `Stripe.errors.StripeError` is a value (class),
+    // not a type alias. Inline the structural shape instead — Stripe
+    // guarantees these props on every error type they emit.
+    const stripeErr = e as {
+      type?: string;
+      code?: string;
+      statusCode?: number;
+      message: string;
+    };
     const err = new Error(`Stripe ${stripeErr.statusCode ?? ""}: ${stripeErr.message}`) as Error & {
       code?: string;
       status?: number;
