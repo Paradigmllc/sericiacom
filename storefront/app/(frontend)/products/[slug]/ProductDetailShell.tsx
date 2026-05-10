@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import ProductGallery from "./ProductGallery";
 import AddToCartButton from "./AddToCartButton";
 import Accordion, { type AccordionItem } from "@/components/Accordion";
@@ -45,12 +46,6 @@ type ProductShape = {
 // medium-stock items (which would feel manipulative and break brand trust).
 const LOW_STOCK_THRESHOLD = 10;
 
-const SHIPPING_COPY =
-  "Hand-packed in Kyoto and shipped via EMS with tracking. Japan & Asia arrive in 3–5 business days; North America, Europe & Oceania in 5–9. Every parcel is temperature-considered, double-sealed, and includes a handwritten tasting card.";
-
-const RETURNS_COPY =
-  "Opened food cannot be returned for hygiene reasons, but we replace anything that arrives damaged or different to description — just send us a photo within 7 days of delivery. Unopened items in their original packaging may be returned within 14 days.";
-
 export default function ProductDetailShell({
   product,
   relatedCategoryLabel,
@@ -58,6 +53,12 @@ export default function ProductDetailShell({
   product: ProductShape;
   relatedCategoryLabel: string;
 }) {
+  // F60 — PDP accordion + labels are now i18n'd via next-intl `pdp` namespace.
+  // Was hardcoded English which Daisy reported as "i18nバグハードコードで言語切り替わらない箇所多数"
+  // 2026-05-10. The static SHIPPING_COPY / RETURNS_COPY constants moved into
+  // the translations file (en/ja hand-written, other 8 locales placeholder
+  // for follow-up DeepSeek V4 batch translation).
+  const t = useTranslations("pdp");
   const [notifyOpen, setNotifyOpen] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const mainCtaRef = useRef<HTMLDivElement>(null);
@@ -91,32 +92,32 @@ export default function ProductDetailShell({
   const accordionItems: AccordionItem[] = [
     {
       id: "origin",
-      title: "Ingredients & origin",
+      title: t("ingredients_origin"),
       body: (
         <div className="space-y-4">
           <p>
-            <span className="label block mb-1">Category</span>
+            <span className="label block mb-1">{t("category")}</span>
             {relatedCategoryLabel}
           </p>
           {product.origin_region ? (
             <p>
-              <span className="label block mb-1">Origin</span>
+              <span className="label block mb-1">{t("origin")}</span>
               {product.origin_region}
             </p>
           ) : null}
           {product.producer_name ? (
             <p>
-              <span className="label block mb-1">Producer</span>
+              <span className="label block mb-1">{t("producer")}</span>
               {product.producer_name}
             </p>
           ) : null}
           <p>
-            <span className="label block mb-1">Weight</span>
-            {product.weight_g}g net
+            <span className="label block mb-1">{t("weight")}</span>
+            {t("weight_g_net_fmt", { grams: product.weight_g })}
           </p>
           {ingredientItems.length > 0 && (
             <div>
-              <span className="label block mb-2">Ingredients</span>
+              <span className="label block mb-2">{t("ingredients")}</span>
               <ul className="list-disc list-inside space-y-1 text-[14px] leading-relaxed">
                 {ingredientItems.map((ing, i) => (
                   <li key={i}>{ing}</li>
@@ -126,13 +127,13 @@ export default function ProductDetailShell({
           )}
           {product.allergens && (
             <p>
-              <span className="label block mb-1">Allergens</span>
+              <span className="label block mb-1">{t("allergens")}</span>
               <span className="text-sericia-ink-soft">{product.allergens}</span>
             </p>
           )}
           {product.shelfLife && (
             <p>
-              <span className="label block mb-1">Best within</span>
+              <span className="label block mb-1">{t("best_within")}</span>
               <span className="text-sericia-ink-soft">{product.shelfLife}</span>
             </p>
           )}
@@ -141,14 +142,14 @@ export default function ProductDetailShell({
     },
     {
       id: "shipping",
-      title: "Shipping & returns",
+      title: t("shipping_returns"),
       body: (
         <div className="space-y-4">
-          <p>{SHIPPING_COPY}</p>
-          <p>{RETURNS_COPY}</p>
+          <p>{t("shipping_copy")}</p>
+          <p>{t("returns_copy")}</p>
           <p>
             <Link href="/shipping" className="underline underline-offset-4 hover:text-sericia-ink">
-              Full shipping details →
+              {t("shipping_link")}
             </Link>
           </p>
         </div>
@@ -156,16 +157,16 @@ export default function ProductDetailShell({
     },
     {
       id: "producer",
-      title: "Producer story",
+      title: t("producer_story"),
       body: (
         <p className="whitespace-pre-line text-[14px] leading-[1.7] text-sericia-ink-soft">
-          {product.story || "We'll share the producer's full story here soon. Each Sericia maker is visited in person before their craft joins our collection."}
+          {product.story || t("story_fallback")}
         </p>
       ),
     },
     {
       id: "tasting",
-      title: "Tasting notes & pairing",
+      title: t("tasting_pairing"),
       body: (
         <div className="space-y-4">
           <p>{product.description}</p>
@@ -176,7 +177,7 @@ export default function ProductDetailShell({
           )}
           {product.preparation && (
             <div>
-              <span className="label block mb-1">Preparation</span>
+              <span className="label block mb-1">{t("preparation")}</span>
               <p className="whitespace-pre-line text-[14px] leading-[1.7] text-sericia-ink-soft">
                 {product.preparation}
               </p>
@@ -184,7 +185,7 @@ export default function ProductDetailShell({
           )}
           {!product.tastingNotes && !product.preparation && (
             <p className="text-sericia-ink-mute">
-              Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.
+              {t("tasting_fallback")}
             </p>
           )}
         </div>

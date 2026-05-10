@@ -38,6 +38,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { loadStripe, type Stripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import {
   Elements,
@@ -176,6 +177,7 @@ function PaymentForm({ orderId, amountUSD, receiptEmail, payButtonLabel, receipt
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
+  const t = useTranslations("pay");
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // F59 — track PaymentElement DOM-mount completion separately from
@@ -266,10 +268,10 @@ function PaymentForm({ orderId, amountUSD, receiptEmail, payButtonLabel, receipt
         className="w-full bg-sericia-ink text-sericia-paper py-4 px-6 text-[14px] tracking-[0.1em] uppercase font-normal transition-opacity hover:opacity-86 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {submitting
-          ? "Processing…"
+          ? t("processing")
           : !paymentElementReady
-            ? "Loading payment form…"
-            : (payButtonLabel ?? `Pay $${amountUSD}.00 USD`)}
+            ? t("loading_form")
+            : (payButtonLabel ?? t("pay_button_fmt", { amount: `${amountUSD}.00` }))}
       </button>
       {errorMessage && (
         <p className="text-[13px] text-[#9b2c2c]" role="alert">
@@ -277,7 +279,7 @@ function PaymentForm({ orderId, amountUSD, receiptEmail, payButtonLabel, receipt
         </p>
       )}
       <p className="text-[11px] text-sericia-ink-mute tracking-wider uppercase text-center">
-        {receiptLine ?? `Receipt to ${receiptEmail} · Secured by Stripe`}
+        {receiptLine ?? t("receipt_to_fmt", { email: receiptEmail })}
       </p>
     </form>
   );
@@ -288,17 +290,18 @@ function PaymentForm({ orderId, amountUSD, receiptEmail, payButtonLabel, receipt
 // ─────────────────────────────────────────────────────────────────────
 
 function PaymentError({ orderId, errorMessage }: { orderId: string; errorMessage: string }) {
+  const t = useTranslations("pay");
   return (
     <div className="space-y-6">
       <p className="text-[15px] text-sericia-ink-soft">
-        We couldn't start the payment process just now. This is on our side, not yours.
+        {t("init_error_title")}
       </p>
       <p className="text-[13px] text-sericia-ink-mute">
-        Reach our concierge directly at{" "}
+        {t("init_error_concierge_prefix")}{" "}
         <a className="underline-link" href={`mailto:contact@sericia.com?subject=Order ${orderId}`}>
           contact@sericia.com
         </a>{" "}
-        and we'll process the order by hand.
+        {t("init_error_concierge_suffix")}
       </p>
       {process.env.NODE_ENV !== "production" && (
         <pre className="text-[11px] text-sericia-ink-mute font-mono whitespace-pre-wrap">

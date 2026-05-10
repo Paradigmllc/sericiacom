@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import StripePayment from "@/components/StripePayment";
 import HyperswitchPayment from "@/components/HyperswitchPayment";
 import CrossmintPayment from "@/components/CrossmintPayment";
@@ -26,14 +27,17 @@ function fillTemplate(tpl: string, vars: Record<string, string | number>): strin
 export default async function PayPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = await params;
   // F55 — both Payload settings and order fetch in parallel for cold-render speed
+  // F60 — i18n strings (pay namespace) batched into the same Promise.all so
+  // adding next-intl doesn't widen the cold-render waterfall.
   const locale = await getLocale();
-  const [{ data: order }, settings] = await Promise.all([
+  const [{ data: order }, settings, tPay] = await Promise.all([
     supabaseAdmin
       .from("sericia_orders")
       .select("id, amount_usd, status, email, drop_id")
       .eq("id", orderId)
       .maybeSingle(),
     getPaymentSettings(locale),
+    getTranslations("pay"),
   ]);
 
   if (!order) notFound();
@@ -94,7 +98,7 @@ export default async function PayPage({ params }: { params: Promise<{ orderId: s
       <Container size="narrow" className="py-16 md:py-24">
         <div className="border border-sericia-line bg-sericia-paper-card p-10">
           <div className="flex items-baseline justify-between mb-8">
-            <p className="label">Amount due</p>
+            <p className="label">{tPay("amount_due")}</p>
             <p className="text-[28px] font-normal leading-none">${order.amount_usd}.00 USD</p>
           </div>
           <Rule className="mb-8" />

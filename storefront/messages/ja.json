@@ -374,5 +374,37 @@
     "error_network_lede": "しばらくしてからもう一度お試しいただくか、問題が解決しない場合はメールでお問い合わせください。",
     "try_again": "再試行",
     "email_concierge": "メールで問い合わせる"
+  },
+  "pdp": {
+    "ingredients_origin": "原材料・産地",
+    "shipping_returns": "配送・返品",
+    "producer_story": "生産者の物語",
+    "tasting_pairing": "テイスティングノート・ペアリング",
+    "category": "カテゴリー",
+    "origin": "産地",
+    "producer": "生産者",
+    "weight": "内容量",
+    "ingredients": "原材料",
+    "allergens": "アレルゲン",
+    "best_within": "賞味期限",
+    "preparation": "お召し上がり方",
+    "weight_g_net_fmt": "{grams}g（正味）",
+    "shipping_copy": "京都にて手詰めし、追跡付きEMSにてお届けします。日本・アジア圏は3〜5営業日、北米・欧州・オセアニアは5〜9営業日でお届けします。すべての荷物は温度管理に配慮し、二重梱包の上、手書きのテイスティングカードをお付けしております。",
+    "returns_copy": "開封済みの食品は衛生上の理由により返品をお受けできませんが、破損や記載と異なる商品が届いた場合は、お届け日から7日以内に写真を添えてご連絡いただければ交換いたします。未開封の商品は、元のパッケージのまま14日以内であれば返品可能です。",
+    "shipping_link": "配送の詳細はこちら →",
+    "story_fallback": "生産者の物語は近日公開予定です。Sericiaの取扱商品は、すべての作り手のもとを直接訪れ、その手仕事を確かめた上でコレクションに加えています。",
+    "tasting_fallback": "焦らずゆっくりとお楽しみください。70°Cで90秒抽出し、味わいが花開くのを待ちましょう。素朴な釉薬の器と、心地よい時間とともに。",
+    "recommended_pairings_eyebrow": "おすすめのペアリング",
+    "you_may_also_like": "こちらもおすすめ"
+  },
+  "pay": {
+    "amount_due": "お支払い金額",
+    "loading_form": "決済フォームを読み込んでいます…",
+    "processing": "処理中…",
+    "pay_button_fmt": "${amount} USD を支払う",
+    "receipt_to_fmt": "領収書送信先: {email} · Stripeにより安全に処理されます",
+    "init_error_title": "決済処理を開始できませんでした。お客様側ではなく、当社側の問題です。",
+    "init_error_concierge_prefix": "コンシェルジュまでご連絡ください:",
+    "init_error_concierge_suffix": "ご注文を手作業で承ります。"
   }
 }

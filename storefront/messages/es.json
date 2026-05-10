@@ -351,5 +351,37 @@
     "error_network_lede": "Intente de nuevo en un momento, o envíenos un correo electrónico si persiste.",
     "try_again": "Intentar de nuevo",
     "email_concierge": "Enviar correo al conserje"
+  },
+  "pdp": {
+    "ingredients_origin": "Ingredients & origin",
+    "shipping_returns": "Shipping & returns",
+    "producer_story": "Producer story",
+    "tasting_pairing": "Tasting notes & pairing",
+    "category": "Category",
+    "origin": "Origin",
+    "producer": "Producer",
+    "weight": "Weight",
+    "ingredients": "Ingredients",
+    "allergens": "Allergens",
+    "best_within": "Best within",
+    "preparation": "Preparation",
+    "weight_g_net_fmt": "{grams}g net",
+    "shipping_copy": "Hand-packed in Kyoto and shipped via EMS with tracking. Japan & Asia arrive in 3–5 business days; North America, Europe & Oceania in 5–9. Every parcel is temperature-considered, double-sealed, and includes a handwritten tasting card.",
+    "returns_copy": "Opened food cannot be returned for hygiene reasons, but we replace anything that arrives damaged or different to description — just send us a photo within 7 days of delivery. Unopened items in their original packaging may be returned within 14 days.",
+    "shipping_link": "Full shipping details →",
+    "story_fallback": "We''ll share the producer''s full story here soon. Each Sericia maker is visited in person before their craft joins our collection.",
+    "tasting_fallback": "Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.",
+    "recommended_pairings_eyebrow": "Recommended pairings",
+    "you_may_also_like": "You may also like"
+  },
+  "pay": {
+    "amount_due": "Amount due",
+    "loading_form": "Loading payment form…",
+    "processing": "Processing…",
+    "pay_button_fmt": "Pay ${amount} USD",
+    "receipt_to_fmt": "Receipt to {email} · Secured by Stripe",
+    "init_error_title": "We couldn''t start the payment process just now. This is on our side, not yours.",
+    "init_error_concierge_prefix": "Reach our concierge directly at",
+    "init_error_concierge_suffix": "and we''ll process the order by hand."
   }
 }
