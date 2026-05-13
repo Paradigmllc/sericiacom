@@ -73,7 +73,10 @@ export default async function JournalIndex({
   const sp = await searchParams;
   const tPage = await getTranslations("pages.journal");
   const tag = parseTag(typeof sp.tag === "string" ? sp.tag : undefined);
-  const all = await listAllJournalEntries();
+  const [all, t] = await Promise.all([
+    listAllJournalEntries(),
+    getTranslations("journal.listing"),
+  ]);
   const counts = countByTag(all);
   const filtered = tag === "all" ? all : all.filter((e) => e.tag === tag);
 
@@ -119,10 +122,7 @@ export default async function JournalIndex({
         </div>
 
         <p className="mb-10 text-[16px] text-sericia-ink-soft max-w-prose leading-relaxed">
-          Long-form writing about Japanese craft food in three streams. <strong>Stories</strong> are
-          the brand essays. <strong>Techniques</strong> are how-to pieces — brewing, aging, pairing.{" "}
-          <strong>Country guides</strong> walk through importing tea, miso, shiitake and more from
-          Japan to your country specifically.
+          {t("lede")} {t("country_guides_intro")}
         </p>
 
         <div className="mb-10">
@@ -131,13 +131,9 @@ export default async function JournalIndex({
 
         {filtered.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="label mb-3">Nothing yet</p>
+            <p className="label mb-3">{t("nothing_yet")}</p>
             <p className="text-[15px] text-sericia-ink-soft max-w-md mx-auto">
-              No pieces in this section right now. Pick another chip above, or write to{" "}
-              <a href="mailto:contact@sericia.com" className="underline-link">
-                contact@sericia.com
-              </a>{" "}
-              with a question — answered pieces become Journal entries.
+              {t("nothing_yet_lede")}
             </p>
           </div>
         ) : (

@@ -113,7 +113,12 @@
     "category": "カテゴリー",
     "back_to_shop": "ショップに戻る",
     "details": "詳細",
-    "story": "ストーリー"
+    "story": "ストーリー",
+    "listing_extras": {
+      "no_matches": "該当なし",
+      "no_matches_hint": "別のカテゴリーをお試しいただくか、フィルターを解除してください。",
+      "clear_filters": "フィルターを解除"
+    }
   },
   "cart": {
     "title": "カート",
@@ -125,7 +130,39 @@
     "total": "合計",
     "checkout": "ご注文手続きへ",
     "remove": "削除",
-    "quantity": "数量"
+    "quantity": "数量",
+    "checkout_extras": {
+      "empty_cart": "カートが空です",
+      "empty_cart_lede": "カートが空です。ドロップを訪れてバンドルを追加してください。",
+      "shop_drop": "ドロップを見る",
+      "order_summary": "注文概要",
+      "label_email": "メールアドレス",
+      "label_full_name": "氏名",
+      "label_address1": "住所",
+      "label_address2": "建物名・部屋番号（任意）",
+      "label_city": "市区町村",
+      "label_state": "都道府県",
+      "label_postal": "郵便番号",
+      "label_country": "国",
+      "label_phone": "電話番号（税関用）",
+      "placeholder_email": "you@example.com",
+      "placeholder_full_name": "氏名",
+      "placeholder_address1": "番地、通り名",
+      "placeholder_address2": "建物名・部屋番号",
+      "placeholder_city": "市区町村",
+      "placeholder_state": "都道府県",
+      "placeholder_postal": "郵便番号",
+      "placeholder_phone": "電話番号（税関用）",
+      "submit_reserve": "予約して続ける",
+      "submit_reserving": "予約中…",
+      "toast_empty": "カートが空です。",
+      "toast_missing": "入力が不足しています。",
+      "toast_reserved": "予約しました。",
+      "toast_interrupted": "リクエストが中断されました。",
+      "toast_redirect": "注文を予約しました。支払いページにリダイレクトしています…",
+      "toast_network": "ネットワークエラー — もう一度お試しください",
+      "toast_unavailable": "ドロップは利用できません。"
+    }
   },
   "checkout": {
     "title": "ご注文手続き",
@@ -377,7 +414,23 @@
     "how_it_works_title": "京都からお手元まで、4ステップ。",
     "faq_eyebrow": "よくあるご質問",
     "faq_title": "ご質問と検討事項。",
-    "faq_cta": "配送ポリシーの全文を読む"
+    "faq_cta": "配送ポリシーの全文を読む",
+    "spec": {
+      "price": "価格",
+      "weight": "重量",
+      "ships_within": "発送期間",
+      "availability": "在庫状況",
+      "sold_out": "完売 — 次回ドロップのウェイトリストにご登録ください",
+      "remaining_fmt": "残り {remaining} / {total}",
+      "sold_out_short": "このドロップは完売しました。",
+      "billed_usd_fmt": "≈ ${amount} USD請求額",
+      "purchase_fmt": "購入 — ${amount}",
+      "ems_disclaimer": "EMS国際配送 · 京都から{hours}時間以内に発送 · カード決済はUSD。関税・税金は配送先で計算されます。",
+      "stat_countries": "配送国数",
+      "stat_dispatch": "京都からの発送",
+      "stat_producers": "生産者への全額支払い",
+      "clockwise_caption": "時計回り · Sencha · Miso · Shiitake"
+    }
   },
   "pages": {
     "about": {
@@ -533,7 +586,13 @@
     "story_fallback": "生産者の物語は近日公開予定です。Sericiaの取扱商品は、すべての作り手のもとを直接訪れ、その手仕事を確かめた上でコレクションに加えています。",
     "tasting_fallback": "焦らずゆっくりとお楽しみください。70°Cで90秒抽出し、味わいが花開くのを待ちましょう。素朴な釉薬の器と、心地よい時間とともに。",
     "recommended_pairings_eyebrow": "おすすめのペアリング",
-    "you_may_also_like": "こちらもおすすめ"
+    "you_may_also_like": "こちらもおすすめ",
+    "extras": {
+      "the_story": "ストーリー",
+      "recommended_pairings": "おすすめのペアリング",
+      "keep_reading": "続きを読む",
+      "frequently_asked": "よくある質問"
+    }
   },
   "pay": {
     "eyebrow": "ステップ 2/2 — お支払い",
@@ -564,6 +623,106 @@
     "empty_state": "まだ何もありません。",
     "error_generic": "問題が発生しました。もう一度お試しください。",
     "error_network": "サーバーに接続できませんでした。しばらくしてからもう一度お試しください。",
-    "sign_in_required": "続けるにはサインインしてください。"
+    "sign_in_required": "続けるにはサインインしてください。",
+    "sidebar": {
+      "shop_the_story": "ストーリーから購入",
+      "drop_alerts": "ドロップアラート",
+      "related_tools": "関連ツール",
+      "related_guides": "関連ガイド",
+      "in_page_nav": "ページ内ナビゲーション",
+      "account_nav": "アカウントナビゲーション",
+      "breadcrumb": "パンくずリスト",
+      "newsletter_placeholder": "メールアドレス",
+      "newsletter_cta": "購読する",
+      "toast_invalid_email": "有効なメールアドレスを入力してください。",
+      "toast_subscribed": "ありがとうございます — リストに登録されました。"
+    },
+    "a11y": {
+      "back_to_top": "トップに戻る",
+      "close_cart": "カートを閉じる",
+      "open_cart": "カートを開く",
+      "decrease": "減らす",
+      "increase": "増やす",
+      "decrease_qty": "数量を減らす",
+      "increase_qty": "数量を増やす",
+      "sericia_assistant": "Sericia アシスタント",
+      "cinematic_interstitial": "シネマティック インタースティシャル",
+      "email_address": "メールアドレス",
+      "signed_out": "ログアウト中",
+      "signed_in": "ログイン中",
+      "drop_not_available": "ドロップはご利用いただけません。"
+    }
+  },
+  "journal": {
+    "listing": {
+      "eyebrow": "ジャーナル",
+      "title": "日本からのフィールドノート。",
+      "lede": "Sericiaの救われたクラフト食品に関する、生産者の物語、醸造ノート、国別配送ガイド。",
+      "country_guides_intro": "国別ガイドでは、日本からお茶、miso、shiitakeなどを輸入する手順を説明します — 税関、EMS配送、そして持ち込む価値のあるもの。",
+      "nothing_yet": "まだありません",
+      "nothing_yet_lede": "毎回のドロップの後にフィールドノートを公開します。購読すると、次の号が届いたときにお送りします。",
+      "read_more": "続きを読む"
+    }
+  },
+  "compare": {
+    "sections": {
+      "at_a_glance": "一目",
+      "how_to_choose": "選び方",
+      "frequently_asked": "よくある質問",
+      "browse_other": "他の比較を閲覧",
+      "related": "関連比較",
+      "cross_ship_save": "同梱配送で節約",
+      "cross_ship_lede": "両方をひとつのドロップに追加すると、1アイテムあたりのEMS料金が下がります。京都から48時間以内に手作業で包装し発送します。"
+    }
+  },
+  "uses": {
+    "sections": {
+      "why_combination": "この組み合わせが成立する理由",
+      "frequently_asked": "よくあるご質問",
+      "related_uses": "関連する使い方",
+      "try_it": "この組み合わせをお試しください",
+      "try_it_lede": "手詰め、余剰から救出、京都からEMSで48時間以内に出荷。"
+    }
+  },
+  "forms": {
+    "waitlist": {
+      "cta_default": "参加",
+      "placeholder_email": "メールアドレス",
+      "toast_invalid": "正しいメールアドレスを入力してください",
+      "toast_already": "既にご登録いただいています — 次のドロップでお会いしましょう",
+      "toast_failed": "登録に失敗しました。もう一度お試しください。",
+      "toast_success": "登録完了しました。次のドロップの24時間前にメールをお送りします。",
+      "toast_network": "ネットワークエラー — もう一度お試しください",
+      "confirmed": "✓ 早期アクセスが確定しました。受信箱をご確認ください。"
+    },
+    "footer_subscribe": {
+      "sr_email": "メールアドレス",
+      "placeholder_email": "メールアドレス",
+      "cta": "登録する",
+      "toast_invalid": "有効なメールアドレスを入力してください。",
+      "toast_success": "リストに登録されました。次のドロップでお会いしましょう。",
+      "toast_already": "既に登録済みです — 次のドロップでお会いしましょう。",
+      "toast_failed": "登録できませんでした。もう一度お試しください。",
+      "toast_network": "ネットワークエラーです。もう一度お試しください。"
+    },
+    "notify_me": {
+      "title": "再入荷お知らせ",
+      "lede": "カタログに戻り次第メールをお送りします。マーケティングやアップセルはありません。",
+      "placeholder_email": "メールアドレス",
+      "cta": "通知を受け取る",
+      "cta_loading": "保存中…",
+      "toast_success": "リストに追加されました — 再入荷され次第メールをお送りします。",
+      "toast_failed": "保存できませんでした。もう一度お試しください。",
+      "close": "閉じる"
+    },
+    "push_optin": {
+      "title": "ささやく次のドロップ",
+      "lede": "ドロップごとに1つの通知を送信します — 一般公開の24時間前。タップして有効にしてください。",
+      "cta_enable": "ドロップ通知を有効にする",
+      "cta_enabling": "有効にしています…",
+      "toast_success": "ドロップ通知オン。ささやくだけで、叫びません。",
+      "toast_blocked": "ブラウザが通知をブロックしました。サイト設定で有効にできます。",
+      "toast_failed": "今は購読できませんでした。しばらくしてからもう一度お試しください。"
+    }
   }
 }

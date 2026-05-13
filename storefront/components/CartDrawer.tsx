@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Drawer } from "vaul";
 import autoAnimate from "@formkit/auto-animate";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/lib/cart-store";
 import { CloseIcon, MinusIcon, PlusIcon } from "./Icons";
 import SamplerBanner from "./SamplerBanner";
@@ -14,6 +15,7 @@ type CartDrawerProps = {
 };
 
 export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
+  const tA11y = useTranslations("common.a11y");
   const items = useCart((s) => s.items);
   const setQty = useCart((s) => s.setQty);
   const remove = useCart((s) => s.remove);
@@ -66,7 +68,7 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              aria-label="Close cart"
+              aria-label={tA11y("close_cart")}
               className="p-2 text-sericia-ink hover:text-sericia-accent transition"
             >
               <CloseIcon className="h-5 w-5" />
@@ -143,7 +145,7 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                           <button
                             type="button"
                             onClick={() => setQty(item.productId, item.quantity - 1)}
-                            aria-label="Decrease"
+                            aria-label={tA11y("decrease")}
                             className="p-2 text-sericia-ink hover:bg-sericia-paper-card"
                           >
                             <MinusIcon className="h-3 w-3" />
@@ -154,7 +156,7 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                           <button
                             type="button"
                             onClick={() => setQty(item.productId, item.quantity + 1)}
-                            aria-label="Increase"
+                            aria-label={tA11y("increase")}
                             className="p-2 text-sericia-ink hover:bg-sericia-paper-card"
                           >
                             <PlusIcon className="h-3 w-3" />

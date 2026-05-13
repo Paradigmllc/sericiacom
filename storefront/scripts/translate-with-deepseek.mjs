@@ -355,6 +355,224 @@ const TARGETS = [
       toast_link_copied: "Link copied to clipboard",
     },
   },
+  // ─────────────────────────────────────────────────────────────────
+  // F69 — comprehensive i18n sweep. Hardcoded English detected in
+  // homepage labels, journal/compare/uses page section titles, toast
+  // notifications across customer-facing forms, and aria-labels on
+  // common UI primitives. Grouped per page/component.
+  // ─────────────────────────────────────────────────────────────────
+  {
+    name: "home_spec_labels",
+    keyPath: "home_sections.spec",
+    enValues: {
+      price: "Price",
+      weight: "Weight",
+      ships_within: "Ships within",
+      availability: "Availability",
+      sold_out: "Sold out — join the waitlist for the next drop",
+      remaining_fmt: "{remaining} of {total} remaining",
+      sold_out_short: "This drop has sold out.",
+      billed_usd_fmt: "≈ ${amount} billed USD",
+      purchase_fmt: "Purchase — ${amount}",
+      ems_disclaimer:
+        "EMS worldwide · ships within {hours}h from Kyoto · Card checkout in USD. Duties & taxes calculated at destination.",
+      stat_countries: "Countries shipped",
+      stat_dispatch: "Dispatch from Kyoto",
+      stat_producers: "Producers paid full price",
+      clockwise_caption: "Clockwise · Sencha · Miso · Shiitake",
+    },
+  },
+  {
+    name: "products_listing",
+    keyPath: "products.listing_extras",
+    enValues: {
+      no_matches: "No matches",
+      no_matches_hint: "Try a different category or clear filters.",
+      clear_filters: "Clear filters",
+    },
+  },
+  {
+    name: "pdp_extras",
+    keyPath: "pdp.extras",
+    enValues: {
+      the_story: "The story",
+      recommended_pairings: "Recommended pairings",
+      keep_reading: "Keep reading",
+      frequently_asked: "Frequently asked",
+    },
+  },
+  {
+    name: "journal_listing",
+    keyPath: "journal.listing",
+    enValues: {
+      eyebrow: "Journal",
+      title: "Field notes from Japan.",
+      lede: "Producer stories, brewing notes and country-by-country shipping guides for Sericia's rescued craft food.",
+      country_guides_intro:
+        "Country guides walk through importing tea, miso, shiitake and more from Japan — customs, EMS transit, and what's worth bringing in.",
+      nothing_yet: "Nothing yet",
+      nothing_yet_lede:
+        "We publish field notes after every drop. Subscribe and we'll send the next one when it lands.",
+      read_more: "Read more",
+    },
+  },
+  {
+    name: "compare_page",
+    keyPath: "compare.sections",
+    enValues: {
+      at_a_glance: "At a glance",
+      how_to_choose: "How to choose",
+      frequently_asked: "Frequently asked",
+      browse_other: "Browse other comparisons",
+      related: "Related comparisons",
+      cross_ship_save: "Cross-ship & save",
+      cross_ship_lede:
+        "Add both to a single drop and the per-item EMS cost drops. We hand-pack and ship within 48h from Kyoto.",
+    },
+  },
+  {
+    name: "uses_page",
+    keyPath: "uses.sections",
+    enValues: {
+      why_combination: "Why this combination works",
+      frequently_asked: "Frequently asked",
+      related_uses: "Related uses",
+      try_it: "Try this pairing",
+      try_it_lede:
+        "Hand-packed, rescued from surplus, shipped EMS from Kyoto within 48 hours.",
+    },
+  },
+  {
+    name: "waitlist_form",
+    keyPath: "forms.waitlist",
+    enValues: {
+      cta_default: "Join",
+      placeholder_email: "Your email address",
+      toast_invalid: "Please enter a valid email",
+      toast_already: "You're already on the list — see you at the next drop!",
+      toast_failed: "Could not subscribe. Please try again.",
+      toast_success: "You're in. We'll email 24h before the next drop.",
+      toast_network: "Network error — please try again",
+      confirmed: "✓ Early-access confirmed. Check your inbox.",
+    },
+  },
+  {
+    name: "footer_subscribe",
+    keyPath: "forms.footer_subscribe",
+    enValues: {
+      sr_email: "Email address",
+      placeholder_email: "Your email",
+      cta: "Subscribe",
+      toast_invalid: "Please enter a valid email address.",
+      toast_success: "You're on the list. See you at the next drop.",
+      toast_already: "You're already subscribed — see you at the next drop.",
+      toast_failed: "Could not subscribe. Please try again.",
+      toast_network: "Network error. Please try again.",
+    },
+  },
+  {
+    name: "notify_me_modal",
+    keyPath: "forms.notify_me",
+    enValues: {
+      title: "Notify me when back",
+      lede:
+        "We'll email you the moment this returns to the catalogue. No marketing, no upsells.",
+      placeholder_email: "Your email address",
+      cta: "Notify me",
+      cta_loading: "Saving…",
+      toast_success: "You're on the list — we'll email you the moment it's back.",
+      toast_failed: "Could not save. Please try again.",
+      close: "Close",
+    },
+  },
+  {
+    name: "push_optin",
+    keyPath: "forms.push_optin",
+    enValues: {
+      title: "Whisper next drop",
+      lede:
+        "We send one notification per drop — 24h before public release. Tap to enable.",
+      cta_enable: "Enable drop alerts",
+      cta_enabling: "Enabling…",
+      toast_success: "Drop alerts on. We'll whisper, never shout.",
+      toast_blocked:
+        "Browser blocked notifications. You can enable them in site settings.",
+      toast_failed: "Couldn't subscribe right now. Try again in a moment.",
+    },
+  },
+  {
+    name: "cart_checkout_extras",
+    keyPath: "cart.checkout_extras",
+    enValues: {
+      empty_cart: "Empty cart",
+      empty_cart_lede:
+        "Your cart is empty. Visit the drop to add the bundle.",
+      shop_drop: "Shop the drop",
+      order_summary: "Order summary",
+      label_email: "Email address",
+      label_full_name: "Full name",
+      label_address1: "Address",
+      label_address2: "Apartment, suite (optional)",
+      label_city: "City",
+      label_state: "State / Region",
+      label_postal: "Postal code",
+      label_country: "Country",
+      label_phone: "Phone (for customs)",
+      placeholder_email: "you@example.com",
+      placeholder_full_name: "First and last",
+      placeholder_address1: "Street, number",
+      placeholder_address2: "Apartment, suite, unit",
+      placeholder_city: "City",
+      placeholder_state: "State / Region",
+      placeholder_postal: "Postal code",
+      placeholder_phone: "Phone (for customs)",
+      submit_reserve: "Reserve & continue",
+      submit_reserving: "Reserving…",
+      toast_empty: "Your cart is empty.",
+      toast_missing: "A detail is missing.",
+      toast_reserved: "Reserved.",
+      toast_interrupted: "Something interrupted the request.",
+      toast_redirect: "Order reserved. Redirecting to payment…",
+      toast_network: "Network error — please try again",
+      toast_unavailable: "Drop not available.",
+    },
+  },
+  {
+    name: "content_sidebar",
+    keyPath: "common.sidebar",
+    enValues: {
+      shop_the_story: "Shop the story",
+      drop_alerts: "Drop alerts",
+      related_tools: "Related tools",
+      related_guides: "Related guides",
+      in_page_nav: "In-page navigation",
+      account_nav: "Account navigation",
+      breadcrumb: "Breadcrumb",
+      newsletter_placeholder: "Your email address",
+      newsletter_cta: "Subscribe",
+      toast_invalid_email: "Enter a valid email address.",
+      toast_subscribed: "Thank you — you're on the list.",
+    },
+  },
+  {
+    name: "a11y_common",
+    keyPath: "common.a11y",
+    enValues: {
+      back_to_top: "Back to top",
+      close_cart: "Close cart",
+      open_cart: "Open cart",
+      decrease: "Decrease",
+      increase: "Increase",
+      decrease_qty: "Decrease quantity",
+      increase_qty: "Increase quantity",
+      sericia_assistant: "Sericia Assistant",
+      cinematic_interstitial: "Cinematic interstitial",
+      email_address: "Email address",
+      signed_out: "Signed out",
+      signed_in: "Signed in",
+      drop_not_available: "Drop not available.",
+    },
+  },
 ];
 
 async function deepseekTranslate(targetLocale, target) {

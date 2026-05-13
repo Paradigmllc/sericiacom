@@ -5,23 +5,25 @@ import LuxuryToaster from "@/components/LuxuryToaster";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { isRtlLocale, type Locale } from "@/i18n/routing";
-import Analytics from "@/components/Analytics";
-import DifyChat from "@/components/DifyChat";
 import GlobalOverlay from "@/components/GlobalOverlay";
 import RouteProgress from "@/components/RouteProgress";
 import ScrollProgress from "@/components/ScrollProgress";
 import LuxuryLoader from "@/components/LuxuryLoader";
 import RegionModal from "@/components/RegionModal";
-import CookieConsent from "@/components/CookieConsent";
 import CouponBanner from "@/components/CouponBanner";
-import SocialProofToastGate from "@/components/SocialProofToastGate";
 import ReferralCookieSetter from "@/components/ReferralCookieSetter";
-import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import DeferredOverlays from "@/components/DeferredOverlays";
 import SettingsProvider from "@/components/SettingsProvider";
 import ThemeProvider, { NoFlashThemeScript } from "@/components/ThemeProvider";
 import { getSiteSettings } from "@/lib/payload-settings";
 import { Suspense } from "react";
 
+// F69 — Noto Sans is required for every locale (Latin + diacritics for
+// de/fr/es/it, Cyrillic for ru via the wider subset). Noto Sans JP is only
+// needed when the page renders Japanese characters (locale === "ja"). On
+// other locales we still emit the CSS variable so any stray inline JP text
+// degrades to system sans-serif rather than tofu boxes. The preload of the
+// JP WOFF2 (~110kB) is dropped on 90% of traffic.
 const notoSans = Noto_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -33,6 +35,7 @@ const notoSansJp = Noto_Sans_JP({
   weight: ["300", "400", "500", "700"],
   variable: "--font-noto-sans-jp",
   display: "swap",
+  preload: false, // F69 — only download if a JP-locale page actually uses it
 });
 
 const SITE_URL = "https://sericia.com";
@@ -194,8 +197,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // functionally readable; minor asymmetries in margins are acceptable for
   // launch against the MENA market.
   const dir = isRtlLocale(locale) ? "rtl" : "ltr";
+  // F69 — only attach JP font CSS variable when locale=ja. Other locales
+  // never use --font-noto-sans-jp in production CSS, so omitting the class
+  // is harmless; it just keeps the preload signal smaller for the browser.
+  const fontVars =
+    locale === "ja"
+      ? `${notoSans.variable} ${notoSansJp.variable}`
+      : notoSans.variable;
   return (
-    <html lang={locale} dir={dir} className={`${notoSans.variable} ${notoSansJp.variable}`}>
+    <html lang={locale} dir={dir} className={fontVars}>
       <head>
         {/* No-flash theme script — must be FIRST in <head> so it runs before
             any paint. Reads localStorage and sets data-theme synchronously. */}
@@ -219,12 +229,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
           <GlobalOverlay />
           <RegionModal />
-          <CookieConsent />
-          <SocialProofToastGate />
           <LuxuryToaster />
-          <Analytics />
-          <DifyChat />
-          <ServiceWorkerRegister />
+          {/* F69 — heavy/non-critical overlays are idle-mounted after first
+              paint so their JS bundles don't compete with hero hydration.
+              Includes DifyChat, Analytics, CookieConsent, SocialProofToastGate,
+              ServiceWorkerRegister. See components/DeferredOverlays.tsx. */}
+          <DeferredOverlays />
          </SettingsProvider>
         </NextIntlClientProvider>
       </body>

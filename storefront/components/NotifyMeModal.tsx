@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { CloseIcon } from "./Icons";
 
 export default function NotifyMeModal({
@@ -17,6 +18,8 @@ export default function NotifyMeModal({
   productName: string;
   productSlug: string;
 }) {
+  const t = useTranslations("forms.notify_me");
+  const tA11y = useTranslations("common.a11y");
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -54,15 +57,15 @@ export default function NotifyMeModal({
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
-        throw new Error(body.error ?? `Request failed (${res.status})`);
+        throw new Error(body.error ?? t("toast_failed"));
       }
-      toast.success("You're on the list — we'll email you the moment it's back.");
+      toast.success(t("toast_success"));
       setEmail("");
       onClose();
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[notify-me] submit", err);
-      toast.error(msg);
+      toast.error(msg || t("toast_failed"));
     } finally {
       setSubmitting(false);
     }
@@ -98,17 +101,17 @@ export default function NotifyMeModal({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close"
+              aria-label={t("close")}
               className="absolute top-4 right-4 p-2 text-sericia-ink-mute hover:text-sericia-ink transition"
             >
               <CloseIcon className="h-4 w-4" />
             </button>
-            <p className="label mb-3">Waitlist</p>
+            <p className="label mb-3">{t("title")}</p>
             <h2 id="notify-title" className="text-[22px] md:text-[26px] leading-tight font-normal mb-3">
-              Notify me when {productName} is back.
+              {t("title")} — {productName}
             </h2>
             <p className="text-[13px] text-sericia-ink-soft leading-relaxed mb-6">
-              We make small batches — when this returns to Kyoto, you&apos;ll be the first to know. No marketing, just restocks.
+              {t("lede")}
             </p>
             <form onSubmit={handleSubmit} className="space-y-3">
               <input
@@ -117,7 +120,7 @@ export default function NotifyMeModal({
                 autoFocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("placeholder_email")}
                 className="w-full bg-sericia-paper border border-sericia-line px-4 py-3.5 text-[14px] placeholder:text-sericia-ink-mute focus:outline-none focus:border-sericia-ink transition"
               />
               <button
@@ -125,12 +128,9 @@ export default function NotifyMeModal({
                 disabled={submitting}
                 className="w-full bg-sericia-ink text-sericia-paper py-3.5 text-[13px] tracking-[0.18em] uppercase hover:bg-sericia-accent transition-colors disabled:opacity-60"
               >
-                {submitting ? "Submitting…" : "Join waitlist"}
+                {submitting ? t("cta_loading") : t("cta")}
               </button>
             </form>
-            <p className="text-[11px] text-sericia-ink-mute mt-4 leading-relaxed">
-              By submitting, you agree to receive restock emails. Unsubscribe anytime.
-            </p>
           </motion.div>
         </motion.div>
       )}

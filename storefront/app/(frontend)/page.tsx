@@ -171,28 +171,28 @@ export default async function Home() {
 
               <dl className="grid grid-cols-3 gap-6 mb-10">
                 <div>
-                  <dt className="label mb-2">Price</dt>
+                  <dt className="label mb-2">{tHome("spec.price")}</dt>
                   <dd className="text-[22px] font-normal tabular-nums">
                     {isLocalized ? localPrice : `$${dropData.price_usd}`}
                   </dd>
-                  {isLocalized && <p className="text-[11px] text-sericia-ink-mute mt-1">≈ ${dropData.price_usd} billed USD</p>}
+                  {isLocalized && <p className="text-[11px] text-sericia-ink-mute mt-1">{tHome("spec.billed_usd_fmt", { amount: dropData.price_usd })}</p>}
                 </div>
                 <div>
-                  <dt className="label mb-2">Weight</dt>
+                  <dt className="label mb-2">{tHome("spec.weight")}</dt>
                   <dd className="text-[22px] font-normal tabular-nums">{dropData.weight_g}g</dd>
                 </div>
                 <div>
-                  <dt className="label mb-2">Ships within</dt>
+                  <dt className="label mb-2">{tHome("spec.ships_within")}</dt>
                   <dd className="text-[22px] font-normal tabular-nums">{dropData.ships_within_hours}h</dd>
                 </div>
               </dl>
 
               <div className="mb-6">
-                <p className="label mb-2">Availability</p>
+                <p className="label mb-2">{tHome("spec.availability")}</p>
                 <p className="text-[15px]">
                   {soldOut
-                    ? "Sold out — join the waitlist for the next drop"
-                    : `${remaining} of ${dropData.total_units} remaining`}
+                    ? tHome("spec.sold_out")
+                    : tHome("spec.remaining_fmt", { remaining, total: dropData.total_units })}
                 </p>
                 <div className="mt-3 h-px bg-sericia-line relative overflow-hidden">
                   <div
@@ -205,19 +205,18 @@ export default async function Home() {
               {soldOut ? (
                 <div className="space-y-5">
                   <div className="border border-sericia-line p-6 text-center text-sericia-ink-soft text-[14px]">
-                    This drop has sold out.
+                    {tHome("spec.sold_out_short")}
                   </div>
                   <WaitlistForm source="sold-out" country={country} />
                 </div>
               ) : (
                 <Button href={`/checkout?drop=${dropData.id}`} size="large" fullWidth>
-                  Purchase — ${dropData.price_usd}
+                  {tHome("spec.purchase_fmt", { amount: dropData.price_usd })}
                 </Button>
               )}
 
               <p className="text-[12px] text-sericia-ink-mute mt-5 leading-relaxed">
-                EMS worldwide · ships within {dropData.ships_within_hours}h from Kyoto · Card checkout in USD.
-                Duties & taxes calculated at destination.
+                {tHome("spec.ems_disclaimer", { hours: dropData.ships_within_hours })}
               </p>
             </FadeIn>
 
@@ -250,7 +249,7 @@ export default async function Home() {
                   parallax={false}
                 />
               </div>
-              <p className="label mt-5">Clockwise · Sencha · Miso · Shiitake</p>
+              <p className="label mt-5">{tHome("spec.clockwise_caption")}</p>
             </FadeIn>
           </div>
         </Container>
@@ -389,19 +388,19 @@ export default async function Home() {
               <div className="text-[28px] md:text-[36px] font-normal leading-none mb-2 tabular-nums">
                 <StatCountUp value={23} suffix="+" />
               </div>
-              <div className="label">Countries shipped</div>
+              <div className="label">{tHome("spec.stat_countries")}</div>
             </FadeIn>
             <FadeIn delay={0.1}>
               <div className="text-[28px] md:text-[36px] font-normal leading-none mb-2 tabular-nums">
                 <StatCountUp value={48} suffix="h" />
               </div>
-              <div className="label">Dispatch from Kyoto</div>
+              <div className="label">{tHome("spec.stat_dispatch")}</div>
             </FadeIn>
             <FadeIn delay={0.2}>
               <div className="text-[28px] md:text-[36px] font-normal leading-none mb-2 tabular-nums">
                 <StatCountUp value={100} suffix="%" />
               </div>
-              <div className="label">Producers paid full price</div>
+              <div className="label">{tHome("spec.stat_producers")}</div>
             </FadeIn>
           </div>
         </Container>

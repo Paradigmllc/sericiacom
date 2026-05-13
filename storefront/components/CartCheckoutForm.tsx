@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { useCart } from "@/lib/cart-store";
 import { Rule } from "@/components/ui";
@@ -51,6 +52,7 @@ export default function CartCheckoutForm({
   profileDefaults: Defaults;
 }) {
   const router = useRouter();
+  const t = useTranslations("cart.checkout_extras");
   const items = useCart((s) => s.items);
   const clear = useCart((s) => s.clear);
   const [mounted, setMounted] = useState(false);
@@ -87,15 +89,15 @@ export default function CartCheckoutForm({
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (items.length === 0) {
-      toast.error("Your cart is empty.", {
-        description: "Add something before checking out.",
+      toast.error(t("toast_empty"), {
+        description: t("empty_cart_lede"),
       });
       router.push("/products");
       return;
     }
     const parsed = Schema.safeParse(form);
     if (!parsed.success) {
-      toast.error("A detail is missing.", {
+      toast.error(t("toast_missing"), {
         description: parsed.error.issues[0]?.message ?? "Please complete the required fields.",
       });
       return;
@@ -146,7 +148,7 @@ export default function CartCheckoutForm({
         setLoading(false);
         return;
       }
-      toast.success("Reserved.", {
+      toast.success(t("toast_reserved"), {
         description: "Continuing to payment.",
       });
       clear();
@@ -154,7 +156,7 @@ export default function CartCheckoutForm({
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[cart-checkout] exception", err);
-      toast.error("Something interrupted the request.", {
+      toast.error(t("toast_interrupted"), {
         description: msg,
       });
       setLoading(false);
@@ -162,18 +164,18 @@ export default function CartCheckoutForm({
   }
 
   if (!mounted) {
-    return <div className="text-sericia-ink-soft">Loading checkout…</div>;
+    return <div className="text-sericia-ink-soft">…</div>;
   }
 
   if (items.length === 0) {
     return (
       <div className="border border-sericia-line p-16 text-center">
-        <p className="label mb-5">Empty cart</p>
+        <p className="label mb-5">{t("empty_cart")}</p>
         <p className="text-[17px] text-sericia-ink-soft mb-10 max-w-md mx-auto leading-relaxed">
-          Add something to your cart before checking out.
+          {t("empty_cart_lede")}
         </p>
         <Link href="/products" className="inline-block bg-sericia-ink text-sericia-paper px-10 py-4 text-[14px] tracking-wider hover:bg-sericia-accent transition">
-          Shop the collection
+          {t("shop_drop")}
         </Link>
       </div>
     );
@@ -184,45 +186,45 @@ export default function CartCheckoutForm({
       <div className="md:col-span-7">
         <form onSubmit={onSubmit} className="space-y-7">
           <div>
-            <label className={labelCls}>Email address</label>
-            <input type="email" required value={form.email} onChange={update("email")} className={inputCls} placeholder="you@example.com" autoComplete="email" />
+            <label className={labelCls}>{t("label_email")}</label>
+            <input type="email" required value={form.email} onChange={update("email")} className={inputCls} placeholder={t("placeholder_email")} autoComplete="email" />
           </div>
           <div>
-            <label className={labelCls}>Full name</label>
-            <input type="text" required value={form.full_name} onChange={update("full_name")} className={inputCls} placeholder="First and last" autoComplete="name" />
+            <label className={labelCls}>{t("label_full_name")}</label>
+            <input type="text" required value={form.full_name} onChange={update("full_name")} className={inputCls} placeholder={t("placeholder_full_name")} autoComplete="name" />
           </div>
           <div>
-            <label className={labelCls}>Address line 1</label>
-            <input type="text" required value={form.address_line1} onChange={update("address_line1")} className={inputCls} placeholder="Street, number" autoComplete="address-line1" />
+            <label className={labelCls}>{t("label_address1")}</label>
+            <input type="text" required value={form.address_line1} onChange={update("address_line1")} className={inputCls} placeholder={t("placeholder_address1")} autoComplete="address-line1" />
           </div>
           <div>
-            <label className={labelCls}>Address line 2 <span className="text-sericia-ink-mute normal-case tracking-normal">— optional</span></label>
-            <input type="text" value={form.address_line2} onChange={update("address_line2")} className={inputCls} placeholder="Apartment, suite, unit" autoComplete="address-line2" />
+            <label className={labelCls}>{t("label_address2")}</label>
+            <input type="text" value={form.address_line2} onChange={update("address_line2")} className={inputCls} placeholder={t("placeholder_address2")} autoComplete="address-line2" />
           </div>
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <label className={labelCls}>City</label>
+              <label className={labelCls}>{t("label_city")}</label>
               <input type="text" required value={form.city} onChange={update("city")} className={inputCls} autoComplete="address-level2" />
             </div>
             <div>
-              <label className={labelCls}>State / Region</label>
+              <label className={labelCls}>{t("label_state")}</label>
               <input type="text" value={form.region} onChange={update("region")} className={inputCls} autoComplete="address-level1" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <label className={labelCls}>Postal code</label>
+              <label className={labelCls}>{t("label_postal")}</label>
               <input type="text" required value={form.postal_code} onChange={update("postal_code")} className={inputCls} autoComplete="postal-code" />
             </div>
             <div>
-              <label className={labelCls}>Country</label>
+              <label className={labelCls}>{t("label_country")}</label>
               <select required value={form.country_code} onChange={update("country_code")} className={`${inputCls} cursor-pointer`}>
                 {COUNTRIES.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
               </select>
             </div>
           </div>
           <div>
-            <label className={labelCls}>Phone <span className="text-sericia-ink-mute normal-case tracking-normal">— for customs</span></label>
+            <label className={labelCls}>{t("label_phone")}</label>
             <input type="tel" value={form.phone} onChange={update("phone")} className={inputCls} autoComplete="tel" />
           </div>
           <div className="pt-2">
@@ -230,7 +232,7 @@ export default function CartCheckoutForm({
           </div>
           <div className="pt-6">
             <button type="submit" disabled={loading} className="w-full bg-sericia-ink text-sericia-paper py-5 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40">
-              {loading ? "Reserving…" : `Continue to payment — $${total}`}
+              {loading ? t("submit_reserving") : `${t("submit_reserve")} — $${total}`}
             </button>
             <p className="text-[12px] text-sericia-ink-mute text-center mt-5 leading-relaxed">
               EMS worldwide · By continuing you agree to our{" "}
@@ -243,7 +245,7 @@ export default function CartCheckoutForm({
 
       <aside className="md:col-span-5">
         <div className="md:sticky md:top-8 border border-sericia-line bg-sericia-paper-card p-8">
-          <p className="label mb-6">Order summary</p>
+          <p className="label mb-6">{t("order_summary")}</p>
           <div className="space-y-4 mb-6">
             {items.map((it) => (
               <div key={it.productId} className="flex justify-between text-[14px]">

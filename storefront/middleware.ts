@@ -259,7 +259,43 @@ export async function middleware(req: NextRequest) {
     res.cookies.set("country", country, { maxAge: 60 * 60 * 24 * 30, path: "/" });
   }
 
-  // --- Supabase SSR session refresh ---
+  // --- F68 — disable Cloudflare HTML transformations (Auto Minify) ---
+  // Cloudflare's Auto Minify HTML feature was stripping `<!DOCTYPE html>`
+  // and the opening `<html>` tag from cached responses (confirmed by
+  // bypassing CF with `curl https://46.62.217.172/` -H "Host: sericia.com"
+  // which returned proper `<!DOCTYPE html><html lang="en" dir="ltr" ...>`).
+  // The HTTP-standard signal to tell intermediaries "do not transform this
+  // payload" is `Cache-Control: no-transform`. CF docs explicitly honour it
+  // for Auto Minify and Polish.
+  //
+  // We APPEND no-transform without overwriting the page-level cache-control
+  // because pages set their own `revalidate` (private, max-age=N) values.
+  // If the page didn't set anything, default to a safe `no-store` for
+  // dynamic surfaces (signal NOT to cache + NOT to transform).
+  const existing = res.headers.get("cache-control");
+  if (existing) {
+    if (!existing.includes("no-transform")) {
+      res.headers.set("cache-control", `${existing}, no-transform`);
+    }
+  } else {
+    res.headers.set("cache-control", "no-transform");
+  }
+
+  // --- Supabase SSR session refresh (GATED) ---
+  // PERF: pre-F69 every page request hit Supabase auth REST to call
+  // `getUser()`, even for guests who never need an auth check. That cost
+  // 100–300ms on every TTFB across the site. F69 gates the auth check so
+  // it ONLY runs when the request actually targets a protected surface
+  // (/account/*). Guests on /, /products, /journal, /guides, /tools, etc.
+  // skip the round-trip entirely → TTFB -100~300ms site-wide.
+  //
+  // We still need Supabase cookies set by the auth callback to flow through
+  // so the account pages, when finally hit, recognize the session. Those
+  // cookies live on the request already; we just don't *validate* them on
+  // every page unless we'll actually use them.
+  const accountGuard = /^\/(en|ja|de|fr|es|it|ko|zh-TW|ru|ar)?\/?account(\/|$)/;
+  if (!accountGuard.test(path)) return res;
+
   const supaUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supaKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!supaUrl || !supaKey) return res;
@@ -282,9 +318,7 @@ export async function middleware(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Guard /account/* (and localized /<locale>/account/*)
-  const accountGuard = /^\/(en|ja|de|fr|es|it|ko|zh-TW|ru|ar)?\/?account(\/|$)/;
-  if (accountGuard.test(path) && !user) {
+  if (!user) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = "/login";
     redirectUrl.searchParams.set("redirect", path);

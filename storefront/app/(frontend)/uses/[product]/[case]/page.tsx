@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, Eyebrow, Rule, SectionHeading } from "@/components/ui";
@@ -89,6 +90,7 @@ export default async function UsesPage({ params }: { params: Params }) {
 
   const { product, useCase } = r;
   const stats = statsFor(product.slug, useCase.slug);
+  const t = await getTranslations("uses.sections");
 
   // ── JSON-LD ──────────────────────────────────────────────────────────
   // GEO optimisation: 4 separate JSON-LD blocks. Article + Breadcrumb
@@ -245,7 +247,7 @@ export default async function UsesPage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading title="Why this combination works" />
+          <SectionHeading title={t("why_combination")} />
           <p className="text-[16px] leading-relaxed text-sericia-ink-soft max-w-prose mt-6">
             {product.name} brings sourcing depth — small-batch producers,
             named regions, traceable harvests — that translates directly
@@ -317,7 +319,7 @@ export default async function UsesPage({ params }: { params: Params }) {
           </div>
 
           {/* FAQ section — visible markup matches FAQPage JSON-LD above */}
-          <SectionHeading title="Frequently asked" />
+          <SectionHeading title={t("frequently_asked")} />
           <dl className="mt-8 space-y-8">
             {faqs.map((f) => (
               <div

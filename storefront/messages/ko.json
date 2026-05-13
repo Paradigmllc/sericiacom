@@ -113,7 +113,12 @@
     "category": "카테고리",
     "back_to_shop": "쇼핑으로 돌아가기",
     "details": "상세",
-    "story": "스토리"
+    "story": "스토리",
+    "listing_extras": {
+      "no_matches": "일치하는 항목 없음",
+      "no_matches_hint": "다른 카테고리를 시도하거나 필터를 지우십시오.",
+      "clear_filters": "필터 지우기"
+    }
   },
   "cart": {
     "title": "장바구니",
@@ -125,7 +130,39 @@
     "total": "합계",
     "checkout": "결제하기",
     "remove": "삭제",
-    "quantity": "수량"
+    "quantity": "수량",
+    "checkout_extras": {
+      "empty_cart": "빈 장바구니",
+      "empty_cart_lede": "장바구니가 비어 있습니다. 드롭을 방문하여 번들을 추가하세요.",
+      "shop_drop": "드롭 쇼핑하기",
+      "order_summary": "주문 요약",
+      "label_email": "이메일 주소",
+      "label_full_name": "성명",
+      "label_address1": "주소",
+      "label_address2": "아파트, 스위트 (선택사항)",
+      "label_city": "도시",
+      "label_state": "주 / 지역",
+      "label_postal": "우편번호",
+      "label_country": "국가",
+      "label_phone": "전화번호 (통관용)",
+      "placeholder_email": "you@example.com",
+      "placeholder_full_name": "이름과 성",
+      "placeholder_address1": "거리명, 번지",
+      "placeholder_address2": "아파트, 스위트, 호실",
+      "placeholder_city": "도시",
+      "placeholder_state": "주 / 지역",
+      "placeholder_postal": "우편번호",
+      "placeholder_phone": "전화번호 (통관용)",
+      "submit_reserve": "예약 및 계속",
+      "submit_reserving": "예약 중…",
+      "toast_empty": "장바구니가 비어 있습니다.",
+      "toast_missing": "세부 정보가 누락되었습니다.",
+      "toast_reserved": "예약되었습니다.",
+      "toast_interrupted": "요청이 중단되었습니다.",
+      "toast_redirect": "주문이 예약되었습니다. 결제 페이지로 이동 중…",
+      "toast_network": "네트워크 오류 — 다시 시도해 주세요",
+      "toast_unavailable": "드롭을 사용할 수 없습니다."
+    }
   },
   "checkout": {
     "title": "결제",
@@ -377,7 +414,23 @@
     "how_it_works_title": "교토에서 문 앞까지, 4단계.",
     "faq_eyebrow": "자주 묻는 질문",
     "faq_title": "질문과 고려사항.",
-    "faq_cta": "배송 정책 전문 읽기"
+    "faq_cta": "배송 정책 전문 읽기",
+    "spec": {
+      "price": "가격",
+      "weight": "중량",
+      "ships_within": "배송 기간",
+      "availability": "재고 상태",
+      "sold_out": "품절 — 다음 드롭을 위해 대기자 명단에 등록하세요.",
+      "remaining_fmt": "남은 수량: {remaining}/{total}",
+      "sold_out_short": "이 드롭은 품절되었습니다.",
+      "billed_usd_fmt": "약 ${amount} USD 청구",
+      "purchase_fmt": "구매 — ${amount}",
+      "ems_disclaimer": "전 세계 EMS · 교토에서 {hours}시간 내 배송 · USD 카드 결제. 관세 및 세금은 도착지에서 계산됩니다.",
+      "stat_countries": "배송 국가",
+      "stat_dispatch": "교토에서 발송",
+      "stat_producers": "정가 지불한 생산자",
+      "clockwise_caption": "시계 방향 · Sencha · Miso · Shiitake"
+    }
   },
   "pages": {
     "about": {
@@ -533,7 +586,13 @@
     "story_fallback": "We''ll share the producer''s full story here soon. Each Sericia maker is visited in person before their craft joins our collection.",
     "tasting_fallback": "Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.",
     "recommended_pairings_eyebrow": "Recommended pairings",
-    "you_may_also_like": "You may also like"
+    "you_may_also_like": "You may also like",
+    "extras": {
+      "the_story": "이야기",
+      "recommended_pairings": "추천 페어링",
+      "keep_reading": "계속 읽기",
+      "frequently_asked": "자주 묻는 질문"
+    }
   },
   "pay": {
     "eyebrow": "2단계 / 2 — 결제",
@@ -564,6 +623,106 @@
     "empty_state": "아직 아무것도 없습니다.",
     "error_generic": "문제가 발생했습니다. 다시 시도해 주세요.",
     "error_network": "서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.",
-    "sign_in_required": "계속하려면 로그인해 주세요."
+    "sign_in_required": "계속하려면 로그인해 주세요.",
+    "sidebar": {
+      "shop_the_story": "스토리 쇼핑",
+      "drop_alerts": "드롭 알림",
+      "related_tools": "관련 도구",
+      "related_guides": "관련 가이드",
+      "in_page_nav": "페이지 내 탐색",
+      "account_nav": "계정 탐색",
+      "breadcrumb": "이동 경로",
+      "newsletter_placeholder": "이메일 주소",
+      "newsletter_cta": "구독",
+      "toast_invalid_email": "유효한 이메일 주소를 입력해 주세요.",
+      "toast_subscribed": "감사합니다 — 목록에 추가되었습니다."
+    },
+    "a11y": {
+      "back_to_top": "맨 위로 가기",
+      "close_cart": "카트 닫기",
+      "open_cart": "카트 열기",
+      "decrease": "감소",
+      "increase": "증가",
+      "decrease_qty": "수량 감소",
+      "increase_qty": "수량 증가",
+      "sericia_assistant": "Sericia 어시스턴트",
+      "cinematic_interstitial": "시네마틱 인터스티셜",
+      "email_address": "이메일 주소",
+      "signed_out": "로그아웃됨",
+      "signed_in": "로그인됨",
+      "drop_not_available": "드롭을 사용할 수 없습니다."
+    }
+  },
+  "journal": {
+    "listing": {
+      "eyebrow": "저널",
+      "title": "일본 현장 기록.",
+      "lede": "생산자 이야기, 추출 노트, 그리고 Sericia의 구조된 공예 식품에 대한 국가별 배송 가이드.",
+      "country_guides_intro": "국가 가이드는 일본에서 차, 미소, 표고버섯 등을 수입하는 과정을 안내합니다 — 세관, EMS 운송, 그리고 가져올 만한 것들.",
+      "nothing_yet": "아직 없음",
+      "nothing_yet_lede": "우리는 매 드롭 후 현장 기록을 게시합니다. 구독하시면 다음 기록이 게시될 때 보내드립니다.",
+      "read_more": "더 읽기"
+    }
+  },
+  "compare": {
+    "sections": {
+      "at_a_glance": "한눈에",
+      "how_to_choose": "선택 방법",
+      "frequently_asked": "자주 묻는 질문",
+      "browse_other": "다른 비교 보기",
+      "related": "관련 비교",
+      "cross_ship_save": "교차 배송 & 할인",
+      "cross_ship_lede": "두 제품을 하나의 드롭에 추가하면 개별 EMS 비용이 낮아집니다. 교토에서 48시간 이내에 직접 포장하여 발송합니다."
+    }
+  },
+  "uses": {
+    "sections": {
+      "why_combination": "이 조합이 효과적인 이유",
+      "frequently_asked": "자주 묻는 질문",
+      "related_uses": "관련 활용법",
+      "try_it": "이 조합 시도하기",
+      "try_it_lede": "손으로 포장, 잉여 재고에서 구조, 교토에서 EMS로 48시간 이내 배송."
+    }
+  },
+  "forms": {
+    "waitlist": {
+      "cta_default": "가입",
+      "placeholder_email": "이메일 주소",
+      "toast_invalid": "유효한 이메일을 입력해 주세요.",
+      "toast_already": "이미 목록에 등록되어 있습니다 — 다음 드롭에서 뵙겠습니다.",
+      "toast_failed": "구독하지 못했습니다. 다시 시도해 주세요.",
+      "toast_success": "가입되었습니다. 다음 드롭 24시간 전에 이메일을 보내드립니다.",
+      "toast_network": "네트워크 오류 — 다시 시도해 주세요.",
+      "confirmed": "✓ 얼리 액세스가 확인되었습니다. 받은 편지함을 확인하세요."
+    },
+    "footer_subscribe": {
+      "sr_email": "이메일 주소",
+      "placeholder_email": "이메일",
+      "cta": "구독",
+      "toast_invalid": "유효한 이메일 주소를 입력해 주세요.",
+      "toast_success": "목록에 추가되었습니다. 다음 드롭에서 뵙겠습니다.",
+      "toast_already": "이미 구독 중입니다 — 다음 드롭에서 뵙겠습니다.",
+      "toast_failed": "구독할 수 없습니다. 다시 시도해 주세요.",
+      "toast_network": "네트워크 오류. 다시 시도해 주세요."
+    },
+    "notify_me": {
+      "title": "재입고 알림",
+      "lede": "이 상품이 카탈로그에 다시 등록되는 즉시 이메일로 알려드립니다. 마케팅이나 추가 판매 제안은 없습니다.",
+      "placeholder_email": "이메일 주소",
+      "cta": "알림 신청",
+      "cta_loading": "저장 중…",
+      "toast_success": "알림 목록에 등록되었습니다 — 입고되는 즉시 이메일로 알려드립니다.",
+      "toast_failed": "저장하지 못했습니다. 다시 시도해 주세요.",
+      "close": "닫기"
+    },
+    "push_optin": {
+      "title": "다음 드롭 속삭임",
+      "lede": "드롭당 하나의 알림을 보냅니다 — 공개 출시 24시간 전. 탭하여 활성화하세요.",
+      "cta_enable": "드롭 알림 활성화",
+      "cta_enabling": "활성화 중…",
+      "toast_success": "드롭 알림이 켜졌습니다. 우리는 속삭일 뿐, 결코 소리지르지 않습니다.",
+      "toast_blocked": "브라우저가 알림을 차단했습니다. 사이트 설정에서 활성화할 수 있습니다.",
+      "toast_failed": "지금은 구독할 수 없었습니다. 잠시 후 다시 시도하세요."
+    }
   }
 }

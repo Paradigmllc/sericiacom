@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container } from "@/components/ui";
@@ -105,7 +106,10 @@ export default async function ProductsIndexPage(
   const category = parseCategory(typeof sp.category === "string" ? sp.category : undefined);
   const sort = parseSort(typeof sp.sort === "string" ? sp.sort : undefined);
 
-  const all = await listActiveProducts();
+  const [all, tListing] = await Promise.all([
+    listActiveProducts(),
+    getTranslations("products.listing_extras"),
+  ]);
 
   // Build counts off the unfiltered list so pills always show "(N)" of what's
   // actually available, not "(0)" in a category the user just filtered away from.
@@ -223,10 +227,9 @@ export default async function ProductsIndexPage(
         <div className="mt-10 md:mt-14">
           {withBadges.length === 0 ? (
             <div className="py-16 text-center">
-              <p className="label mb-3">No matches</p>
+              <p className="label mb-3">{tListing("no_matches")}</p>
               <p className="text-[15px] text-sericia-ink-soft max-w-md mx-auto">
-                Nothing in this category right now. Try another filter — the drop
-                rotates often and new items appear as they come back into stock.
+                {tListing("no_matches_hint")}
               </p>
             </div>
           ) : (

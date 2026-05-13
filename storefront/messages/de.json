@@ -113,7 +113,12 @@
     "category": "Kategorie",
     "back_to_shop": "Zurück zum Shop",
     "details": "Details",
-    "story": "Geschichte"
+    "story": "Geschichte",
+    "listing_extras": {
+      "no_matches": "Keine Übereinstimmungen",
+      "no_matches_hint": "Versuchen Sie eine andere Kategorie oder löschen Sie die Filter.",
+      "clear_filters": "Filter löschen"
+    }
   },
   "cart": {
     "title": "Ihr Warenkorb",
@@ -125,7 +130,39 @@
     "total": "Gesamt",
     "checkout": "Zur Kasse",
     "remove": "Entfernen",
-    "quantity": "Menge"
+    "quantity": "Menge",
+    "checkout_extras": {
+      "empty_cart": "Leerer Warenkorb",
+      "empty_cart_lede": "Ihr Warenkorb ist leer. Besuchen Sie den Drop, um das Bundle hinzuzufügen.",
+      "shop_drop": "Drop durchstöbern",
+      "order_summary": "Bestellübersicht",
+      "label_email": "E-Mail-Adresse",
+      "label_full_name": "Vollständiger Name",
+      "label_address1": "Adresse",
+      "label_address2": "Apartment, Suite (optional)",
+      "label_city": "Stadt",
+      "label_state": "Bundesland / Region",
+      "label_postal": "Postleitzahl",
+      "label_country": "Land",
+      "label_phone": "Telefon (für Zoll)",
+      "placeholder_email": "you@example.com",
+      "placeholder_full_name": "Vor- und Nachname",
+      "placeholder_address1": "Straße, Hausnummer",
+      "placeholder_address2": "Apartment, Suite, Einheit",
+      "placeholder_city": "Stadt",
+      "placeholder_state": "Bundesland / Region",
+      "placeholder_postal": "Postleitzahl",
+      "placeholder_phone": "Telefon (für Zoll)",
+      "submit_reserve": "Reservieren & fortfahren",
+      "submit_reserving": "Reservieren…",
+      "toast_empty": "Ihr Warenkorb ist leer.",
+      "toast_missing": "Ein Detail fehlt.",
+      "toast_reserved": "Reserviert.",
+      "toast_interrupted": "Etwas hat die Anfrage unterbrochen.",
+      "toast_redirect": "Bestellung reserviert. Weiterleitung zur Zahlung…",
+      "toast_network": "Netzwerkfehler — bitte versuchen Sie es erneut",
+      "toast_unavailable": "Drop nicht verfügbar."
+    }
   },
   "checkout": {
     "title": "Kasse",
@@ -377,7 +414,23 @@
     "how_it_works_title": "Von Kyoto an Ihre Tür in vier Schritten.",
     "faq_eyebrow": "Häufig gefragt",
     "faq_title": "Fragen & Überlegungen.",
-    "faq_cta": "Vollständige Versandrichtlinien lesen"
+    "faq_cta": "Vollständige Versandrichtlinien lesen",
+    "spec": {
+      "price": "Preis",
+      "weight": "Gewicht",
+      "ships_within": "Versand innerhalb",
+      "availability": "Verfügbarkeit",
+      "sold_out": "Ausverkauft — setzen Sie sich auf die Warteliste für den nächsten Drop",
+      "remaining_fmt": "{remaining} von {total} verbleibend",
+      "sold_out_short": "Dieser Drop ist ausverkauft.",
+      "billed_usd_fmt": "≈ ${amount} USD abgerechnet",
+      "purchase_fmt": "Kauf — ${amount}",
+      "ems_disclaimer": "EMS weltweit · Versand innerhalb von {hours} Stunden ab Kyoto · Zahlung per Karte in USD. Zölle und Steuern werden am Bestimmungsort berechnet.",
+      "stat_countries": "Lieferländer",
+      "stat_dispatch": "Versand aus Kyoto",
+      "stat_producers": "Produzenten zum vollen Preis bezahlt",
+      "clockwise_caption": "Im Uhrzeigersinn · Sencha · Miso · Shiitake"
+    }
   },
   "pages": {
     "about": {
@@ -533,7 +586,13 @@
     "story_fallback": "We''ll share the producer''s full story here soon. Each Sericia maker is visited in person before their craft joins our collection.",
     "tasting_fallback": "Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.",
     "recommended_pairings_eyebrow": "Recommended pairings",
-    "you_may_also_like": "You may also like"
+    "you_may_also_like": "You may also like",
+    "extras": {
+      "the_story": "Die Geschichte",
+      "recommended_pairings": "Empfohlene Kombinationen",
+      "keep_reading": "Weiterlesen",
+      "frequently_asked": "Häufig gestellte Fragen"
+    }
   },
   "pay": {
     "eyebrow": "Schritt 2 von 2 — Zahlung",
@@ -564,6 +623,106 @@
     "empty_state": "Noch nichts hier.",
     "error_generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "error_network": "Wir konnten den Server nicht erreichen. Bitte versuchen Sie es in einem Moment erneut.",
-    "sign_in_required": "Bitte melden Sie sich an, um fortzufahren."
+    "sign_in_required": "Bitte melden Sie sich an, um fortzufahren.",
+    "sidebar": {
+      "shop_the_story": "Die Geschichte entdecken",
+      "drop_alerts": "Drop-Benachrichtigungen",
+      "related_tools": "Verwandte Werkzeuge",
+      "related_guides": "Verwandte Anleitungen",
+      "in_page_nav": "Seitennavigation",
+      "account_nav": "Kontonavigation",
+      "breadcrumb": "Breadcrumb",
+      "newsletter_placeholder": "Ihre E-Mail-Adresse",
+      "newsletter_cta": "Abonnieren",
+      "toast_invalid_email": "Geben Sie eine gültige E-Mail-Adresse ein.",
+      "toast_subscribed": "Vielen Dank — Sie sind auf der Liste."
+    },
+    "a11y": {
+      "back_to_top": "Zurück nach oben",
+      "close_cart": "Warenkorb schließen",
+      "open_cart": "Warenkorb öffnen",
+      "decrease": "Verringern",
+      "increase": "Erhöhen",
+      "decrease_qty": "Menge verringern",
+      "increase_qty": "Menge erhöhen",
+      "sericia_assistant": "Sericia Assistent",
+      "cinematic_interstitial": "Kinematografischer Interstitial",
+      "email_address": "E-Mail-Adresse",
+      "signed_out": "Abgemeldet",
+      "signed_in": "Angemeldet",
+      "drop_not_available": "Drop nicht verfügbar."
+    }
+  },
+  "journal": {
+    "listing": {
+      "eyebrow": "Journal",
+      "title": "Feldnotizen aus Japan.",
+      "lede": "Geschichten der Produzenten, Braunotizen und länderspezifische Versandleitfäden für Sericias gerettete Handwerksspeisen.",
+      "country_guides_intro": "Länderleitfäden führen durch den Import von Tee, Miso, Shiitake und mehr aus Japan — Zoll, EMS-Transit und was sich mitzubringen lohnt.",
+      "nothing_yet": "Noch nichts",
+      "nothing_yet_lede": "Wir veröffentlichen Feldnotizen nach jedem Drop. Abonnieren Sie und wir senden Ihnen die nächste, sobald sie erscheint.",
+      "read_more": "Mehr lesen"
+    }
+  },
+  "compare": {
+    "sections": {
+      "at_a_glance": "Auf einen Blick",
+      "how_to_choose": "Wie auswählen",
+      "frequently_asked": "Häufig gestellt",
+      "browse_other": "Weitere Vergleiche durchsuchen",
+      "related": "Verwandte Vergleiche",
+      "cross_ship_save": "Kreuzversand & sparen",
+      "cross_ship_lede": "Fügen Sie beide zu einem einzigen Drop hinzu, und die EMS-Kosten pro Artikel sinken. Wir packen von Hand und versenden innerhalb von 48 Stunden aus Kyoto."
+    }
+  },
+  "uses": {
+    "sections": {
+      "why_combination": "Warum diese Kombination funktioniert",
+      "frequently_asked": "Häufig gestellte Fragen",
+      "related_uses": "Verwandte Verwendungen",
+      "try_it": "Probieren Sie es",
+      "try_it_lede": "Handverpackt, aus Überschuss gerettet, per EMS aus Kyoto innerhalb von 48 Stunden versendet."
+    }
+  },
+  "forms": {
+    "waitlist": {
+      "cta_default": "Beitreten",
+      "placeholder_email": "Ihre E-Mail-Adresse",
+      "toast_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+      "toast_already": "Sie sind bereits auf der Liste — bis zum nächsten Drop.",
+      "toast_failed": "Abonnieren fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      "toast_success": "Sie sind dabei. Wir senden Ihnen 24 Stunden vor dem nächsten Drop eine E-Mail.",
+      "toast_network": "Netzwerkfehler — bitte versuchen Sie es erneut.",
+      "confirmed": "✓ Frühzugang bestätigt. Überprüfen Sie Ihren Posteingang."
+    },
+    "footer_subscribe": {
+      "sr_email": "E-Mail-Adresse",
+      "placeholder_email": "Ihre E-Mail",
+      "cta": "Abonnieren",
+      "toast_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+      "toast_success": "Sie sind auf der Liste. Bis zum nächsten Drop.",
+      "toast_already": "Sie sind bereits abonniert — bis zum nächsten Drop.",
+      "toast_failed": "Abonnieren fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      "toast_network": "Netzwerkfehler. Bitte versuchen Sie es erneut."
+    },
+    "notify_me": {
+      "title": "Bei Verfügbarkeit benachrichtigen",
+      "lede": "Wir senden Ihnen eine E-Mail, sobald dieses Produkt wieder im Katalog ist. Kein Marketing, keine Verkaufsförderung.",
+      "placeholder_email": "Ihre E-Mail-Adresse",
+      "cta": "Benachrichtigen",
+      "cta_loading": "Speichern…",
+      "toast_success": "Sie sind auf der Liste — wir benachrichtigen Sie per E-Mail, sobald es wieder da ist.",
+      "toast_failed": "Speichern fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      "close": "Schließen"
+    },
+    "push_optin": {
+      "title": "Ein Flüstern zum nächsten Drop",
+      "lede": "Wir senden eine Benachrichtigung pro Drop — 24 Stunden vor der öffentlichen Veröffentlichung. Tippen Sie, um zu aktivieren.",
+      "cta_enable": "Drop-Benachrichtigungen aktivieren",
+      "cta_enabling": "Wird aktiviert…",
+      "toast_success": "Drop-Benachrichtigungen aktiviert. Wir flüstern, schreien nie.",
+      "toast_blocked": "Browser hat Benachrichtigungen blockiert. Sie können sie in den Website-Einstellungen aktivieren.",
+      "toast_failed": "Abonnieren fehlgeschlagen. Versuchen Sie es in einem Moment erneut."
+    }
   }
 }
