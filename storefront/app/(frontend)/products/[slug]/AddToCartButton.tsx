@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/lib/cart-store";
 import { useUi } from "@/lib/ui-store";
 import { useWishlist } from "@/lib/wishlist-store";
@@ -24,6 +25,7 @@ export default function AddToCartButton({
   category: string;
   onNotifyClick?: () => void;
 }) {
+  const tA11y = useTranslations("common.a11y");
   const add = useCart((s) => s.add);
   const openCart = useUi((s) => s.openCart);
   const toggleWish = useWishlist((s) => s.toggle);
@@ -85,7 +87,7 @@ export default function AddToCartButton({
           <button
             type="button"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
-            aria-label="Decrease quantity"
+            aria-label={tA11y("decrease_qty")}
             className="w-10 h-10 flex items-center justify-center text-sericia-ink hover:bg-sericia-paper-card transition"
           >
             <MinusIcon className="h-3 w-3" />
@@ -94,7 +96,7 @@ export default function AddToCartButton({
           <button
             type="button"
             onClick={() => setQty((q) => Math.min(99, q + 1))}
-            aria-label="Increase quantity"
+            aria-label={tA11y("increase_qty")}
             className="w-10 h-10 flex items-center justify-center text-sericia-ink hover:bg-sericia-paper-card transition"
           >
             <PlusIcon className="h-3 w-3" />

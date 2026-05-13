@@ -90,7 +90,12 @@
     "category": "類別",
     "back_to_shop": "返回商店",
     "details": "詳情",
-    "story": "故事"
+    "story": "故事",
+    "listing_extras": {
+      "no_matches": "無符合項目",
+      "no_matches_hint": "嘗試其他類別或清除篩選條件。",
+      "clear_filters": "清除篩選條件"
+    }
   },
   "cart": {
     "title": "您的購物車",
@@ -102,7 +107,39 @@
     "total": "總計",
     "checkout": "結帳",
     "remove": "移除",
-    "quantity": "數量"
+    "quantity": "數量",
+    "checkout_extras": {
+      "empty_cart": "清空購物車",
+      "empty_cart_lede": "您的購物車是空的。前往限定上架加入組合。",
+      "shop_drop": "選購限定上架",
+      "order_summary": "訂單摘要",
+      "label_email": "電子郵件地址",
+      "label_full_name": "全名",
+      "label_address1": "地址",
+      "label_address2": "公寓、套房（選填）",
+      "label_city": "城市",
+      "label_state": "州 / 地區",
+      "label_postal": "郵遞區號",
+      "label_country": "國家",
+      "label_phone": "電話（海關用）",
+      "placeholder_email": "you@example.com",
+      "placeholder_full_name": "姓氏與名字",
+      "placeholder_address1": "街道、門牌號碼",
+      "placeholder_address2": "公寓、套房、單位",
+      "placeholder_city": "城市",
+      "placeholder_state": "州 / 地區",
+      "placeholder_postal": "郵遞區號",
+      "placeholder_phone": "電話（海關用）",
+      "submit_reserve": "預留並繼續",
+      "submit_reserving": "保留中…",
+      "toast_empty": "您的購物車是空的。",
+      "toast_missing": "缺少詳細資料。",
+      "toast_reserved": "已預留。",
+      "toast_interrupted": "請求被中斷。",
+      "toast_redirect": "訂單已預留。正在重新導向至付款…",
+      "toast_network": "網路錯誤 — 請再試一次",
+      "toast_unavailable": "限定上架無法使用。"
+    }
   },
   "checkout": {
     "title": "結帳",
@@ -354,7 +391,23 @@
     "how_it_works_title": "從京都到您的家門口，四個步驟。",
     "faq_eyebrow": "常見問題",
     "faq_title": "疑問與考量。",
-    "faq_cta": "閱讀完整的配送政策"
+    "faq_cta": "閱讀完整的配送政策",
+    "spec": {
+      "price": "價格",
+      "weight": "重量",
+      "ships_within": "發貨時間",
+      "availability": "供貨情況",
+      "sold_out": "已售罄 — 加入候補名單以等待下次限定上架",
+      "remaining_fmt": "剩餘 {remaining}/{total}",
+      "sold_out_short": "此限定上架已售罄。",
+      "billed_usd_fmt": "≈ ${amount} 美元計費",
+      "purchase_fmt": "購買 — ${amount}",
+      "ems_disclaimer": "全球EMS配送 · 從京都發貨需 {hours} 小時 · 信用卡結帳以美元計價。關稅及稅費於目的地計算。",
+      "stat_countries": "配送國家數",
+      "stat_dispatch": "從京都發貨",
+      "stat_producers": "生產者獲得全額報酬",
+      "clockwise_caption": "順時針方向 · Sencha · Miso · Shiitake"
+    }
   },
   "pages": {
     "about": {
@@ -510,7 +563,13 @@
     "story_fallback": "We''ll share the producer''s full story here soon. Each Sericia maker is visited in person before their craft joins our collection.",
     "tasting_fallback": "Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.",
     "recommended_pairings_eyebrow": "Recommended pairings",
-    "you_may_also_like": "You may also like"
+    "you_may_also_like": "You may also like",
+    "extras": {
+      "the_story": "故事",
+      "recommended_pairings": "推薦搭配",
+      "keep_reading": "繼續閱讀",
+      "frequently_asked": "常見問題"
+    }
   },
   "pay": {
     "eyebrow": "第 2 步 / 共 2 步 — 付款",
@@ -541,6 +600,106 @@
     "empty_state": "尚無內容。",
     "error_generic": "發生錯誤。請再試一次。",
     "error_network": "無法連線至伺服器。請稍後重試。",
-    "sign_in_required": "請登入以繼續。"
+    "sign_in_required": "請登入以繼續。",
+    "sidebar": {
+      "shop_the_story": "探索故事",
+      "drop_alerts": "限定上架通知",
+      "related_tools": "相關工具",
+      "related_guides": "相關指南",
+      "in_page_nav": "頁面導航",
+      "account_nav": "帳戶導航",
+      "breadcrumb": "麵包屑",
+      "newsletter_placeholder": "您的電子郵件地址",
+      "newsletter_cta": "訂閱",
+      "toast_invalid_email": "請輸入有效的電子郵件地址。",
+      "toast_subscribed": "謝謝 — 您已在名單上。"
+    },
+    "a11y": {
+      "back_to_top": "回到頂端",
+      "close_cart": "關閉購物車",
+      "open_cart": "開啟購物車",
+      "decrease": "減少",
+      "increase": "增加",
+      "decrease_qty": "減少數量",
+      "increase_qty": "增加數量",
+      "sericia_assistant": "Sericia 助手",
+      "cinematic_interstitial": "電影式插頁",
+      "email_address": "電子郵件地址",
+      "signed_out": "已登出",
+      "signed_in": "已登入",
+      "drop_not_available": "限定上架暫不可用。"
+    }
+  },
+  "journal": {
+    "listing": {
+      "eyebrow": "期刊",
+      "title": "來自日本的田野筆記。",
+      "lede": "生產者故事、沖泡筆記以及 Sericia 救援的手作食品的各國運送指南。",
+      "country_guides_intro": "各國指南引導從日本進口茶、miso、shiitake 等 — 海關、EMS 運輸，以及值得帶入的物品。",
+      "nothing_yet": "暫無",
+      "nothing_yet_lede": "我們在每次限定上架後發布田野筆記。訂閱後，我們將在下一次到來時寄送。",
+      "read_more": "閱讀更多"
+    }
+  },
+  "compare": {
+    "sections": {
+      "at_a_glance": "一覽",
+      "how_to_choose": "如何選擇",
+      "frequently_asked": "常見問題",
+      "browse_other": "瀏覽其他比較",
+      "related": "相關比較",
+      "cross_ship_save": "合併寄送，節省運費",
+      "cross_ship_lede": "將兩者加入同一限定上架，每件物品的EMS運費就會降低。我們從京都手工包裝，48小時內出貨。"
+    }
+  },
+  "uses": {
+    "sections": {
+      "why_combination": "此組合為何奏效",
+      "frequently_asked": "常見問題",
+      "related_uses": "相關用途",
+      "try_it": "嘗試此組合",
+      "try_it_lede": "手工包裝，從剩餘中救出，從京都以EMS運送，48小時內送達。"
+    }
+  },
+  "forms": {
+    "waitlist": {
+      "cta_default": "加入",
+      "placeholder_email": "您的電子郵件地址",
+      "toast_invalid": "請輸入有效的電子郵件地址",
+      "toast_already": "您已在清單上——我們下次限定上架見",
+      "toast_failed": "無法訂閱。請再試一次。",
+      "toast_success": "您已成功加入。我們將在下次限定上架前24小時寄送電子郵件。",
+      "toast_network": "網路錯誤——請再試一次",
+      "confirmed": "✓ 已確認搶先體驗資格。請查看您的收件匣。"
+    },
+    "footer_subscribe": {
+      "sr_email": "電子郵件地址",
+      "placeholder_email": "您的電子郵件",
+      "cta": "訂閱",
+      "toast_invalid": "請輸入有效的電子郵件地址。",
+      "toast_success": "您已列入清單。下次限定上架見。",
+      "toast_already": "您已訂閱 — 下次限定上架見。",
+      "toast_failed": "無法訂閱。請再試一次。",
+      "toast_network": "網路錯誤。請再試一次。"
+    },
+    "notify_me": {
+      "title": "通知我補貨",
+      "lede": "當此商品重新上架時，我們會立即發送電子郵件通知您。無行銷，無追加銷售。",
+      "placeholder_email": "您的電子郵件地址",
+      "cta": "通知我",
+      "cta_loading": "儲存中…",
+      "toast_success": "您已在清單中 — 我們會在補貨時立即發送電子郵件。",
+      "toast_failed": "無法儲存。請再試一次。",
+      "close": "關閉"
+    },
+    "push_optin": {
+      "title": "低語下一次限定上架",
+      "lede": "我們每次限定上架發送一次通知——在公開發售前24小時。點擊以啟用。",
+      "cta_enable": "啟用限定上架提醒",
+      "cta_enabling": "啟用中……",
+      "toast_success": "限定上架提醒已開啟。我們會低語，從不喧嘩。",
+      "toast_blocked": "瀏覽器已封鎖通知。您可以在網站設定中啟用。",
+      "toast_failed": "目前無法訂閱。請稍後再試。"
+    }
   }
 }

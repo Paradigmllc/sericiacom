@@ -1,10 +1,12 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Lenis from "lenis";
 import { ArrowUpIcon } from "./Icons";
 
 export default function BackToTop() {
+  const t = useTranslations("common.a11y");
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function BackToTop() {
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           type="button"
           onClick={toTop}
-          aria-label="Back to top"
+          aria-label={t("back_to_top")}
           // Lift above the chat button (which itself lifts above the cookie banner).
           // Math: chat button bottom = 20 + cookieH; chat is 48px + gap → BackToTop sits at ~6rem above the chat.
           style={{

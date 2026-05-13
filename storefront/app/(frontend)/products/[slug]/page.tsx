@@ -153,7 +153,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
         <FadeIn>
           <div className="grid md:grid-cols-12 gap-12 md:gap-20">
             <div className="md:col-span-4">
-              <p className="label mb-3">The story</p>
+              <p className="label mb-3">{tPdp("extras.the_story")}</p>
               <p className="text-[13px] text-sericia-ink-mute leading-relaxed">
                 Every product in our collection is chosen for a reason — meet the people and place behind this one.
               </p>

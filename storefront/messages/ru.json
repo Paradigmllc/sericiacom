@@ -90,7 +90,12 @@
     "category": "Категория",
     "back_to_shop": "Назад в магазин",
     "details": "Детали",
-    "story": "История"
+    "story": "История",
+    "listing_extras": {
+      "no_matches": "Совпадений нет",
+      "no_matches_hint": "Попробуйте другую категорию или сбросьте фильтры.",
+      "clear_filters": "Сбросить фильтры"
+    }
   },
   "cart": {
     "title": "Ваша корзина",
@@ -102,7 +107,39 @@
     "total": "Итого",
     "checkout": "Оформить заказ",
     "remove": "Удалить",
-    "quantity": "Количество"
+    "quantity": "Количество",
+    "checkout_extras": {
+      "empty_cart": "Пустая корзина",
+      "empty_cart_lede": "Ваша корзина пуста. Посетите дроп, чтобы добавить набор.",
+      "shop_drop": "Купить дроп",
+      "order_summary": "Сводка заказа",
+      "label_email": "Адрес электронной почты",
+      "label_full_name": "Полное имя",
+      "label_address1": "Адрес",
+      "label_address2": "Квартира, офис (необязательно)",
+      "label_city": "Город",
+      "label_state": "Штат / Регион",
+      "label_postal": "Почтовый индекс",
+      "label_country": "Страна",
+      "label_phone": "Телефон (для таможни)",
+      "placeholder_email": "you@example.com",
+      "placeholder_full_name": "Имя и фамилия",
+      "placeholder_address1": "Улица, номер дома",
+      "placeholder_address2": "Квартира, офис, помещение",
+      "placeholder_city": "Город",
+      "placeholder_state": "Штат / Регион",
+      "placeholder_postal": "Почтовый индекс",
+      "placeholder_phone": "Телефон (для таможни)",
+      "submit_reserve": "Забронировать и продолжить",
+      "submit_reserving": "Бронирование…",
+      "toast_empty": "Ваша корзина пуста.",
+      "toast_missing": "Не хватает детали.",
+      "toast_reserved": "Забронировано.",
+      "toast_interrupted": "Что-то прервало запрос.",
+      "toast_redirect": "Заказ забронирован. Перенаправление на оплату…",
+      "toast_network": "Ошибка сети — повторите попытку",
+      "toast_unavailable": "Дроп недоступен."
+    }
   },
   "checkout": {
     "title": "Оформление заказа",
@@ -354,7 +391,23 @@
     "how_it_works_title": "Из Киото к вашей двери за четыре шага.",
     "faq_eyebrow": "Часто задаваемые",
     "faq_title": "Вопросы и соображения.",
-    "faq_cta": "Читать полную политику доставки"
+    "faq_cta": "Читать полную политику доставки",
+    "spec": {
+      "price": "Цена",
+      "weight": "Вес",
+      "ships_within": "Отправка в течение",
+      "availability": "Наличие",
+      "sold_out": "Распродано — присоединитесь к листу ожидания на следующий дроп",
+      "remaining_fmt": "Осталось {remaining} из {total}",
+      "sold_out_short": "Этот дроп распродан.",
+      "billed_usd_fmt": "≈ ${amount} списано в USD",
+      "purchase_fmt": "Купить — ${amount}",
+      "ems_disclaimer": "EMS по всему миру · отправка в течение {hours} ч из Киото · оплата картой в USD. Пошлины и налоги рассчитываются в пункте назначения.",
+      "stat_countries": "Страны доставки",
+      "stat_dispatch": "Отправка из Киото",
+      "stat_producers": "Производители получили полную цену",
+      "clockwise_caption": "По часовой стрелке · Sencha · Miso · Shiitake"
+    }
   },
   "pages": {
     "about": {
@@ -510,7 +563,13 @@
     "story_fallback": "We''ll share the producer''s full story here soon. Each Sericia maker is visited in person before their craft joins our collection.",
     "tasting_fallback": "Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.",
     "recommended_pairings_eyebrow": "Recommended pairings",
-    "you_may_also_like": "You may also like"
+    "you_may_also_like": "You may also like",
+    "extras": {
+      "the_story": "История",
+      "recommended_pairings": "Рекомендуемые сочетания",
+      "keep_reading": "Читать далее",
+      "frequently_asked": "Часто задаваемые"
+    }
   },
   "pay": {
     "eyebrow": "Шаг 2 из 2 — Оплата",
@@ -541,6 +600,106 @@
     "empty_state": "Здесь пока ничего нет.",
     "error_generic": "Что-то пошло не так. Пожалуйста, попробуйте снова.",
     "error_network": "Не удалось связаться с сервером. Пожалуйста, повторите попытку через некоторое время.",
-    "sign_in_required": "Пожалуйста, войдите, чтобы продолжить."
+    "sign_in_required": "Пожалуйста, войдите, чтобы продолжить.",
+    "sidebar": {
+      "shop_the_story": "Перейти к истории",
+      "drop_alerts": "Уведомления о дропах",
+      "related_tools": "Сопутствующие инструменты",
+      "related_guides": "Сопутствующие руководства",
+      "in_page_nav": "Навигация по странице",
+      "account_nav": "Навигация аккаунта",
+      "breadcrumb": "Хлебные крошки",
+      "newsletter_placeholder": "Ваш адрес электронной почты",
+      "newsletter_cta": "Подписаться",
+      "toast_invalid_email": "Введите корректный адрес электронной почты.",
+      "toast_subscribed": "Спасибо — вы в списке."
+    },
+    "a11y": {
+      "back_to_top": "Наверх",
+      "close_cart": "Закрыть корзину",
+      "open_cart": "Открыть корзину",
+      "decrease": "Уменьшить",
+      "increase": "Увеличить",
+      "decrease_qty": "Уменьшить количество",
+      "increase_qty": "Увеличить количество",
+      "sericia_assistant": "Помощник Sericia",
+      "cinematic_interstitial": "Кинематографическая заставка",
+      "email_address": "Адрес электронной почты",
+      "signed_out": "Вышли",
+      "signed_in": "Вошли",
+      "drop_not_available": "Дроп недоступен."
+    }
+  },
+  "journal": {
+    "listing": {
+      "eyebrow": "Журнал",
+      "title": "Полевые заметки из Японии.",
+      "lede": "Истории производителей, заметки о заваривании и пострановые руководства по доставке спасённых крафтовых продуктов Sericia.",
+      "country_guides_intro": "Пострановые руководства описывают импорт чая, мисо, шиитаке и других продуктов из Японии — таможню, транзит EMS и то, что стоит ввозить.",
+      "nothing_yet": "Пока ничего",
+      "nothing_yet_lede": "Мы публикуем полевые заметки после каждого дропа. Подпишитесь, и мы пришлем следующий, когда он выйдет.",
+      "read_more": "Читать далее"
+    }
+  },
+  "compare": {
+    "sections": {
+      "at_a_glance": "На первый взгляд",
+      "how_to_choose": "Как выбрать",
+      "frequently_asked": "Часто задаваемые",
+      "browse_other": "Просмотреть другие сравнения",
+      "related": "Похожие",
+      "cross_ship_save": "Совместная отправка и экономия",
+      "cross_ship_lede": "Добавьте оба в один дроп, и стоимость EMS за единицу снижается. Мы упаковываем вручную и отправляем в течение 48 часов из Киото."
+    }
+  },
+  "uses": {
+    "sections": {
+      "why_combination": "Почему эта комбинация работает",
+      "frequently_asked": "Часто задаваемые",
+      "related_uses": "Связанные применения",
+      "try_it": "Попробуйте это сочетание",
+      "try_it_lede": "Упакованы вручную, спасённые от излишков, отправлены EMS из Киото в течение 48 часов."
+    }
+  },
+  "forms": {
+    "waitlist": {
+      "cta_default": "Присоединиться",
+      "placeholder_email": "Ваш адрес электронной почты",
+      "toast_invalid": "Пожалуйста, введите корректный email",
+      "toast_already": "Вы уже в списке — увидимся на следующем дропе.",
+      "toast_failed": "Не удалось подписаться. Пожалуйста, попробуйте снова.",
+      "toast_success": "Вы в списке. Мы отправим письмо за 24 часа до следующего дропа.",
+      "toast_network": "Ошибка сети — пожалуйста, попробуйте снова",
+      "confirmed": "✓ Ранний доступ подтвержден. Проверьте свой почтовый ящик."
+    },
+    "footer_subscribe": {
+      "sr_email": "Адрес электронной почты",
+      "placeholder_email": "Ваш email",
+      "cta": "Подписаться",
+      "toast_invalid": "Пожалуйста, введите действительный адрес электронной почты.",
+      "toast_success": "Вы в списке. Увидимся на следующем дропе.",
+      "toast_already": "Вы уже подписаны — увидимся на следующем дропе.",
+      "toast_failed": "Не удалось подписаться. Пожалуйста, попробуйте снова.",
+      "toast_network": "Сетевая ошибка. Пожалуйста, попробуйте снова."
+    },
+    "notify_me": {
+      "title": "Уведомить меня, когда появится",
+      "lede": "Мы отправим вам письмо, как только этот товар появится в каталоге. Без рекламы и навязывания.",
+      "placeholder_email": "Ваш адрес электронной почты",
+      "cta": "Уведомить меня",
+      "cta_loading": "Сохранение…",
+      "toast_success": "Вы в списке — мы отправим вам письмо, как только он появится.",
+      "toast_failed": "Не удалось сохранить. Пожалуйста, попробуйте снова.",
+      "close": "Закрыть"
+    },
+    "push_optin": {
+      "title": "Шёпот о следующем дропе",
+      "lede": "Мы отправляем одно уведомление на каждый дроп — за 24 часа до публичного релиза. Нажмите, чтобы включить.",
+      "cta_enable": "Включить уведомления о дропах",
+      "cta_enabling": "Включение…",
+      "toast_success": "Уведомления о дропах включены. Мы будем шептать, никогда не кричать.",
+      "toast_blocked": "Браузер заблокировал уведомления. Вы можете включить их в настройках сайта.",
+      "toast_failed": "Не удалось подписаться сейчас. Попробуйте снова через мгновение."
+    }
   }
 }

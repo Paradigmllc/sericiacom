@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Container, Eyebrow, Rule, SectionHeading } from "@/components/ui";
@@ -104,6 +105,7 @@ export default async function ComparePage({ params }: { params: Params }) {
   if (!pair) return notFound();
 
   const { a, b } = pair;
+  const t = await getTranslations("compare.sections");
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -208,7 +210,7 @@ export default async function ComparePage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading title="At a glance" />
+          <SectionHeading title={t("at_a_glance")} />
           <ColorfulComparisonTable
             productA={a.name}
             productB={b.name}
@@ -252,7 +254,7 @@ export default async function ComparePage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading title="How to choose" />
+          <SectionHeading title={t("how_to_choose")} />
           <p className="text-[16px] leading-relaxed text-sericia-ink-soft max-w-prose">
             The right choice depends on your dish, your time budget, and
             your taste preferences. {a.name} tends to lead in pantries
@@ -288,7 +290,7 @@ export default async function ComparePage({ params }: { params: Params }) {
           </div>
 
           {/* FAQ — visible <dl> markup matched to FAQPage JSON-LD */}
-          <SectionHeading title="Frequently asked" />
+          <SectionHeading title={t("frequently_asked")} />
           <dl className="mt-8 space-y-8">
             {faqs.map((f) => (
               <div
@@ -308,7 +310,7 @@ export default async function ComparePage({ params }: { params: Params }) {
           <Rule className="my-12" />
 
           {/* Marquee — related comparisons strip */}
-          <SectionHeading title="Browse other comparisons" />
+          <SectionHeading title={t("browse_other")} />
           <div className="mt-6">
             <Marquee pauseOnHover className="[--duration:35s]">
               {PRODUCTS.filter(
@@ -334,7 +336,7 @@ export default async function ComparePage({ params }: { params: Params }) {
 
           <Rule className="my-12" />
 
-          <SectionHeading title="Related comparisons" />
+          <SectionHeading title={t("related")} />
           <ul className="grid md:grid-cols-2 gap-3 text-[15px]">
             {PRODUCTS.filter((p) => p.slug !== a.slug && p.slug !== b.slug)
               .slice(0, 6)

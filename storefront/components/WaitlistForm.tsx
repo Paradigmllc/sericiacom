@@ -1,15 +1,17 @@
 "use client";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 type Props = {
   source: string;
   country: string;
-  /** Optional editor-controlled button label. Defaults to "Join" for coded callers. */
+  /** Optional editor-controlled button label. Overrides the localized default. */
   ctaLabel?: string;
 };
 
-export default function WaitlistForm({ source, country, ctaLabel = "Join" }: Props) {
+export default function WaitlistForm({ source, country, ctaLabel }: Props) {
+  const t = useTranslations("forms.waitlist");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [joined, setJoined] = useState(false);
@@ -17,7 +19,7 @@ export default function WaitlistForm({ source, country, ctaLabel = "Join" }: Pro
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.includes("@")) {
-      toast.error("Please enter a valid email");
+      toast.error(t("toast_invalid"));
       return;
     }
     setLoading(true);
@@ -38,22 +40,22 @@ export default function WaitlistForm({ source, country, ctaLabel = "Join" }: Pro
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        toast.error(data?.error === "already_subscribed" ? "You're already on the list — see you at the next drop!" : "Could not subscribe. Please try again.");
+        toast.error(data?.error === "already_subscribed" ? t("toast_already") : t("toast_failed"));
         setLoading(false);
         return;
       }
-      toast.success("You're in. We'll email 24h before the next drop.");
+      toast.success(t("toast_success"));
       setJoined(true);
     } catch (e) {
       console.error("[waitlist] error", e);
-      toast.error("Network error — please try again");
+      toast.error(t("toast_network"));
     } finally {
       setLoading(false);
     }
   }
 
   if (joined) {
-    return <p className="text-sericia-accent text-center">✓ Early-access confirmed. Check your inbox.</p>;
+    return <p className="text-sericia-accent text-center">{t("confirmed")}</p>;
   }
 
   return (
@@ -63,7 +65,7 @@ export default function WaitlistForm({ source, country, ctaLabel = "Join" }: Pro
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="you@example.com"
+        placeholder={t("placeholder_email")}
         className="flex-1 px-4 py-3 rounded-lg border border-sericia-ink/20 bg-white focus:outline-none focus:ring-2 focus:ring-sericia-accent"
         autoComplete="email"
       />
@@ -72,7 +74,7 @@ export default function WaitlistForm({ source, country, ctaLabel = "Join" }: Pro
         disabled={loading}
         className="bg-sericia-ink text-sericia-paper px-6 py-3 rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50"
       >
-        {loading ? "…" : ctaLabel}
+        {loading ? "…" : (ctaLabel ?? t("cta_default"))}
       </button>
     </form>
   );

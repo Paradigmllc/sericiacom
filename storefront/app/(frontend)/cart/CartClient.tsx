@@ -1,10 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/lib/cart-store";
 import { Rule } from "@/components/ui";
 
 export default function CartClient() {
+  const tCart = useTranslations("cart.checkout_extras");
+  const tA11y = useTranslations("common.a11y");
   const items = useCart((s) => s.items);
   const setQty = useCart((s) => s.setQty);
   const remove = useCart((s) => s.remove);
@@ -12,18 +15,18 @@ export default function CartClient() {
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    return <div className="text-sericia-ink-soft">Loading cart…</div>;
+    return <div className="text-sericia-ink-soft">…</div>;
   }
 
   if (items.length === 0) {
     return (
       <div className="border border-sericia-line p-16 text-center">
-        <p className="label mb-5">Empty cart</p>
+        <p className="label mb-5">{tCart("empty_cart")}</p>
         <p className="text-[17px] text-sericia-ink-soft mb-10 max-w-md mx-auto leading-relaxed">
-          There is nothing in your cart yet. Browse the collection — every product is limited and ships from Kyoto.
+          {tCart("empty_cart_lede")}
         </p>
         <Link href="/products" className="inline-block bg-sericia-ink text-sericia-paper px-10 py-4 text-[14px] tracking-wider hover:bg-sericia-accent transition">
-          Shop the collection
+          {tCart("shop_drop")}
         </Link>
       </div>
     );
@@ -52,14 +55,14 @@ export default function CartClient() {
                     type="button"
                     onClick={() => setQty(item.productId, item.quantity - 1)}
                     className="w-9 h-9 text-[16px] text-sericia-ink hover:bg-sericia-paper-card"
-                    aria-label="Decrease"
+                    aria-label={tA11y("decrease")}
                   >−</button>
                   <span className="w-10 text-center text-[13px]">{item.quantity}</span>
                   <button
                     type="button"
                     onClick={() => setQty(item.productId, item.quantity + 1)}
                     className="w-9 h-9 text-[16px] text-sericia-ink hover:bg-sericia-paper-card"
-                    aria-label="Increase"
+                    aria-label={tA11y("increase")}
                   >+</button>
                 </div>
               </div>

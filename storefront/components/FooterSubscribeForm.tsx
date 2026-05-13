@@ -21,8 +21,11 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function FooterSubscribeForm() {
+  const t = useTranslations("forms.footer_subscribe");
+  const tA11y = useTranslations("common.a11y");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
 
@@ -30,7 +33,7 @@ export default function FooterSubscribeForm() {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed.includes("@") || trimmed.length < 5) {
-      toast.error("Please enter a valid email address.");
+      toast.error(t("toast_invalid"));
       return;
     }
     setStatus("sending");
@@ -50,21 +53,21 @@ export default function FooterSubscribeForm() {
         }),
       });
       if (res.ok) {
-        toast.success("You're on the list. See you at the next drop.");
+        toast.success(t("toast_success"));
         setStatus("done");
         return;
       }
       const data = await res.json().catch(() => ({}));
       if (data?.error === "already_subscribed") {
-        toast.success("You're already subscribed — see you at the next drop.");
+        toast.success(t("toast_already"));
         setStatus("done");
         return;
       }
-      toast.error("Could not subscribe. Please try again.");
+      toast.error(t("toast_failed"));
       setStatus("idle");
     } catch (err) {
       console.error("[footer-subscribe] error", err);
-      toast.error("Network error. Please try again.");
+      toast.error(t("toast_network"));
       setStatus("idle");
     }
   }
@@ -73,7 +76,7 @@ export default function FooterSubscribeForm() {
     return (
       <p className="text-[13px] text-sericia-ink-soft leading-relaxed">
         <span className="inline-block mr-2 text-sericia-ink">✓</span>
-        Confirmed. We write four to six times a year — no more.
+        {t("toast_success")}
       </p>
     );
   }
@@ -81,13 +84,13 @@ export default function FooterSubscribeForm() {
   return (
     <form onSubmit={onSubmit} className="flex flex-col sm:flex-row gap-0 max-w-md">
       <label className="flex-1 sm:min-w-0">
-        <span className="sr-only">Email address</span>
+        <span className="sr-only">{t("sr_email")}</span>
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
+          placeholder={t("placeholder_email")}
           autoComplete="email"
           className="w-full h-12 px-0 py-3 bg-transparent border-b border-sericia-ink/30 focus:border-sericia-ink focus:outline-none text-[14px] text-sericia-ink placeholder:text-sericia-ink-mute"
         />
@@ -97,7 +100,7 @@ export default function FooterSubscribeForm() {
         disabled={status === "sending"}
         className="h-12 px-6 border-b border-sericia-ink text-[12px] tracking-[0.22em] uppercase text-sericia-ink hover:text-sericia-ink-mute transition-colors disabled:opacity-50 whitespace-nowrap"
       >
-        {status === "sending" ? "…" : "Notify me"}
+        {status === "sending" ? "…" : t("cta")}
       </button>
     </form>
   );

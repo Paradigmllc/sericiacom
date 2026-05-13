@@ -90,7 +90,12 @@
     "category": "Categoría",
     "back_to_shop": "Volver a la tienda",
     "details": "Detalles",
-    "story": "Historia"
+    "story": "Historia",
+    "listing_extras": {
+      "no_matches": "Sin coincidencias",
+      "no_matches_hint": "Prueba con otra categoría o limpia los filtros.",
+      "clear_filters": "Limpiar filtros"
+    }
   },
   "cart": {
     "title": "Tu carrito",
@@ -102,7 +107,39 @@
     "total": "Total",
     "checkout": "Pagar",
     "remove": "Quitar",
-    "quantity": "Cantidad"
+    "quantity": "Cantidad",
+    "checkout_extras": {
+      "empty_cart": "Carrito vacío",
+      "empty_cart_lede": "Su carrito está vacío. Visite el drop para agregar el lote.",
+      "shop_drop": "Comprar el drop",
+      "order_summary": "Resumen del pedido",
+      "label_email": "Correo electrónico",
+      "label_full_name": "Nombre completo",
+      "label_address1": "Dirección",
+      "label_address2": "Departamento, suite (opcional)",
+      "label_city": "Ciudad",
+      "label_state": "Estado / Región",
+      "label_postal": "Código postal",
+      "label_country": "País",
+      "label_phone": "Teléfono (para aduana)",
+      "placeholder_email": "usted@ejemplo.com",
+      "placeholder_full_name": "Nombre y apellido",
+      "placeholder_address1": "Calle, número",
+      "placeholder_address2": "Departamento, suite, unidad",
+      "placeholder_city": "Ciudad",
+      "placeholder_state": "Estado / Región",
+      "placeholder_postal": "Código postal",
+      "placeholder_phone": "Teléfono (para aduana)",
+      "submit_reserve": "Reservar y continuar",
+      "submit_reserving": "Reservando…",
+      "toast_empty": "Su carrito está vacío.",
+      "toast_missing": "Falta un detalle.",
+      "toast_reserved": "Reservado.",
+      "toast_interrupted": "Algo interrumpió la solicitud.",
+      "toast_redirect": "Pedido reservado. Redirigiendo al pago…",
+      "toast_network": "Error de red — intente de nuevo",
+      "toast_unavailable": "Drop no disponible."
+    }
   },
   "checkout": {
     "title": "Pagar",
@@ -354,7 +391,23 @@
     "how_it_works_title": "De Kioto a tu puerta en cuatro pasos.",
     "faq_eyebrow": "Preguntas frecuentes",
     "faq_title": "Preguntas y consideraciones.",
-    "faq_cta": "Leer la política de envío completa"
+    "faq_cta": "Leer la política de envío completa",
+    "spec": {
+      "price": "Precio",
+      "weight": "Peso",
+      "ships_within": "Envío dentro de",
+      "availability": "Disponibilidad",
+      "sold_out": "Agotado — únete a la lista de espera para el próximo drop",
+      "remaining_fmt": "{remaining} de {total} restantes",
+      "sold_out_short": "Este drop se ha agotado.",
+      "billed_usd_fmt": "≈ ${amount} USD facturados",
+      "purchase_fmt": "Compra — ${amount}",
+      "ems_disclaimer": "EMS mundial · se envía en {hours}h desde Kyoto · Pago con tarjeta en USD. Aranceles e impuestos calculados en destino.",
+      "stat_countries": "Países a los que se envía",
+      "stat_dispatch": "Envío desde Kyoto",
+      "stat_producers": "Productores pagados a precio completo",
+      "clockwise_caption": "En el sentido de las agujas del reloj · Sencha · Miso · Shiitake"
+    }
   },
   "pages": {
     "about": {
@@ -510,7 +563,13 @@
     "story_fallback": "We''ll share the producer''s full story here soon. Each Sericia maker is visited in person before their craft joins our collection.",
     "tasting_fallback": "Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.",
     "recommended_pairings_eyebrow": "Recommended pairings",
-    "you_may_also_like": "You may also like"
+    "you_may_also_like": "You may also like",
+    "extras": {
+      "the_story": "La historia",
+      "recommended_pairings": "Maridajes recomendados",
+      "keep_reading": "Sigue leyendo",
+      "frequently_asked": "Preguntas frecuentes"
+    }
   },
   "pay": {
     "eyebrow": "Paso 2 de 2 — Pago",
@@ -541,6 +600,106 @@
     "empty_state": "Nada aquí todavía.",
     "error_generic": "Algo salió mal. Inténtalo de nuevo.",
     "error_network": "No pudimos conectar con el servidor. Inténtalo de nuevo en un momento.",
-    "sign_in_required": "Inicia sesión para continuar."
+    "sign_in_required": "Inicia sesión para continuar.",
+    "sidebar": {
+      "shop_the_story": "Comprar la historia",
+      "drop_alerts": "Alertas de drop",
+      "related_tools": "Herramientas relacionadas",
+      "related_guides": "Guías relacionadas",
+      "in_page_nav": "Navegación en página",
+      "account_nav": "Navegación de cuenta",
+      "breadcrumb": "Ruta de navegación",
+      "newsletter_placeholder": "Su correo electrónico",
+      "newsletter_cta": "Suscribirse",
+      "toast_invalid_email": "Introduzca una dirección de correo electrónico válida.",
+      "toast_subscribed": "Gracias — ya está en la lista."
+    },
+    "a11y": {
+      "back_to_top": "Volver al inicio",
+      "close_cart": "Cerrar carrito",
+      "open_cart": "Abrir carrito",
+      "decrease": "Disminuir",
+      "increase": "Aumentar",
+      "decrease_qty": "Disminuir cantidad",
+      "increase_qty": "Aumentar cantidad",
+      "sericia_assistant": "Asistente de Sericia",
+      "cinematic_interstitial": "Intersticio cinematográfico",
+      "email_address": "Dirección de correo electrónico",
+      "signed_out": "Sesión cerrada",
+      "signed_in": "Sesión iniciada",
+      "drop_not_available": "Drop no disponible."
+    }
+  },
+  "journal": {
+    "listing": {
+      "eyebrow": "Diario",
+      "title": "Notas de campo desde Japón.",
+      "lede": "Historias de productores, notas de preparación y guías de envío país por país para los productos artesanales rescatados de Sericia.",
+      "country_guides_intro": "Las guías de países recorren la importación de té, miso, shiitake y más desde Japón — aduanas, tránsito por EMS y lo que vale la pena traer.",
+      "nothing_yet": "Nada aún",
+      "nothing_yet_lede": "Publicamos notas de campo después de cada drop. Suscríbete y te enviaremos la próxima cuando llegue.",
+      "read_more": "Leer más"
+    }
+  },
+  "compare": {
+    "sections": {
+      "at_a_glance": "De un vistazo",
+      "how_to_choose": "Cómo elegir",
+      "frequently_asked": "Preguntas frecuentes",
+      "browse_other": "Explorar otras comparativas",
+      "related": "Comparativas relacionadas",
+      "cross_ship_save": "Combina envíos y ahorra",
+      "cross_ship_lede": "Añade ambos a un solo drop y el coste de EMS por artículo disminuye. Empaquetamos a mano y enviamos en menos de 48 horas desde Kyoto."
+    }
+  },
+  "uses": {
+    "sections": {
+      "why_combination": "Por qué funciona esta combinación",
+      "frequently_asked": "Preguntas frecuentes",
+      "related_uses": "Usos relacionados",
+      "try_it": "Pruebe esta combinación",
+      "try_it_lede": "Empacado a mano, rescatado del excedente, enviado por EMS desde Kioto en 48 horas."
+    }
+  },
+  "forms": {
+    "waitlist": {
+      "cta_default": "Unirse",
+      "placeholder_email": "Su correo electrónico",
+      "toast_invalid": "Introduzca un correo electrónico válido",
+      "toast_already": "Ya estás en la lista — nos vemos en el próximo drop",
+      "toast_failed": "No se pudo suscribir. Intente de nuevo.",
+      "toast_success": "Estás dentro. Le enviaremos un correo 24h antes del próximo drop.",
+      "toast_network": "Error de red — intente de nuevo",
+      "confirmed": "✓ Acceso anticipado confirmado. Revise su bandeja de entrada."
+    },
+    "footer_subscribe": {
+      "sr_email": "Dirección de correo electrónico",
+      "placeholder_email": "Tu correo electrónico",
+      "cta": "Suscribirse",
+      "toast_invalid": "Por favor, introduce una dirección de correo electrónico válida.",
+      "toast_success": "Estás en la lista. Nos vemos en el próximo drop.",
+      "toast_already": "Ya estás suscrito — nos vemos en el próximo drop.",
+      "toast_failed": "No se pudo suscribir. Inténtalo de nuevo.",
+      "toast_network": "Error de red. Inténtalo de nuevo."
+    },
+    "notify_me": {
+      "title": "Notificarme cuando vuelva",
+      "lede": "Te enviaremos un correo en el momento en que esto vuelva al catálogo. Sin marketing, sin ventas adicionales.",
+      "placeholder_email": "Tu correo electrónico",
+      "cta": "Notificarme",
+      "cta_loading": "Guardando…",
+      "toast_success": "Estás en la lista — te enviaremos un correo en cuanto vuelva.",
+      "toast_failed": "No se pudo guardar. Inténtalo de nuevo.",
+      "close": "Cerrar"
+    },
+    "push_optin": {
+      "title": "Susurra el próximo drop",
+      "lede": "Enviamos una notificación por drop — 24 horas antes del lanzamiento público. Toca para activar.",
+      "cta_enable": "Activar alertas de drop",
+      "cta_enabling": "Activando…",
+      "toast_success": "Alertas de drop activadas. Susurraremos, nunca gritaremos.",
+      "toast_blocked": "El navegador bloqueó las notificaciones. Puedes activarlas en la configuración del sitio.",
+      "toast_failed": "No se pudo suscribir ahora. Inténtalo de nuevo en un momento."
+    }
   }
 }

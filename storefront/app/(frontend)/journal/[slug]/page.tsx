@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ContentSidebar from "@/components/ContentSidebar";
@@ -62,7 +63,10 @@ export default async function JournalArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = getArticle(slug);
+  const [article, t] = await Promise.all([
+    Promise.resolve(getArticle(slug)),
+    getTranslations("pdp.extras"),
+  ]);
   if (!article) notFound();
 
   const url = `https://sericia.com/journal/${slug}`;
@@ -222,7 +226,7 @@ export default async function JournalArticlePage({
 
             {/* FAQ */}
             <section id="faq" className="scroll-mt-28">
-              <Eyebrow>Frequently asked</Eyebrow>
+              <Eyebrow>{t("frequently_asked")}</Eyebrow>
               <h2 className="text-[26px] md:text-[32px] font-normal leading-tight tracking-tight mb-10">
                 Questions, answered.
               </h2>
@@ -247,7 +251,7 @@ export default async function JournalArticlePage({
               <>
                 <Rule className="my-16" />
                 <section>
-                  <Eyebrow>Keep reading</Eyebrow>
+                  <Eyebrow>{t("keep_reading")}</Eyebrow>
                   <ul className="space-y-4">
                     {article.relatedArticles.map((r) => (
                       <li key={r.href}>

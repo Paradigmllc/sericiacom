@@ -90,7 +90,12 @@
     "category": "الفئة",
     "back_to_shop": "العودة إلى المتجر",
     "details": "التفاصيل",
-    "story": "القصّة"
+    "story": "القصّة",
+    "listing_extras": {
+      "no_matches": "لا تطابقات",
+      "no_matches_hint": "جرب فئة مختلفة أو قم بمسح المرشحات.",
+      "clear_filters": "مسح المرشحات"
+    }
   },
   "cart": {
     "title": "سلّتك",
@@ -102,7 +107,39 @@
     "total": "الإجمالي",
     "checkout": "إتمام الشراء",
     "remove": "إزالة",
-    "quantity": "الكمّيّة"
+    "quantity": "الكمّيّة",
+    "checkout_extras": {
+      "empty_cart": "سلة فارغة",
+      "empty_cart_lede": "سلتك فارغة. زر الإصدار المحدود لإضافة المجموعة.",
+      "shop_drop": "تسوق الإصدار المحدود",
+      "order_summary": "ملخص الطلب",
+      "label_email": "عنوان البريد الإلكتروني",
+      "label_full_name": "الاسم الكامل",
+      "label_address1": "العنوان",
+      "label_address2": "الشقة، الجناح (اختياري)",
+      "label_city": "المدينة",
+      "label_state": "الولاية / المنطقة",
+      "label_postal": "الرمز البريدي",
+      "label_country": "الدولة",
+      "label_phone": "الهاتف (لأغراض الجمارك)",
+      "placeholder_email": "you@example.com",
+      "placeholder_full_name": "الاسم الأول والأخير",
+      "placeholder_address1": "الشارع، الرقم",
+      "placeholder_address2": "الشقة، الجناح، الوحدة",
+      "placeholder_city": "المدينة",
+      "placeholder_state": "الولاية / المنطقة",
+      "placeholder_postal": "الرمز البريدي",
+      "placeholder_phone": "الهاتف (لأغراض الجمارك)",
+      "submit_reserve": "احجز واستمر",
+      "submit_reserving": "جارٍ الحجز...",
+      "toast_empty": "سلتك فارغة.",
+      "toast_missing": "أحد التفاصيل مفقود.",
+      "toast_reserved": "تم الحجز.",
+      "toast_interrupted": "حدث ما أدى إلى تعطل الطلب.",
+      "toast_redirect": "تم حجز الطلب. جارٍ التحويل إلى الدفع...",
+      "toast_network": "خطأ في الشبكة — يرجى المحاولة مرة أخرى",
+      "toast_unavailable": "الإصدار المحدود غير متوفر."
+    }
   },
   "checkout": {
     "title": "إتمام الشراء",
@@ -354,7 +391,23 @@
     "how_it_works_title": "من كيوتو إلى بابك في أربع خطوات.",
     "faq_eyebrow": "الأسئلة الشائعة",
     "faq_title": "أسئلة واعتبارات.",
-    "faq_cta": "اقرأ سياسة الشحن الكاملة"
+    "faq_cta": "اقرأ سياسة الشحن الكاملة",
+    "spec": {
+      "price": "السعر",
+      "weight": "الوزن",
+      "ships_within": "الشحن خلال",
+      "availability": "التوفر",
+      "sold_out": "نفد — انضم إلى قائمة الانتظار للإصدار المحدود القادم",
+      "remaining_fmt": "{remaining} من {total} متبقٍ",
+      "sold_out_short": "هذا الإصدار المحدود نفد.",
+      "billed_usd_fmt": "≈ ${amount} دولار أمريكي مفوتر",
+      "purchase_fmt": "شراء — ${amount}",
+      "ems_disclaimer": "EMS حول العالم · الشحن خلال {hours} ساعة من كيوتو · الدفع بالبطاقة بالدولار الأمريكي. يتم حساب الرسوم والضرائب عند الوجهة.",
+      "stat_countries": "الدول المشحون إليها",
+      "stat_dispatch": "الشحن من كيوتو",
+      "stat_producers": "المنتجون يتقاضون السعر الكامل",
+      "clockwise_caption": "اتجاه عقارب الساعة · Sencha · Miso · Shiitake"
+    }
   },
   "pages": {
     "about": {
@@ -510,7 +563,13 @@
     "story_fallback": "We''ll share the producer''s full story here soon. Each Sericia maker is visited in person before their craft joins our collection.",
     "tasting_fallback": "Best enjoyed unhurried — steep at 70°C for 90 seconds, savour slowly, and let the flavour bloom. Pair with a plain-glazed ceramic vessel and good company.",
     "recommended_pairings_eyebrow": "Recommended pairings",
-    "you_may_also_like": "You may also like"
+    "you_may_also_like": "You may also like",
+    "extras": {
+      "the_story": "القصة",
+      "recommended_pairings": "التوافقات الموصى بها",
+      "keep_reading": "استمر في القراءة",
+      "frequently_asked": "الأسئلة الشائعة"
+    }
   },
   "pay": {
     "eyebrow": "الخطوة 2 من 2 — الدفع",
@@ -541,6 +600,106 @@
     "empty_state": "لا يوجد شيء هنا بعد.",
     "error_generic": "حدث خطأ ما. يُرجى المحاولة مرة أخرى.",
     "error_network": "تعذر الوصول إلى الخادم. يُرجى إعادة المحاولة بعد لحظة.",
-    "sign_in_required": "يرجى تسجيل الدخول للمتابعة."
+    "sign_in_required": "يرجى تسجيل الدخول للمتابعة.",
+    "sidebar": {
+      "shop_the_story": "تسوّق القصة",
+      "drop_alerts": "إشعارات الإصدار المحدود",
+      "related_tools": "أدوات ذات صلة",
+      "related_guides": "أدلة ذات صلة",
+      "in_page_nav": "التنقل داخل الصفحة",
+      "account_nav": "تنقل الحساب",
+      "breadcrumb": "مسار التنقل",
+      "newsletter_placeholder": "عنوان بريدك الإلكتروني",
+      "newsletter_cta": "اشتراك",
+      "toast_invalid_email": "أدخل عنوان بريد إلكتروني صحيح.",
+      "toast_subscribed": "شكرًا — أنت الآن في القائمة."
+    },
+    "a11y": {
+      "back_to_top": "العودة إلى الأعلى",
+      "close_cart": "إغلاق السلة",
+      "open_cart": "فتح السلة",
+      "decrease": "تخفيض",
+      "increase": "زيادة",
+      "decrease_qty": "تخفيض الكمية",
+      "increase_qty": "زيادة الكمية",
+      "sericia_assistant": "مساعد Sericia",
+      "cinematic_interstitial": "فاصل سينمائي",
+      "email_address": "عنوان البريد الإلكتروني",
+      "signed_out": "تم تسجيل الخروج",
+      "signed_in": "تم تسجيل الدخول",
+      "drop_not_available": "الإصدار المحدود غير متاح."
+    }
+  },
+  "journal": {
+    "listing": {
+      "eyebrow": "مدوّنة",
+      "title": "ملاحظات ميدانية من اليابان.",
+      "lede": "قصص المنتجين، وملاحظات التخمير، وأدلة الشحن لكل دولة للأطعمة الحرفية المنقذة من Sericia.",
+      "country_guides_intro": "تستعرض أدلة الدول كيفية استيراد الشاي، والميسو، والشيتاكي، والمزيد من اليابان — الجمارك، وعبور EMS، وما يستحق الإحضار.",
+      "nothing_yet": "لا شيء بعد",
+      "nothing_yet_lede": "ننشر الملاحظات الميدانية بعد كل إصدار محدود. اشترك وسنرسل لك التالي عند صدوره.",
+      "read_more": "اقرأ المزيد"
+    }
+  },
+  "compare": {
+    "sections": {
+      "at_a_glance": "في لمحة",
+      "how_to_choose": "كيفية الاختيار",
+      "frequently_asked": "أسئلة متكررة",
+      "browse_other": "تصفح مقارنات أخرى",
+      "related": "ذات صلة",
+      "cross_ship_save": "شحن مشترك وتوفير",
+      "cross_ship_lede": "أضف كليهما إلى إصدار محدود واحد وستنخفض تكلفة EMS لكل عنصر. نحن نعبئ يدويًا ونشحن خلال 48 ساعة من كيوتو."
+    }
+  },
+  "uses": {
+    "sections": {
+      "why_combination": "لماذا يعمل هذا المزيج",
+      "frequently_asked": "أسئلة متكررة",
+      "related_uses": "استخدامات ذات صلة",
+      "try_it": "جرب هذه المزاوجة",
+      "try_it_lede": "معبأ يدويًا، مُنقذ من الفائض، مشحون عبر EMS من كيوتو خلال 48 ساعة."
+    }
+  },
+  "forms": {
+    "waitlist": {
+      "cta_default": "انضم",
+      "placeholder_email": "عنوان بريدك الإلكتروني",
+      "toast_invalid": "يرجى إدخال بريد إلكتروني صحيح",
+      "toast_already": "أنت مسجل بالفعل في القائمة — نراكم في الإصدار المحدود القادم.",
+      "toast_failed": "تعذر الاشتراك. يرجى المحاولة مرة أخرى.",
+      "toast_success": "تم التسجيل. سنرسل بريدًا إلكترونيًا قبل 24 ساعة من الإصدار المحدود القادم.",
+      "toast_network": "خطأ في الشبكة — يرجى المحاولة مرة أخرى",
+      "confirmed": "✓ تم تأكيد الوصول المبكر. تحقق من صندوق الوارد الخاص بك."
+    },
+    "footer_subscribe": {
+      "sr_email": "عنوان البريد الإلكتروني",
+      "placeholder_email": "بريدك الإلكتروني",
+      "cta": "اشتراك",
+      "toast_invalid": "يرجى إدخال عنوان بريد إلكتروني صحيح.",
+      "toast_success": "أنت في القائمة. نراكم في الإصدار المحدود القادم.",
+      "toast_already": "أنت مشترك بالفعل — نراكم في الإصدار المحدود القادم.",
+      "toast_failed": "تعذر الاشتراك. يرجى المحاولة مرة أخرى.",
+      "toast_network": "خطأ في الشبكة. يرجى المحاولة مرة أخرى."
+    },
+    "notify_me": {
+      "title": "أبلغني عندما يعود",
+      "lede": "سنرسل لك بريدًا إلكترونيًا فور عودته إلى الكتالوج. لا تسويق، لا بيع إضافي.",
+      "placeholder_email": "عنوان بريدك الإلكتروني",
+      "cta": "أبلغني",
+      "cta_loading": "جارٍ الحفظ…",
+      "toast_success": "أنت على القائمة — سنرسل لك بريدًا إلكترونيًا فور عودته.",
+      "toast_failed": "تعذر الحفظ. يرجى المحاولة مرة أخرى.",
+      "close": "إغلاق"
+    },
+    "push_optin": {
+      "title": "همس الإصدار المحدود القادم",
+      "lede": "نرسل إشعارًا واحدًا لكل إصدار محدود — قبل 24 ساعة من الإصدار العام. اضغط للتفعيل.",
+      "cta_enable": "تفعيل تنبيهات الإصدار المحدود",
+      "cta_enabling": "جارٍ التفعيل…",
+      "toast_success": "تنبيهات الإصدار المحدود نشطة. سنهمس، ولن نصرخ.",
+      "toast_blocked": "المتصفح حظر الإشعارات. يمكنك تفعيلها في إعدادات الموقع.",
+      "toast_failed": "تعذر الاشتراك الآن. حاول مرة أخرى بعد لحظة."
+    }
   }
 }

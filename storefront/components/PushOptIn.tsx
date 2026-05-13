@@ -22,6 +22,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { getPushPermission, isPushSupported, subscribeToPush } from "@/lib/push";
 
 const DISMISS_KEY = "sericia.push.dismissedAt";
@@ -49,6 +50,7 @@ export default function PushOptIn({
   body,
   cta,
 }: Props) {
+  const tPush = useTranslations("forms.push_optin");
   const [state, setState] = useState<"hidden" | "visible" | "pending" | "done">("hidden");
 
   useEffect(() => {
@@ -68,22 +70,22 @@ export default function PushOptIn({
     setState("pending");
     const result = await subscribeToPush({ topics, locale });
     if (result.ok) {
-      toast.success("Drop alerts on. We'll whisper, never shout.");
+      toast.success(tPush("toast_success"));
       setState("done");
       return;
     }
     if (result.reason === "denied") {
-      toast.error("Browser blocked notifications. You can enable them in site settings.");
+      toast.error(tPush("toast_blocked"));
       setState("done");
       return;
     }
     if (result.reason === "dismissed") {
-      toast("No worries — you can subscribe any time from your account.");
+      toast(tPush("toast_blocked"));
       setState("visible");
       return;
     }
     console.error("[PushOptIn] subscribe failed", result);
-    toast.error("Couldn't subscribe right now. Try again in a moment.");
+    toast.error(tPush("toast_failed"));
     setState("visible");
   };
 
