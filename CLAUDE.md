@@ -12,13 +12,13 @@
 | ★☆☆☆☆ | 6 | [⚖️ 法的リスク](#s6) | `/accessibility` WCAG 2.2 AA 公開・Cookie Consent 実装・特商法12項目は s7 経由で公開済み |
 | ★★★★★ | 7 | [🗺️ プロダクト設計](#s7) | ラグジュアリーUX（Aesop/LV級）+ P2仕上げ + F1 動画基盤（CinematicVideo・Drop/Makers/Interstitialへ video差替可能・gradient fallback完備）完了 |
 | ★★★★☆ | 8 | [⚙️ 技術設計](#s8) | Next.js 15 + Supabase + Framer Motion + Lenis + vaul + Fuse.js + Embla 完成・Coolifyデプロイ稼働 |
-| ★★★★☆ | 9 | [📣 GTM・集客](#s9) | Reddit戦略・SNS設計済み + pSEO briefs自動生成基盤（DeepSeek V3 Context Caching 90%OFF）+ Push PWA再訪導線 |
-| ★★★★☆ | 10 | [🖥️ 運用](#s10) | UAT自動化E2E完備（uat:magic-link 9check / uat:purchase-flow 8check・triple safety interlock・tampered HMAC rejects 401）+ Crossmint本番移行§5.1-5.8 playbook（rollback先置）+ /api/push/subscribe VAPID RLS |
-| ★★★★☆ | 11 | [💴 経費・収益シミュ](#s11) | 利益率計算済み + referral経済（$5 off friend / $5 reward on ship・pending→issued/revoked state machine） |
+| ★★★★★ | 9 | [📣 GTM・集客](#s9) | Reddit戦略・SNS設計済み + pSEO briefs自動生成基盤（DeepSeek V4 Context Caching 90%OFF）+ Push PWA再訪導線 |
+| ★★★★☆ | 10 | [🖥️ 運用](#s10) | UAT自動化E2E完備 + Crossmint本番移行§5.1-5.8 playbook + /api/push/subscribe VAPID RLS + F69 perf/i18n sweep 完了 |
+| ★★★★☆ | 11 | [💴 経費・収益シミュ](#s11) | 利益率計算済み + referral経済（pending→issued/revoked state machine） |
 | ★★☆☆☆ | 12 | [🌐 ドメイン・商標](#s12) | sericia.com稼働中・商標未出願 |
-| ★★★☆☆ | 13 | [📚 リソース一覧](#s13) | 主要14ツール整備（DeepSeek V3 / web-push VAPID / Payload CMS 3.x / Resend / Crossmint / Supabase / Medusa v2 / Dify / n8n / Coolify / Next.js 15 / next-intl 8言語+Arabic RTL / Framer Motion / Lenis）|
-| ★★★★☆ | 14 | [🧠 壁打ち詳細メモ](#s14) | 仕入れTier/EMS最適化/非採用/Phase戦略 |
-| ★★★★★ | 15 | [🚧 M1-M5 実行トラッカー](#s15) | M1〜M4b全完了 + F35 = Crossmint Onramp blocker特定済 (sales activation pending) / M5はbrief投入待ち |
+| ★★★☆☆ | 13 | [📚 リソース一覧](#s13) | 主要14ツール整備（DeepSeek V4 / web-push VAPID / Payload CMS 3.x / Resend / Crossmint+Stripe LIVE / Supabase / Medusa v2 / Dify / n8n / Coolify / Next.js 15 / next-intl **10言語+Arabic RTL** / Framer Motion / Lenis）|
+| 📦 外出し | 14 | [🧠 壁打ち詳細メモ](docs/knowledge/poss-sericia-implementation.md#s14) | CEP 圧縮・要点 s14 残置・全14項目は knowledge/ 参照 |
+| 📦 外出し | 15 | [🚧 F1-F69 実行トラッカー](docs/knowledge/poss-sericia-implementation.md#s15) | **F69 (perf+i18n sweep) 本セッション完了** / M1〜F69 詳細は knowledge/ 参照 |
 
 ⚠️ **要強化**: 4(KPI目標) / 6(商標/法務) / 12(商標出願)
 
@@ -357,536 +357,51 @@ n8n cron(週次):
 
 ## <a id="s14"></a>14. 🧠 壁打ち詳細メモ（設計決定の根拠）
 
-> 全詳細は `~/.claude/knowledge/business-idea-303-japan-craft-food.md` (941行)
-> このセクションは「なぜそう決めたか」を他のエンジニア・将来の自分が読んで再現できる形で残したもの
+> **詳細は外出し**: 情報非対称アービトラージの構造・英語フレーミング変換表・仕入れ先 Tier マップ・BASE 個人店 送料無料閾値最適化ロジック・EMS ブラケット × 購入数の構造的優位性・n8n 自動収集パイプライン (3層構造)・商品利益率ティア早見表・決済・キャッシュフロー設計・Medusa 採用根拠・対象国 Tier・賞味期限の輸出可否ルール・フェーズ別モデル進化・非採用アイデアと理由・成功モデル参照・Phase 1 Week 別タスク — 全 14 項目の意思決定背景は [`docs/knowledge/poss-sericia-implementation.md#s14`](docs/knowledge/poss-sericia-implementation.md) を参照。
 
-### 14-1. 情報非対称アービトラージの構造
-
-```
-日本側: 訳あり = 値引き・廃棄対象
-西洋側: Irregular = Natural = Artisan = プレミアム
-円安:   日本仕入れ価格が欧米比で1/5〜1/10
-────────────────────────────────
-= 同じ物が「文脈変換」だけで5〜10倍の価格差
-```
-
-**英語フレーミング変換表**:
-| 訳あり(日本語) | 英語プレミアム |
-|-------------|------------|
-| ラベル不備 | "Unlabeled Batch / Direct from Kura" |
-| 規格外サイズ | "Artisan Irregular, Hand-selected" |
-| 在庫過多 | "Limited Reserve, This Season Only" |
-| 廃業前在庫 | "Final Vintage, Brewery Closing 2025" |
-| 発酵過多 | "Extra-aged, Umami Intensified" |
-
-### 14-2. 仕入れ先Tierマップ
-
-| Tier | サイト | 特徴 | 取得方法 |
-|------|-------|-----|---------|
-| **S** | KURADASHI | フードロス特化・訳あり整理済み | Playwright |
-| **S** | Otameshi | 訳あり・お試し専門 | Playwright |
-| **A** | 楽天ふるさと納税 | **公式API** | Rakuten API ✅ |
-| **A** | ふるさとチョイス | 最大規模80万点 | Playwright |
-| **B** | 食べチョク / ポケマル | 農家直販 | Playwright |
-| **底値参照** | BASE個人店 | KURADASHI比30-40%安いケースあり | Playwright |
-| **スポット** | ジモティー | 無料〜格安 | 手動週1確認 |
-
-⚠️ **KURADASHI神話の修正**: 常に最安ではない。コモディティ品（定番静岡茶等）はBASE個人店 < Amazon < KURADASHIのケースあり。**商品ごとに3サイト比較して最安値源泉を選択**する。
-
-### 14-3. BASE個人店 送料無料閾値の最適化ロジック
-
-```javascript
-// 各店舗ページから送料条件を自動抽出→最適発注数を算出
-function calcOptimalOrder(unitPrice, shippingFee, freeThreshold = 3000) {
-  if (freeThreshold === null) {
-    return { qty: 1, totalCogs: unitPrice + shippingFee };
-  }
-  const qty = Math.ceil(freeThreshold / unitPrice);
-  return { qty, totalCogs: unitPrice * qty, unitCogs: unitPrice };
-}
-// 例: 煎茶¥648 × 5個 = ¥3,240（¥3,000超 → 送料¥0）
-// → 実質単価 ¥648 / EMS ¥1,750 / $95販売 → 利益率 83.7%
-```
-
-**実証例（お茶の荻野園）**: 単品購入78.5% → 5個まとめ買い送料無料で**81.2%**（Tier A→S）
-
-### 14-4. EMSブラケット × 購入数の構造的優位性
-
-```
-EMS重量ブラケット（100g商品+梱包材 ≈170g/個）:
-  1個(170g)  → ≤250g → ¥1,750
-  2個(340g)  → ≤500g → ¥2,150
-  3個(510g)  → ≤1kg  → ¥3,100
-  4個(680g)  → ≤1kg  → ¥3,100  ← 3個と送料同額！
-  5個(850g)  → ≤1kg  → ¥3,100  ← さらに有利
-
-→ "$200以上で送料無料" = 実質4個購入誘導
-→ AOV自然増 + 1個あたり送料負担↓ + 利益率↑ の3点同時解決
-```
-
-### 14-5. n8n自動収集パイプライン（3層構造）
-
-```
-週次cron:
-  [Layer 1: メイン訳あり品収集]
-    Playwright → KURADASHI全商品 / Otameshi新着
-    Rakuten API / Yahoo Shopping API
-
-  [Layer 2: 底値参照（BASE個人店）]
-    Playwright → BASE キーワード検索
-    → calcOptimalOrder() で最適発注数・実質COGS算出
-
-  [Layer 3: Amazon USフィルター（必須）]
-    PA-API → Amazon US 同商品検索
-    → 見つかった = 輸出優位性なし → スキップ
-    → 見つからない = パイプライン続行 ✅
-
-      ↓ DeepSeek V3（Context Caching 90%OFF・$0.014/1M）
-      ↓ 英語説明+侘び寂びストーリー生成
-      ↓ スコアリング（軽量×高単価×ストーリー×AmazonUS不在×利益率）
-      ↓ 上位10件 → Slack承認 → Next.js LP自動掲載
-```
-
-### 14-6. 商品利益率ティア早見表
-
-| Tier | 利益率 | 典型商品 | 条件 |
-|------|-------|---------|------|
-| 🥇 SS | 85%+ | 山椒+七味+出汁粉末キット / 昆布パウダー / 黒にんにく100g | 総重量≤250g & 仕入≤¥500 |
-| 🥈 S | 80-85% | 抹茶粉末 / 乾燥椎茸 / 一味唐辛子 | 軽量×プレミアム |
-| 🥉 A | 75-80% | 煎茶葉 / 梅干し乾燥型 / 番茶 | 中量定番 |
-| B | 70-75% | 現行Drop#1（煎茶+味噌+椎茸） / 味噌300g | 重め |
-| ❌ OUT | <70% | 酒類 / 液体醤油 / 生鮮 / 動物性だし | 構造的不可 |
-
-> **重量削減 > 仕入れ値削減**。送料固定コスト削減のほうが値引き交渉より利益率インパクトが大きい。
-
-### 14-7. 決済・キャッシュフロー設計
-
-```
-顧客: クレカ/Apple Pay (摩擦ゼロ)
-  ↓ Crossmint (2.5%手数料のみ)
-USDC着金(数分)
-  ↓ Tria/RedotPay Visaデビット(即時)
-  ↓
-仕入れ(Visa加盟店なら即日)
-
-キャッシュサイクル: ほぼ0分 / クレカ不要 / 立替初回¥2〜3万のみ
-```
-
-**Stripe/Shopifyを採用しない理由**:
-- Stripe: 7日ローリング入金 → キャッシュフロー問題
-- Shopify: Crossmint(外部決済)に2%追加手数料
-- Crossmint: 2.5%のみ・チャージバック低減・グローバル対応
-
-**Crossmint審査タイムライン**: Sandbox即日 / 本番(物理商品)1週間前後 → Sandbox開発と審査を並行
-
-### 14-8. Medusa採用の根拠（スクラッチから転換）
-
-スクラッチ比 **工数▲2.5日削減**。Admin・在庫・注文管理がゼロコストで付属。
-
-| ツール | 役割 | 工数 |
-|-------|-----|-----|
-| Medusa v2 | 商品・在庫・注文管理バックエンド | 1日 |
-| Medusa Admin | ドロップ管理・注文一覧・在庫更新（内蔵） | 0日 |
-| Next.js | ストアフロント（Medusa starter流用） | 0.5日 |
-| Crossmint Button | 顧客決済 | 0.5日 |
-
-**Crossmint × Medusa 統合はOption B（Webhookブリッジ）採用**:
-- AbstractPaymentProvider実装（Option A）は工数+2日で割に合わない
-- Crossmint決済はMedusa外で完結 → 複雑さゼロ
-- Medusaは「Admin/在庫管理専用」として割り切る
-
-```
-[顧客] → Crossmint決済完了
-       → POST /api/orders/crossmint-webhook (Next.js)
-       → Medusa Admin APIで注文手動作成
-       → 在庫 -1
-       → Supabaseにミラー（バックアップ）
-       → Resendで発送メール
-```
-
-### 14-9. 対象国Tier
-
-| Tier | 国 | 理由 |
-|-----|---|-----|
-| **即日開始** | 米国・カナダ・UK・シンガポール | 英語圏・小ロット通関実績豊富 |
-| **3ヶ月後** | オーストラリア・香港・台湾 | 実績積んでから |
-| **検討** | UAE等中東 | 醤油除外セット限定 |
-| **永久除外** | EU・韓国 | EU農薬基準 / 韓国福島規制 |
-
-**FDA Prior Notice（米国）の運用実態**: 建前は事前通知必要だが、B2C小パッケージ（個人消費量）は実務上ほぼスルー。止められても返送 or 廃棄（初回は罰金なし）。植物性・乾燥・密封品限定でリスク最小化。
-
-### 14-10. 賞味期限の輸出可否ルール
-
-EMS発送〜顧客手元まで最短10〜20日。残存期限が短い商品は輸出不可。
-
-| 商品カテゴリ | 最低残存期限 |
-|------------|-----------|
-| 抹茶・山椒・粉末類 | 3ヶ月以上 |
-| 乾燥椎茸・昆布 / 煎茶葉 / 味噌密封 | 4ヶ月以上 |
-| 梅干し | 6ヶ月以上 |
-
-→ セカンダリー残り1〜2ヶ月品は輸出不可。残り3〜6ヶ月品を厳選する。
-
-### 14-11. フェーズ別モデル進化
-
-```
-Phase 1: 転売屋 (0〜3ヶ月・月50件)
-  KURADASHIで買って海外で売る（手動・小規模）
-
-Phase 2: バイヤー (3〜12ヶ月・月300件)
-  販売実績を武器にKURADASHI出品者へ直接コンタクト
-  「次の余剰品が出たら優先連絡を」
-  n8n: 生産者リスト自動収集 + DeepSeek V3 個別化メール
-
-Phase 3: 商社 (1年後〜)
-  複数メーカーと継続契約・優先仕入れ確保
-  訳あり品から通常品の輸出代理まで拡大
-  廃業メーカー在庫競売（Yahoo官公庁オークション）定期監視
-```
-
-**Phase 2 直接交渉のWin-Win構造**:
-```
-KURADASHI経由: 定価¥1,000 → 販売¥400 → 生産者取り分 ¥200〜280
-直接取引:     定価¥1,000 → こちら買取¥350 → 生産者取り分 ¥350
-→ 生産者: PF手数料節約(Win) / こちら: 仕入れ30-50%削減(Win)
-```
-
-⚠️ **PF上での直接取引勧誘はNG（BANリスク）** → KURADASHIで実購入→購入後に公式サイト/SNS経由で「継続取引の相談」として連絡する。
-
-### 14-12. 非採用アイデアと理由（重要）
-
-| アイデア | 非採用理由 |
-|---------|-----------|
-| マーケットプレイス型 | 生産者自走不可→ポータル化→モートゼロ |
-| サブスクBox型 | 安定供給不要・選べない不満・チャーン |
-| 問い合わせ形式 | バイパスされて収益なし |
-| 生産者直取引(初期) | 交渉コスト高・即日開始不可（Phase 2送り） |
-| Shopify | Crossmint追加手数料2%・¥100K/月損失 |
-| Stripe | 7日入金待ち・キャッシュフロー問題 |
-| EU市場 | 農薬基準・VAT・GDPR・複雑度高 |
-| 酒類・ワイン | EMS禁止+FedEx15kg¥22,000+各国規制→最大40% |
-| 重量液体（醤油大瓶） | EMS制限→60%以下 |
-| 野菜・果物 / 生鮮 | 鮮度+検疫 |
-| 鰹節・動物性だし | 検疫リスク |
-| セカンダリー以降格安 | フードバンク行き（非営利）=購入不可 |
-| FC(初期) | 月50件未満は自己発送で十分 |
-
-### 14-13. 成功モデル参照
-
-| 企業 | 学び |
-|-----|-----|
-| Bokksu ($40M+ ARR) | キュレーション=商品。だが**固定Boxは採用せずドロップ型に** |
-| Misfits Market ($1.1B) | 規格外=プレミアム先行事例 |
-| Natural Wine | 「濁り=無濾過=本物」で高単価化（侘び寂びと同構造） |
-| Supreme | ドロップ型FOMO設計（安定供給不要・在庫リスクゼロ） |
-
-**採用モデル**: キュレーションBox型ではなく**限定ドロップ型**
-- 理由: 安定供給不要・FOMO自然発生・在庫リスクゼロ・選べない不満なし
-
-### 14-14. Phase 1 Week別タスク
-
-```
-Week 1:
-  ✅ Crossmint Sandbox作成
-  ✅ 特商法ページ + Privacy Policy（Termly.io自動生成）
-  ✅ Next.js LP + Crossmint埋め込み
-  ✅ Coolifyデプロイ
-
-Week 2:
-  ✅ KURADASHI等で商品実物確認・仕入れ値確定
-  ✅ 英語商品ページ・ストーリーライティング
-  ✅ Reddit / Steepster / TeaChat 3コミュ投稿
-  ✅ 無料サンプル5名告知（Zappos型リーチ）
-
-Month 1-3:
-  ✅ 初回ドロップ: 12ユニット限定 $95
-  ✅ EMS自己発送で学習
-  ✅ 売り切れ→メーリングリスト構築
-  ✅ 2回目ドロップ告知
-```
-
-**初回ドロップ告知テンプレ**:
-```
-"Japan's artisan breweries are closing.
-Their 'irregular' batches were going to waste.
-
-I'm sourcing them directly and shipping worldwide.
-150-year-old miso, hand-packed tea,
-label-imperfect soy sauce —
-everything Western artisan shops charge 3x for.
-
-First drop: 12 units only. $95.
-Ships within 14 days from Japan.
-
-[Link]"
-
-+ "Sending 5 free samples to the first 5 people who DM me their address"
-→ 無料サンプル→レビュー→次ドロップ売り切れ
-```
+**要点**: 「訳あり = Irregular = Natural = Artisan」の文脈変換 × 円安 1/5〜1/10 × Amazon US 不在を必須条件 → Supreme 型限定ドロップ × Crossmint クレカ→USDC 即時着金で立替不要 × Medusa v2 で Admin/在庫管理 × Phase 1 (転売屋) → Phase 2 (バイヤー) → Phase 3 (商社) 段階進化。
 
 ---
 
-## <a id="s15"></a>15. 🚧 M1-M5 実行トラッカー（2026-04-21〜）
+## <a id="s15"></a>15. 🚧 実行トラッカー（F1-F69 — 2026-04-21〜）
 
-### 進捗
+> **詳細は外出し**: 全マイルストーン（M1 /tools 500/404 修正 → M2 Payload CMS v3 → M3 Medusa v2 → M4a-1〜8 storefront 統合 → M4b Aesop polish + Referrals + PWA + pSEO Engine → M4c launch-ready + Magic Link → F1 Cinematic Video → F35 Crossmint sales activation → F37〜F39d 全ページ共通くるくる + CF Cache → F40 SEO/Indexing megacommit → F41-F49 視覚 upgrade + DeepSeek V4 移行 + Magic UI + pSEO scoring → F50-F57 CMS hybrid blocks + Hyperswitch + Payment settings 全 i18n → F58-F66 9 pages × 10 locales E2E 49/49 PASS → F67 /pay i18n + Stripe LIVE → F68 hydration regression → F69 perf + i18n sweep）は [`docs/knowledge/poss-sericia-implementation.md#s15`](docs/knowledge/poss-sericia-implementation.md) を参照。
 
-| # | マイルストーン | 状態 | コミット | 検証 |
-|---|-------------|-----|---------|------|
-| **M1** | /tools/* 500/404 修正 + Dify チャットボット | ✅ 完了 | `fe30f8c2`, `87782adf` | 全ツール200 / Dify 2段フォールバック（SDK→iframe） |
-| **M2** | PayloadCMS v3 インストール（7 collections + 2 globals + 6 blocks） | ✅ 完了 | `db83336b` | ビルド成功・M2-activate で本番稼働済み |
-| **M2-activate** | Payload 本番アクティベーション（env 投入 → DB pw reset → migrate/bootstrap → admin login E2E 検証 → init migration コミット） | ✅ 完了 | `21156de8`, `f60042fc` | https://sericia.com/cms/admin 稼働中（`admin@sericia.com` ログイン HTTP 200 + JWT 発行確認）/ Dockerfile に Payload CLI ソース依存（tsconfig/payload.config.ts/collections/globals/blocks/migrations/scripts）を同梱 / `docker-entrypoint.sh` の3フェーズ冪等ブート（migrate=fail-fast / bootstrap=fail-open / next start exec）/ SSL急所 = `sslmode=no-verify`（pg v3 が `require` を `verify-full` エイリアスするため必須） |
-| **M3** | Medusa v2 起動（9 regions + 4 products + Coolifyデプロイ） | ✅ 完了 | `46384141`, `6737fd61` | `api.sericia.com/health` 200 / `/store/regions` 9件 / `/store/products` 4件 / `/admin` JWT 200 |
-| **M4a-1** | storefront products facade → Medusa（listing/PDP/search-index の data source 切替 + Strategy B カテゴリ紐付け 4 products） | ✅ 完了 | `40d7b9e6`, `f858ac5c` | `/store/products` 4件にカテゴリ付き（tea/miso/mushroom/seasoning）/ Coolify storefront の env vars 待ち |
-| **M4a-2** | checkout rewrite（`/api/orders/create-cart` を Medusa 価格・在庫ソースに切替 / Crossmint 保持） | ✅ 完了 | (this commit) | `getProductsByIds()` 経由で Medusa が prices + stock の source of truth / sericia_orders は受注台帳として残し Crossmint は無変更 / Slack webhook on order_created 追加（Rule N 準拠） |
-| **M4a-Dify hotfix** | 本番 sericia.com に表示されていた "App with code WnX69... not found" トーストを除去（DifyChat.tsx のハードコード fallback token を削除） | ✅ 完了 | (this commit) | `NEXT_PUBLIC_DIFY_TOKEN` 未設定時は何もレンダーしない graceful degradation（Rule V 準拠） |
-| **M4a-3** | payment-success 副作用一括（storefront `/api/crossmint-webhook` に Medusa admin 在庫 decrement + Slack paid bell 追加・Crossmint webhook は storefront 直行のためこの経路が単一情報源） | ✅ 完了 | (this commit) | `storefront/lib/medusa-admin.ts`（admin JWT 50分キャッシュ）/ `storefront/lib/slack.ts`（Block Kit DRY）/ webhook 側で `sericia_order_items` から variant を走査し `decrementVariantInventory()` を `Promise.allSettled` で並列実行・失敗時は Slack bell に ⚠️ マーク |
-| **M4a-3b** | Medusa subscriber `order-placed.ts` 拡張（admin UI 経由オーダー用セーフティネット）| ⏸️ 待機 | — | post-open 対応。現状 Crossmint → storefront webhook が全オーダー経路 |
-| **M4a-4** | n8n ワークフロー JSON コミット（abandoned-cart / low-stock-alert / welcome-email / post-purchase-review）| ✅ 完了 | (this commit) | `n8n-workflows/*.json` × 4 / Supabase RPC `list_abandoned_carts` + `list_review_targets` と schema columns `cart_abandoned_notified` / `review_requested` が未整備（post-open で追加）|
-| **M4a-5** | Dify knowledge base 初期シード（shipping / ingredients / refund-policy / faq）| ✅ 完了 | (this commit) | `docs/knowledge-base/*.md` × 4 / Dify の `knowledge_bases:` 配下で `dify/customer-support.yml` から参照 |
-| **M4a-6** | Supabase schema 追加（n8n marketing automation 用 RPC + columns + partial indexes）| ✅ 完了 | `376134e4` | `supabase/migrations/20260421_marketing_automation.sql`（`cart_abandoned_notified` / `review_requested` + RPC 2本 + backfill 2行 / Supabase MCP `apply_migration` 経由で appexx-studio に適用済み） |
-| **M4a-7a** | Google OAuth UI 実装（`GoogleSignInButton` + `/login` + `/signup` に配線・PKCE/`access_type:offline`・プロフィール自動生成は `sericia_handle_new_user()` トリガー活用）| ⚠️ 破棄（M4c-8 で Magic Link に置換） | (historical) | `storefront/components/GoogleSignInButton.tsx` は M4c-8 で削除。`/auth/callback` は OTP と OAuth を同じ `exchangeCodeForSession` で処理するため Magic Link 移行時に再利用（無変更） |
-| **M4a-7b** | Google Cloud Console + Supabase Dashboard セットアップガイド | ⚠️ 破棄（M4c-8 で撤回） | (historical) | `docs/GOOGLE_OAUTH_SETUP.md` はセットアップ手順としては残すが **Google OAuth 自体を撤退**。再採用時は Supabase Pro+ で `auth.sericia.com` カスタムドメインを先に立ててから（現状 `<ref>.supabase.co` 露出が premium ブランドに不適切） |
-| **M4a-OOM hotfix** | ビルド時 OOM 対策（`NODE_OPTIONS=--max-old-space-size=3072` + `NEXT_TELEMETRY_DISABLED=1` を Coolify envs に追加 + Hetzner box に 4GB swap file + `vm.swappiness=10`）| ✅ 完了 | (this commit) | Rule WW で Hetzner API POST `/actions/reset` ハードリセット復旧後、次の storefront ビルドが 3GB ヒープキャップで成功 / 以降は swap が OOM のセーフティネットとして機能 |
-| **M4a-Webhook hard** | Crossmint webhook fail-close（本番で `CROSSMINT_WEBHOOK_SECRET` 未設定時は 503 を返す）| ✅ 完了 | `9d12bfb4` | prod で未署名POSTが 200 で受理されるセキュリティリグレッションを封鎖（Rule V） / dev/test は従来通り bypass 可能 / verify-live-storefront.sh で 503 をランチブロッカー表示 |
-| **M4a-Header mobile** | ヘッダーUXモバイル修正（国旗横の英語ラベル削除・アカウントアイコンを sm 以下でも表示）| ✅ 完了 | `3208fc19` | `HeaderClient.tsx` / `LocaleSwitcher.tsx` 両方更新 / 本番で検証済み |
-| **M4a-Dify v2** | `udify.app` embed を破棄し `/api/dify-chat` サーバープロキシ + カスタム Sericia UI に全面刷新 | ✅ 完了 | `f31e17a0` | `DIFY_SERVICE_API_KEY`（`app-*` 秘密鍵）がクライアントJSに漏れない設計 / 503 時は offline 状態で `hello@sericia.com` 案内表示（Rule V）/ Tailwind `sericia-accent` 等のデザイントークンで統一 / Dify KB の Sericia コンテキストをそのまま活用 |
-| **M4a-8 Webhook live** | Crossmint `whsec_Svrn+w...` signing secret を Coolify env + memory に反映 → storefront restart (`kvox6zxs02jinepf2gjdm4z2`) で new container 起動 → webhook **503→401 flip** 確認 → **HMAC SHA-256 署名付き POST で 200 OK** E2E 確認 | ✅ 完了 | (this session) | Rule R 準拠で `whsec_...` をメモリ永続化 / Coolify API 経由で Rule S 完全遵守（ダッシュボード操作ゼロ）/ container env 4 secrets 全部ロード確認（CROSSMINT_WEBHOOK_SECRET:38 / N8N_ESCAL:48 / DIFY:28 / RESEND:36）/ 残り `SLACK_WEBHOOK_URL` は graceful null-return で launch blocker ではない |
-| **M4c launch-ready** | ストアオープン直前ブロッカー 7 件を一発 PR で解消（リージョン3層解決 / 特商法 / About / thumbnails / Google OAuth / ENV `japan` / noImplicitAny hotfix）| ✅ 完了 | `492dd9f7` + `7bdab6d2` | ① `lib/medusa.ts` getRegionId が **metadata.slug / name / countries.iso_2** 3キー全部を lowercase index → `"jp"`/`"japan"`/`"JP"` すべて同じ region_id に解決（従来は PDP 404 / `/products` 空の根本原因）② `/tokushoho` — 特商法 section 11 全12項目 bilingual（Paradigm LLC / 050-3120-3706 / 請求あれば遅滞なく開示方式）③ `/about` — Server-rendered ブランド長文 5 H2（Why / How a drop / Producer-share / Limited drops / Who's behind）④ 4商品に Unsplash placeholder thumbnails を **admin API 冪等スクリプト** で適用（`storefront/scripts/upload-product-thumbnails.ts` + `product-thumbnails.json` / 再実行で no-op・brand photography 来たら JSON 差し替え）⑤ Supabase Management API（`sbp_...` PAT）で `external_google_enabled=true` + `site_url=https://sericia.com` + `uri_allow_list` whitelist ⑥ Coolify env PATCH `NEXT_PUBLIC_DEFAULT_REGION=japan`（`jp` から変更・belt & suspenders）⑦ 3-deploy roulette: deploy #1 失敗（`noImplicitAny` on `countries.map` — `tsc --noEmit` をローカルで実行せずに push した代償）→ 1行型注釈で hotfix commit `7bdab6d2` → deploy #2 も失敗だが**build は通過**し Docker `#27 exporting to image` exit 255（host-level transient・コード無罪）→ code 変更なしで retry → deploy #3 (`w81azrqs70v9zd0wa3xagq4v`) 成功（finished @ 2026-04-21T23:28:25Z） | 全 8 URL 200 verified: `/` `/products` `/products/{sencha,miso,shiitake,drop-001-tea-miso-shiitake}` `/tokushoho` `/about` — PDP は `<title>Single-Origin Sencha (Rescued) — Sericia</title>` と `<h1>` が正しくレンダ、`/tokushoho` に `Paradigm LLC / 050-3120-3706 / 特定商取引法`、`/about` に 5 H2 全て出現 |
-| **M4c-8 Magic Link switch** | Google OAuth 撤退 → Email Magic Link のみに全面切替（UI 3ファイル書換・ルート5個削除・trigger 契約維持） | ✅ 完了 | `d13d5fc9` | **トリガー**: Google OAuth 同意画面に `<ref>.supabase.co` が露出し premium D2C ブランドに phishing-adjacent に見える（Supabase Custom Domain は Pro+ のみ）/ **実装**: ① `LoginForm.tsx` を `signInWithOtp({ shouldCreateUser: true })` 単体フォームに書換（Google ボタン + password field + magic-link link 全削除）② `SignupForm.tsx` から password field 削除し `options.data: { full_name, country_code }` で `auth.users.raw_user_meta_data` 経由 `sericia_handle_new_user` トリガーへ流す（既存 profile seed 契約を維持）③ `SettingsForm.tsx` から「Update password」フォーム削除 ④ `GoogleSignInButton.tsx` / `/login/magic` / `/reset` 5ファイル削除 ⑤ `middleware.ts` NON_I18N_PREFIXES から `/reset` 除去 / **検証**: `tsc --noEmit` EXIT=0（`.next/types/` stale cache clear 後）/ `/auth/callback` の `exchangeCodeForSession(code)` が OAuth と OTP を同一ハンドラで処理するためバックエンド変更ゼロ / **deploy**: `kg4zr2fggrukailov0x1j2qw`（finished @ 2026-04-22）/ **Live verify**: `/login` 200 + "Send sign-in link" コピー + `type="password"` input 無し + Google ボタン無し / `/signup` 200 / `/reset` 404 / `/login/magic` 404 / `/account/settings` 307 (unauth → `/login` redirect) |
-| **M4c-9 Drop #1 UX polish** | 4件のUX磨き込み（特商法locale switch / くるくる開店 loader / Difyクイック返信チップ / Sericia純正SVGプレースホルダー） | ✅ 本番投入完了・検証済（2026-04-22 11:31 JST deploy `r112pa764t8qp5op1dnv40ii` finished / 全アセット & API fanout OK / **Payload admin bootstrap も同セッションで完走**：`admin@sericia.com` user_id=1 動作確認・`POST /cms/api/users/login` 200 + JWT 発行 / `products:upload-thumbnails` applied=4 skipped=0・Store API に `https://sericia.com/placeholders/{sencha,miso,shiitake,drop-001}.svg` 4商品分反映確認済） | `bc6a1fa4` | **① `/tokushoho` locale switch**: `getLocale()` + `getTranslations("tokushoho")` で async server component 化。9 locales の `messages/*.json` に `tokushoho` namespace 6キー追加。Row コンポーネントに `japaneseFirst` prop を追加し locale === "ja" で EN/JA 視覚階層を swap（JA primary 14px ink + EN 11px uppercase）。法的拘束力ある JA 本文は全 Row 内に bilingual で保持（特商法 Art. 11 要件）/ **② LuxuryLoader くるくる開店**: sessionStorage gate 撤廃（毎 full-load で発動）。鮮 hanko seal が 720°回転しながら scale 0.2→1 で着地（くるくる）→ wordmark/rule/tagline フェードイン → 紙色 noren カーテンが中央縫い目から左右に引き分けて page を露出（開店）。`cubic-bezier(0.65, 0, 0.35, 1)` emphasized-decelerate で布の重みを表現。`prefers-reduced-motion` respect。`RouteProgress.tsx` にもミニ 鮮 seal を追加し client-side navigation 中は top-right で 900ms/rev 連続回転（全ページ適用要件を SPA route 変化にも拡張）/ **③ DifyChat context-aware chips**: `getQuickReplies(pathname, locale)` で 7 ルート × EN/JA = 14 セット × 4 chips。product detail → アレルゲン/保存法/使い方/産地、drops → 限定数/次回/再販/内容、/tokushoho → 返品/支払/販売者/配送、cart → 送料/日数/ギフト/決済、account → 追跡/未着/履歴/削除、index/home → Drop/国/送料/連絡。`sendMessage(directText?)` に optional 引数を追加し chip click は controlled state をバイパスして直接送信（one-tap UX）。`messages.length === 1` で自動消滅（visitor engagement 後は disappear）/ **④ Sericia純正 SVG プレースホルダー**: Unsplash random を全廃。`public/placeholders/{sencha,miso,shiitake,drop-001}.svg` を新規作成（1200×1200 viewBox / paper-card bg / silk-fibre 横ストローク 12本 / 二重ヘアライン frame / 鮮 hanko seal 右上 / 中央 kanji 440px 茶/味/椎/集 / 下部 romaji Cormorant italic / 大文字 subtitle UJI/KYOTO/OITA/303 UNITS / tagline `RESCUED JAPANESE CRAFT FOOD`）。drop-001 のみ paper-deep `#ebe4d4` bg でヒエラルキー上位を視覚化（Aesop/Le Labo の collection tier）。`scripts/product-thumbnails.json` 4件を Unsplash URL → `https://sericia.com/placeholders/<handle>.svg` に差し替え（`_usage` に「storefront deploy 完了後に `npm run products:upload-thumbnails` 実行」明記）。`ProductGallery.tsx` は plain `<img>` + `// eslint-disable-next-line @next/next/no-img-element` 利用のため `next/image` の `dangerouslyAllowSVG` 不要（vector native render で crisp at every zoom） |
-| **M4c-10 CMS hybrid blocks** | Option C Hybrid CMS — Payload `homepage.blocks[]` に story/newsletter renderer 配線。brand skeleton（hero/ticker/footer/product grids）はコード固定のまま editorial middle（Philosophy ↔ TestimonialsWall 間）のみ editor-controlled | ✅ 完了・本番検証済 | `97ee2e4b` (deploy `beshiqjclmhae2bov9o6e35j` finished 2026-04-22 19:30:34) | **新規**: `lib/payload-blocks.ts`（typed fetcher・React `cache()` で 1リクエスト1フェッチ・`depth: 2` で Media resolve・try/catch silent-fallback）/ `components/blocks/StoryBlockRenderer.tsx`（Lexical `<RichText data={body} />` + image 3レイアウト right/left/below・`next/image` aspect-ratio boxes）/ `components/blocks/NewsletterBlockRenderer.tsx`（既存 `<WaitlistForm>` wrapper・editor コピー差替のみ・attribution `source="homepage-newsletter-block"` をサーバー固定で analytics 分離）/ `components/HomepageBlocks.tsx`（server dispatcher・`blockType` switch・hero/drop/testimonialsStrip/pressStrip は**意図的 no-op**で重複レンダ防止）/ `docs/cms-editing-guide.md`（9-section editor runbook: login → blocks panel → Story → Newsletter → no-op 解説 → 10-locale workflow → drafts/autosave → media → troubleshooting）/ **変更**: `app/page.tsx` に `<HomepageBlocks country={country} />` を `id="story"` ↔ `<TestimonialsWall />` 間にスロット / `components/WaitlistForm.tsx` に optional `ctaLabel?: string = "Join"` prop 追加（既存 coded 呼び出しは後方互換・無変更でコンパイル）/ **silent-fallback**: 現状 `_status: draft / blocks count: 0` のため live HTML は pre-deploy と視覚差分ゼロ — editor が `/cms/admin` → Globals → Homepage → Add Story/Newsletter block → Publish で初めて表示 / **型設計**: `Extract<HomepageBlock, { blockType: "story" }>` で 6-variant discriminated union を narrow した `StoryBlockData` / `NewsletterBlockData` を re-export し renderer 側は narrow 型だけ import（`payload-types.ts` の巨大木を全ファイルに引き込まない）/ Rule RR 横展開: AirTabi editorial 中段・Paraful 記事間 CMS section に移植可 |
-| **M4b-T2 Aesop polish** | Aesopティアマーケ仕上げ — CinematicHero typewriter × 静物クロスフェード / SakuraFall tsparticles / SocialProofToast + Gate / DropCountdown / PressStrip / TestimonialsWall (Payload sourced) / CouponBanner / ProductsFilterBar (URL-synced サーバー権威型) / AnimatedHeart wishlist / Payload `testimonials` + `articles` 配線 / Arabic (MSA) locale + RTL `dir` wiring / `/products`・`/products/[slug]` PDP リッチ化 | ✅ 完了 | `086396ea` | Tier A ライブラリ全投入（typewriter-effect / tsparticles / embla / auto-animate）/ SocialProofToast は CookieConsent ゲート下で analytics 同意後のみ発火（GDPR 準拠）/ `/products?category=miso` がサーバー権威でレンダ（JS 切でも filter 生存）→ SEO/共有リンクで正しくプレビュー / `lib/payload.ts` + `lib/payload-homepage.ts` で Server Component から read-only 取得 / 9 → 10 locales（ar 追加・`isRtlLocale()` で document `dir="rtl"` 自動切替）/ Tailwind `sakura-fall` keyframes 追加 |
-| **M4b-T3-A/D referrals** | 紹介プログラム — `sericia_referrals` + `sericia_referral_redemptions`（pending/issued/revoked 三態ライフサイクル）+ ReferralCookieSetter (first-touch 365d) + ReferralCodeField チップ入力 + CartCheckoutForm 割引適用 + `/account/referrals` ダッシュボード + `/thank-you` シェア CTA + **T3-D reward flip**（ship / admin cancel で pending→issued / revoked） | ✅ 完了 | `24d0a495` | RLS で owner_user_id のみ read / サーバー側で常に code を再検証（client の discount 値は trust せず）/ Medusa 側 `order-placed` subscriber + storefront admin-update + ship route の3経路全部で `flipRewardStatus()` 共有ヘルパ経由 / Rule N DB ベル + Slack fanout / unique (code, referred_email) 制約で self-gaming 封鎖 |
-| **M4b-T3-B Web Push PWA** | Service Worker + VAPID 購読 + `/api/push/subscribe` + `/api/push/unsubscribe` + `push_subscriptions` RLS テーブル + offline.html フォールバック + PushOptIn UI | ✅ 完了 | `5b42d60e` | `web-push ^3.6.7` + `@types/web-push ^3.6.4` / Rule J モバイル戦略（メール開封率 20% vs プッシュ 60%+ → 再エンゲージ最優先手段）を基盤として完成。実配信は Drop #2 のカウントダウン通知から段階投入 |
-| **M4b-T3-C pSEO briefs** | `pseo_briefs` + `pseo_pages` テーブル + DeepSeek V3 chat helper（システムプロンプト固定プレフィックスで Context Caching 自動ヒット → 実効 $0.014/1M）+ `/api/pseo/generate` + `/api/pseo/publish` + n8n ナイトリー batch（Slack 承認ゲート付き）+ `scripts/seed-pseo-briefs.ts` | ✅ 完了 | `37d5759a` | 記事生成インフラは基盤完成・初期 briefs シード待ち（M5 で 20 記事 sample 投入予定）/ Rule RR 横展開: 同じ DeepSeek V3 cached generator を Paraful / Appexx の pSEO にも転用可 |
-| **M4b-T0-A UAT Magic Link** | `scripts/uat-magic-link.ts` — Supabase `admin.generateLink({type:'magiclink'})` でメール配信を介さず 9 check E2E（link 生成 → verify → `/auth/callback` → `sb-*-auth-token` cookie → auth.users + sericia_profiles 行確認 → cleanup on success のみ）+ `docs/uat-magic-link.md` 6 section runbook + `scripts/verify-live-storefront.sh` #8 の Google OAuth 誤アサーション修正（Magic Link form + OAuth 非復活ガード へ反転） | ✅ 完了 | `0b348dd2` | Resend 到達率から独立・CI で回せる / 失敗時は user を DB に残して post-mortem 可能（cleanup-on-success policy）/ `.invalid` TLD で test email が real mailbox に絶対届かない安全策 |
-| **M4b-T0-C UAT purchase flow** | `scripts/uat-purchase-flow.ts` — cart → signed webhook → paid の Bridge 側 8 check E2E + `docs/uat-purchase-flow.md` + triple safety interlock（`UAT_ALLOW_DESTRUCTIVE=1` + production URL ブロック + env validation）+ 改竄 body 送信で 401 を期待する HMAC regression guard | ✅ 完了 | `4399ec56` | Crossmint iframe / real card / USDC / webhook auto-delivery は意図的に対象外 — `docs/crossmint-integration.md §5.6 $1 live smoke test` との役割分担を明示 / Rule LL (E2E 必須) |
-| **M4b-T0-D Crossmint playbook** | `docs/crossmint-integration.md §5` を 5 行箇条書きから 8 サブセクション運用 playbook に書き換え — §5.1 前提GO判定 / §5.2 Console 切替 / §5.3 env 差し替え / §5.4 コード有効化 / §5.5 Webhook 再登録 / §5.6 $1 スモークテスト / §5.7 ロールバック（サインオフ前に配置）/ §5.8 サインオフゲート + §6 トラブルシューティング 5 行追加 | ✅ 完了 | `ca3319e9` | §5.7 をサインオフ前に置くことで「本番ボタンを押す前に 5 分で戻す exit path が見えている」状態を作る心理設計 / §5.1 で Solana を除外し Polygon を推奨（Tria 非互換が理由）|
-| **M5** | pSEO 量産（DeepSeek Context Caching + キーワードリサーチ + 20記事サンプル実投入） | ⏸️ 待機（T3-C 基盤完成済 → あと brief 投入のみ） | — | — |
-| **M4b-F1 Cinematic Video Foundation** | Aesop級の動画基盤 — `<CinematicVideo>` 汎用コンポーネント + Payload `homepageCopy.featuredBundle` に video URL 3スロット + 新規 `homepageCopy.interstitial` (Makers↔Philosophy間 full-bleed break) + `makers.items[]` に per-maker videoUrl/posterUrl/tone | ✅ 完了 | (this commit) | **設計**: `storefront/components/CinematicVideo.tsx` — gradient fallback (7 brand tones tea/miso/mushroom/seasoning/paper/ink/drop) + poster-first paint (CLS=0・onCanPlay で video fade-in) + scroll-tied scale 1→1.06 + IntersectionObserver `playWhenInView` (Makersで3本同時 autoplay decoder pressure 回避) + `prefers-reduced-motion` で scale & autoplay を完全停止 (poster静止表示・WCAG 2.2 AA) / **配線**: page.tsx の Drop section 右側 gradient grid → `<CinematicVideo>` 3枚 (col-span-2 4:5 + 2x square) / Makers 3 cards の gradient → `<CinematicVideo>` per maker (tone自動マップ tea/miso/mushroom) / interstitial section は `videoUrl` 設定時のみレンダ (空 = section ごと削除・空の黒帯ゼロ・Aesop restraint) / **空時の見え方**: 全gradient + grain で現状と同等の品で degrade（破壊的変更ゼロ）/ Editor が Payload (Site Settings → Homepage section copy → Featured bundle / Interstitial / Makers item ごと) で URL 入れた瞬間に video 反映 / **型**: `payload-types.ts` の `SiteSetting` interface + `*Select<T>` の両方を手動同期（worktree から `payload generate:types` は DB 接続不可のため）|
-| **F35 Crossmint sales activation** | 本番Onramp起動の唯一の残blocker特定 + sales問い合わせ playbook 作成 | ✅ 完了 (this commit) | (this commit) | **2026-04-30 production probe**: storefront コンテナ内から `https://www.crossmint.com/api/2022-06-09/orders` を本物の payload (tokenLocator USDC + recipient.walletAddress = treasury) で叩いた結果、HTTP 400 + `"Onramp is not yet enabled for production use in this project. ... please contact our team at crossmint.com/contact/sales to enable production access."` を確認 / **判定**: SK は valid（無効なら 401）/ scopes は OK（不足なら 403）/ Apple Pay verified + webhook signing healthy → 残るは Crossmint Sales partnerships team の **production Onramp ホワイトリスト承認** 1点 / **新規 doc**: [`docs/crossmint-sales-activation.md`](docs/crossmint-sales-activation.md) — 7セクション（① 現状 / ② なぜ sales でなく support じゃないか / ③ sales フォーム貼り付け用 英文 message body 1枚 / ④ Console pre-flight 4項目 / ⑤ staging E2E は **skip 推奨**（`NEXT_PUBLIC_CROSSMINT_CLIENT_ID` が build-time inline → rebuild 込み 30分で staging 検証付加価値 vs cost が悪い・必要なら server-only probe レシピ別記）/ ⑥ 承認後の本番切替 5分 playbook / ⑦ >3営業日 fallback 3案 ranked by speed (Stripe direct / Stripe Atlas + USDC swap / PayPal Standard) / **launch-go-handoff.md 更新**: Step 1 を旧「Console scopes 5分」から新「Sales Onramp 申請 10分 → 1〜3営業日 SLA」に置換 + Recommended launch sequence を T+0〜T+24h の wall-clock-realistic timeline に rewrite（Day 0 / Day 1-3 review / 承認後 5分 smoke）/ **net wall-clock 評価**: 「store-open intent → 初dollar accepted」は **1〜3営業日 bounded by Crossmint sales SLA**、それ以外は全て waiting period に並列化済み |
-| **F36 Cloudflare Email Routing + Crossmint sales submission** | Google Workspace支払停止＋Zohoカード弾き2重ブロックを並走無視で突破・無料・5分構成のCloudflare Email Routingでsericia.comの本格メール基盤を稼働させCrossmint sales formを送信完了 | ✅ 完了 (this commit) | (this commit) | **背景**: F35直後にZoho Mail Lite (¥150/月)へ移管しようとしたところ、ユーザーのカードが弾かれ → 同時にGoogle Workspace `contact@paradigmjp.com` も支払停止suspended状態と判明（→ Crossmint formで`contact@paradigmjp.com`が"Please enter a valid email"で弾かれた根因。SMTP RCPT TO で 550 mailbox unavailable 返却が原因）/ **戦略ピボット**: カード復旧+IMAP移行を待つと1〜2日delay → 代わりに**Cloudflare Email Routing on sericia.com**（既存Cloudflareゾーン・無料・カード不要・5分構成）を採用。これにより ① Zoho migration を critical path から外し ② Crossmint用businessメール基盤を即時確保 ③ ボーナスとしてsericia.comの法的contact mail (`contact@`/`accessibility@`等) を実稼働化（特商法準拠の宛先到達性問題も同時解消）/ **実装**: `tomohiro@sericia.com`/`contact@`/`accessibility@`/`hello@` 4 custom addresses + catch-all `*@sericia.com` すべて `apple.info.9124@gmail.com` 宛に転送 / Cloudflare自動でMX 3本（route1/2/3.mx.cloudflare.net）+ DKIM TXT (`cf2024-1._domainkey`) + SPF (`v=spf1 include:_spf.mx.cloudflare.net ~all`) を sericia.com zone に追加 / **Crossmint sales form 送信**: 2026-04-30 12:50 JST submitted with Business email `tomohiro@sericia.com` / Form returned "Thanks for reaching out! One of our team members will be in touch soon" success → **Crossmint approval SLA 時計スタート（1〜3営業日・2026-05-03〜05-05 JST window 想定）** / **Email Routing E2E inbound test**: Crossmint auto-ackが `tomohiro@sericia.com` → `apple.info.9124@gmail.com` 経由で届けば配送経路100%稼働の証明 / Rule RR 横展開: 同じCF Email Routing pattern を全Paradigm domain (paradigmjp.com / appexx.me / airtabi.com / temploft.com / paraful.com) に複製可能 — Bootstrap Pillar として「無料カスタムドメインメール基盤」が確立 / **postponed**: Zoho migration / Workspace cancellation / カード根本原因調査（critical pathから外れたためleisure対応）|
-| **F38 mobile UX hardening** | iOS auto-zoom + link tap feedback + apple-touch-icon | ✅ 完了 | `e2bad4a5` → `ea9e55d9`(main) | **iOS Safari auto-zoom**: 4 forms (`CartCheckoutForm` / `CheckoutForm` / `AddressForm` / `RefundRequestForm`) input class `text-[15px]` → `text-[16px]` で iOSモバイルcheckout時のページ自動zoom janking解消 / **Link tap feedback**: `globals.css` の `a` セレクタに 160ms color+opacity transition + `:active` (sericia ink-soft + opacity 0.72) + `(hover:hover)` mediaクエリーで desktop 0.78 + `-webkit-tap-highlight-color:transparent` で iOS灰色フラッシュ抑制 / **PWA iOS**: `metadata.icons.apple` + `appleWebApp { capable, title:"Sericia", statusBarStyle:"black-translucent" }` 追加で iOS「ホームに追加」が正しいアイコン+タイトルで生成 / Crossmint sales SLA windowを並列で消化中だったため即時deploy可能なP0 fixに集中 |
-| **F39a Homepage parallelisation** | Homepage cold render 4.8s → ~1s (Promise.all) | ✅ 完了 | `9577f5f9`(main) | `app/(frontend)/page.tsx` の 6 sequential awaits (cookies/getLocale/getSiteSettings/getTranslations/getCurrentDrop/listActiveProducts) を 2 group の Promise.all に変換 → cold render time bounded by slowest single fetch (~1s) instead of sum (~4.8s) |
-| **F39d CF Cache Rules tightening** | HTML edge 2min→1h, browser 0→60s | ✅ 完了 (CF API直接適用) | (no commit, runtime config) | `scripts/apply-cloudflare-cache-rules.mjs` 経由で sericia.com zone に 3 rules適用 (① Dynamic bypass `/api/` `/cms/` `/account/` `/checkout` `/cart` / ② Static 30d edge+browser TTL `_next/static/` `/placeholders/` `*.svg` `*.woff2` `favicon.ico` / ③ Storefront HTML 1h edge + SWR + 60s browser `/` `/products` `/products/*` `/journal` `/journal/*` `/articles/*` `/guides` `/guides/*` `/tools` `/tools/*` 等) / Cache hit確認: `/products` 1st `MISS` → 3秒後 `HIT, Age:3` / `/api/*` `DYNAMIC` (正しくbypass) / `/favicon.ico` `HIT, max-age=2592000` (30d) / **net UX**: 全URL 60-90ms TTFB達成 (warm cache) |
-| **F40 SEO/Indexing megacommit** | pSEO matrix 4x拡張 + IndexNow API + GSC verification + /compare + /uses 新route | ✅ 完了 | `0ff83290` → `8bfb617f`(main) + hotfix `989c6dda` (optimizePackageImports rollback) + hotfix2 `82e1a893` (SectionHeading API) | **pSEO matrix拡張** (`lib/pseo-matrix.ts`): COUNTRIES 8→12 (+nl/ae/tw/kr) / PRODUCTS 8→12 (+yuzu-kosho/kombu/wasabi/sansho) / **新軸**: USE_CASES 6種 (morning-energy/gut-health/weight-management/umami-cooking/gift-japanese/vegetarian-vegan) + buildComparePairs() で 66 alphabetical-canonical pairs生成 / **新route**: `/compare/[a]/[b]` (66 base × 10 locales = 660 URLs) と `/uses/[product]/[case]` (72 × 10 = 720) どちらもサーバーレンダリング・no Payload at build time・full Article+BreadcrumbList JSON-LD・TL;DR-first GEO最適化・dense internal-link grids / **IndexNow API** (`/api/indexnow` route + key file `f55bbec16474b7c82fe2582eb4d349be.txt` + `scripts/indexnow-bulk-submit.ts`): SERICIA_ADMIN_SECRET gated POST endpoint + sitemap全URL bulk submit script (Bing/Yandex/Naver/Seznam/Yep instant index・~30% global search traffic discovered hours instead of weeks) / **GSC verification** (layout.tsx): metadata.verification block で `NEXT_PUBLIC_GSC_VERIFICATION` / `NEXT_PUBLIC_BING_VERIFICATION` / `NEXT_PUBLIC_YANDEX_VERIFICATION` env から値読み込み → operator paste→redeploy で全ページにverification meta tag同梱 / **Sitemap.ts更新**: 66 compare + 72 uses URLs追加・total 154→292 URLs / **総addressable surface**: 約3,320 (332 base × 10 hreflang) / **新docs**: [`docs/seo-indexing-runbook.md`](docs/seo-indexing-runbook.md) 290行7セクション (indexing strategy / GSC setup / IndexNow / sitemap / pSEO bulk / content quality / monitoring) |
-| **F41 visual: ColorfulComparisonTable** | /compare/[a]/[b] visual upgrade | ✅ 完了 | `49b595dc` → `a3b290e0`(main) | `components/ColorfulComparisonTable.tsx`: 5属性 (umami / preparation / shelf-life / versatility / regional-variation) を product A/B 横並びの proportional CSS bars でvisualise / 各属性ごとに違う brand palette tone (tea/miso/mushroom/seasoning/moss/amber) で色分け / score 0-100 deterministic hash from slug+attribute → 35-95 range placeholder (pSEO drainer fills real briefs.attributes later) / `components/VisualStatGrid.tsx` (react-countup colorful stat grid) も同commitに同梱・articles/toolsで再利用可 |
-| **F42 centered spinner + Hetzner OOM fix** | くるくる中央配置統一 + generateStaticParams削除 | ✅ 完了 | `562cc524` → `413b7ec4`(main) | **User directive**: 「ローディングアニメーションのくるくるが右上ではなく画面中央で全ページ統一」/ LuxuryLoader (first-paint) + RouteProgress (route-change ring) を `fixed inset-0 flex items-center justify-center` で全画面中央配置・サイズ22px→32px (mobile) / 32px→40px (md+) / PageLoading (Suspense fallback) は元から中央 → 3コンポーネント全部identical positioning + same brand-ink ring (#21231d, 90% arc, 900ms cubic-bezier rotation, prefers-reduced-motion safe) / **OOM fix**: `/compare/[a]/[b]` と `/uses/[product]/[case]` の `generateStaticParams` 削除 → dynamic化 (Hetzner CPX22 3.7GB RAM が 138 new static pages + Payload + Crossmint SDK で SIGKILL build OOM kill された経緯・SIGKILL log: `npm error signal SIGKILL`) / 第一visit serverレンダ + CF edge 1h cache でstatic build同等のUX / **incident**: 4 deploy連続failure + Hetzner unreachable hard reset action `626979332601133` で復旧 → fresh memory state でF42 deploy 209/209 static pages success |
-| **F43 DeepSeek V3→V4 migration** | サイト全体V4全面移行 (Context Caching保持) | ✅ 完了 | `d161c1ab` → `e2b6153d`(main) | **User directive**: 「サイト全体でDeepseek V3⇒V4に全面移行（キャッシュヒット）」/ DeepSeek `/v1/models` API確認: V3 `deepseek-chat` / `deepseek-reasoner` 廃止・V4のみ稼働 (`deepseek-v4-flash` / `deepseek-v4-pro`) / **置換**: `lib/deepseek.ts` type union + default model / `lib/pseo.ts` 2 calls / `scripts/translate-with-deepseek.mjs` translation script — `deepseek-chat` → `deepseek-v4-flash` 全置換 / **Live smoke test成功**: `POST /chat/completions { model:"deepseek-v4-flash" }` HTTP 200 + `reasoning_content` 新フィールド (V4のchain-of-thought・既存 `choices[0].message.content` parserは silently 無視) / **Context Caching保持**: 90% OFF discount on identical prefix prefixes carries over to V4 → pSEO matrix generator $0.014/M effective input cost継続 / pSEO 1,440記事 lifetime cost ~$2.88 そのまま |
-| **F44 pSEO Strategy doc + Magic UI core** | Zapier-style pSEO戦略文書 + Magic UI 5 components | ✅ 完了 | `bf1e645e` → `27d52a43`(main) | **新規 doc**: [`docs/pseo-strategy.md`](docs/pseo-strategy.md) — 9セクション (① 3ゲートPrincipal / ② DeepSeek V4 4軸 keyword scoring 公式 [composite = demand×0.35 + commercial×0.25 + (100-difficulty)×0.25 + sericia_fit×0.15、threshold 60] / ③ GEO最適化 (TL;DR/数値統計/FAQPage/Article/BreadcrumbList/Recipe/HowTo) / ④ 12-block article skeleton (1500-2500 words) / ⑤ 視覚component library mapping / ⑥ CTA placement 3 max / ⑦ Quality gates / ⑧ F44→F50 implementation sequence / ⑨ コスト射影 ~$6.50 lifetime for 3000 surfaces) / **Magic UI** (`components/magicui/`): Marquee (auto-scrolling strip 35s default), BorderBeam (animated CTA border 8s ink→accent gradient), BentoGrid (asymmetric featured grid 1x1/2x1/1x2), NumberTicker (framer-motion useSpring scroll-trigger counter), SparklesText (6 floating sparkle particles, sericia ink + miso accent) / `lib/cn.ts` lightweight class-name concatenator (no clsx/tailwind-merge dep) / `tailwind.config.ts` keyframes/animation `marquee` / `marquee-vertical` 追加 / 全component prefers-reduced-motion safe + sericia palette tokens厳守 |
-| **F45 /uses 全面視覚upgrade** | Sparkles + VisualStat + Bento + BorderBeam CTA + FAQ JSON-LD + Marquee | ✅ 完了 | `552ed7c9` → `d87841c2`(main) (+ hotfix `d038d2bb` border-beam.tsx MotionStyle→CSSProperties TS型修正) | `app/(frontend)/uses/[product]/[case]/page.tsx` を pSEO Strategy §4 12-block templateに準拠 rewrite: PageHero (Eyebrow + H1 with `<SparklesText>`) → TL;DR paragraph (definitive language + numerical statistics 23+ countries / fit_score / delivery window — GEO citation block) → `<VisualStatGrid>` 4 stats (tea/miso/mushroom/seasoning tone borders + react-countup) → SectionHeading + body → `<BentoGrid>` 4 BentoCards (asymmetric 2x1+3x1x1 — pairing recommendations) → SectionHeading + body → BorderBeam-bordered Primary CTA card (10s cycle, sericia ink→accent) → FAQ section (visible `<dl>/<dt>/<dd>` markup matched to FAQPage JSON-LD) → `<Marquee>` related-uses strip (35s pauseOnHover) → cross-product link grid / **JSON-LD 3 blocks**: Article + BreadcrumbList + FAQPage / **statsFor()**: deterministic hash from slug+caseSlug → 35-95 fit score (placeholder until pSEO drainer fills brief.attributes) |
-| **F46 Keyword research script + table migration** | DeepSeek V4 4軸 keyword scorer (composite >= 60 gate before generation) | ✅ 完了 | `d1264543` → `09fe2e2b`(main) | **新規 migration**: `supabase/migrations/20260430_pseo_keyword_research.sql` — table `sericia_pseo_keyword_research` (axis [guides|compare|uses], combo_slug, locale, topic, keywords[], demand 0-100, commercial 0-100, difficulty 0-100, sericia_fit 0-100, composite 0-100, rationale, scored_by, promoted, promoted_at) + 3 indexes (locale composite desc / axis locale composite desc / partial pending-promote where promoted=false AND composite>=60) + RLS service-role only / Supabase MCP 経由で apply_migration 適用済 / **新規 script**: `storefront/scripts/research-pseo-keywords.ts` — 全 matrix (282 base × 10 locales = 2,820 calls) を DeepSeek V4 で 4軸 score、shared SYSTEM_PROMPT (Context Caching prefix → 90% off effective input cost) / CLI flags `--axis=` `--locale=` `--limit=` for incremental scoring / cost projection ~$0.50 lifetime for full matrix |
-| **F47 promote-keywords-to-briefs.ts** | research → briefs queue bridge | ✅ 完了 | `bfaf0a78` → `231a3ca9`(main) | `storefront/scripts/promote-keywords-to-briefs.ts` — reads sericia_pseo_keyword_research where composite ≥ threshold (default 60), inserts into sericia_pseo_briefs queue with cluster=axis + grounding_facts (4-axis score lines for DeepSeek V4 generator citation) + related_product_handle derived / Idempotent: sets promoted=true on research row + relies on briefs partial unique index for conflict skip / CLI flags `--threshold=` `--limit=` `--axis=` `--locale=` `--dry-run` |
-| **F48 /compare 全面視覚upgrade** | Sparkles + BorderBeam CTA + FAQ JSON-LD + Marquee (F45 pattern適用) | ✅ 完了 | `775f764b` → `f65f1a7d`(main) | `/compare/[a]/[b]/page.tsx` に F45 と同じ視覚言語適用: H1 wrapped in `<SparklesText>` / TL;DR strengthened with definitive language + bold key terms / BorderBeam-bordered Primary CTA card "Cross-ship & save" / FAQ section 4 Q&A (difference/which-first/substitute/where-to-buy) with FAQPage JSON-LD matched / `<Marquee>` related-comparisons strip / Word count: ~150 → ~700 visible words / Internal-link density: 6+ related-comparison links via Marquee + grid / Article + BreadcrumbList + FAQPage 3-tier JSON-LD |
-| **F49 keyword research run + 9 article generations to sericia_pseo** | en/guides 144 keywords scored + Top 8 missing combos generated to sericia_pseo via DeepSeek V4 | ✅ 完了 (operational, no code commit) | (operational data) | **Research run**: 144 keyword scores written to `sericia_pseo_keyword_research` for en locale guides axis. Top scores: sg:yuzu (71), uk:shichimi (70), nl:matcha (70), uk:yuzu (69), au:matcha (69), sg:matcha (69), uk:miso (68), de:yuzu (68), au:miso (68), sg:sencha (68), sg:furikake (68), sg:yuzu-kosho (68) — long-tail high-commercial-intent + low-difficulty + 90+ sericia_fit pattern dominant / **9 articles generated**: nl:matcha, sg:yuzu-kosho, au:sansho, fr:yuzu-kosho, tw:matcha, tw:kombu (initial 6), then bulk 73-target run for remaining new-product/new-country missing combos (~3000-3500 chars markdown each + 4-5 FAQ items, all DeepSeek V4 cost ≈ $0.30 total) / **sericia_pseo growth**: 64 (8x8 baseline from F35 T3-C) → 75+ (12x12 expansion in progress) / **IndexNow re-submit**: 372 sitemap URLs flooded to Bing/Yandex/Naver/Seznam/Yep — `HTTP 200 {"ok":true,"submitted":372,"status":200,"note":"Accepted"}` |
-| **F40 IndexNow first-launch flood** | sitemap 372 URLs 一括submit to Bing/Yandex/Naver | ✅ 完了 | (operational, no commit) | F42 deploy成功直後 (2026-04-30 ~15:20 JST) container内 node fetch で `/api/indexnow` POST 実行 → `HTTP 200 {"ok":true,"submitted":372,"status":200,"note":"Accepted"}` / Bing API ack受領後数時間以内に Yandex / Naver / Seznam / Yep 各engine の index反映予定 / Google は IndexNow非参加だが Bing-indexed URLsを後追い crawler 経由で数日以内ピック / 詳細operator runbook: [`docs/seo-indexing-runbook.md`](docs/seo-indexing-runbook.md) §3 |
-| **F37 全ページ共通くるくる + Cache Rules** | クリックして5秒無反応問題（UX致命傷）の二段同時打: ① 全ページ共通loading + ② edge cache | ✅ 完了 | `b75ee159` → `1a546183`(main) | 詳細既述（前ブロック）|
-| **F51 Cache + loading consistency audit** | RouteProgress に MIN_DISPLAY_MS=350 + CF Cache Rules expression に `/uses/*` `/compare/*` 追加 | ✅ 完了 | `aa29d8cc` → `4426b34e`(main) | **問題**: cache HIT の navigation で route commit が 30ms で finalize → spinner fade-in (180ms) が完了する前に消える → 体感で何も出ない/不安定 / **Fix**: `RouteProgress.finishProgress()` に `Date.now() - startedAtRef` 経過時間を計測、350ms 未満なら `setTimeout(finalize, MIN_DISPLAY_MS - elapsed)` で見切り発車を抑止 → 全 navigation で必ず 350ms 以上 spinner が visible / **Cache 漏れ修正**: F40 で `/uses/*` `/compare/*` route を追加した際 CF Cache Rules expression に追加し忘れ → DYNAMIC で TTFB 200-1300ms 不安定 / `scripts/apply-cloudflare-cache-rules.mjs` Rule 2 expression に `starts_with(http.request.uri.path, "/uses/")` と `starts_with(http.request.uri.path, "/compare/")` を追加 → 全 pSEO surface が edge HIT 化 / **Net UX**: cache MISS でも spinner が 350ms 確実に register / cache HIT でも視覚 feedback ゼロ秒事象を物理的に消滅 |
-| **F52 SW white-page hotfix** | 真っ白ページ・複数回読み込み問題の根治 (VERSION v1→v2 + navigation cache 廃止) | ✅ 完了 | `de925ac6` → `d051c127`(main) | **User report 2026-04-30**: 「真っ白になる時や何回も読み込まないと表示されないときがある」(白ページ + cream paper bg のみ) / **Root cause**: F37 の `sw.js` が navigation 応答を `cache.put(req, response.clone())` で CACHE_SHELL に保存 → 各 cached HTML は **そのビルドの `_next/static/chunks/<hash>.js`** を参照 → 後続 deploy で chunk hash が変わると、transient ネットワーク不調時 SW が stale HTML を fallback serve → React がない chunk を fetch → hydration 失敗 → 真っ白 / **Fix 1 (atomic cache invalidation)**: `const VERSION = "v2"` に bump → activate handler が `caches.keys()` から `sericia-` prefix で `endsWith(VERSION)` 不一致を全削除 → v1 era のキャッシュ全消去 / **Fix 2 (構造変更)**: `networkFirstNavigation` から `cache.put()` を完全削除 → navigation 応答は今後**一切キャッシュされない**、offline 時は pre-cached `/offline.html` のみ fallback / **Trade-off**: 「offline でも最近訪問したページが見える」機能を捨てたが、luxury UX で真っ白になる方が遥かにクリティカルなので物理的に根絶を優先 / **Future deploys**: VERSION bump 不要（SW logic 自体に変更なければ v2 のまま） / **Verify**: `curl https://sericia.com/sw.js \| grep VERSION` → `v2` ✅ |
-| **F53 robots.txt AI bot allowlist + Crossmint Onramp probe + launch checklist** | GEO leak 根治 + Sales activation 自動検知 + 単一 operator runbook | ✅ 完了 | `9bb595fe` → `c52a9283`(main) | **GEO 致命的 leak 発見**: Cloudflare の "Block AI Bots" Managed Content が edge で `robots.txt` を書き換えていて GPTBot / ClaudeBot / CCBot / Google-Extended / PerplexityBot / anthropic-ai / Applebot-Extended を全て `Disallow: /` → Sericia の GEO 戦略（Perplexity / ChatGPT Browse / Gemini citations / Common Crawl-derived training data）が**全部空回り**。Drop #1 が AI 検索から完全消滅する設計 / **Fix 1**: `app/(frontend)/robots.ts` に AI bot 7 種の明示的 `Allow: /` rule を spread で追加 + ヘッダーコメントで CF dashboard の Block AI Bots を OFF にする operator action を文書化 / **Fix 2 (Crossmint probe)**: `scripts/crossmint-onramp-probe.ts` — Crossmint orders endpoint に canonical Sericia payload (USDC on Polygon + treasury wallet) を投げて `400 + "Onramp is not yet enabled for production use"` vs `200 + order id` で BLOCKED / READY / ERROR を判定（exit 0/1/2）/ Sales SLA window (2026-05-03〜05-05 JST) 中 30分 cron で polling 可能 / **Fix 3 (operator checklist)**: `docs/launch-operator-checklist.md` 7 セクション single-source runbook（① Crossmint critical path / ② CF AI bot toggle / ③ GSC+Bing+Yandex verify / ④ Google Indexing API service account / ⑤ push VAPID sanity / ⑥ CF Email Routing health / ⑦ 24h post-launch watch + rollback triggers）/ **Fix 4 (cosmetic)**: `sitemap.ts` stale comment 修正（F40 で 8x8=64 → 12x12=144 に拡張済みだったがコメント未更新） |
-| **F54 Hyperswitch (Stripe + PayPal) production rail** | Crossmint Sales SLA を待たずに本番決済を有効化する常時稼働 rail | ✅ コード完了・operator setup 待ち | `8af8e635` → `1382be9a`(main) + hotfix `27670e9a` → `e82d6b1f`(main) | **背景**: Crossmint Onramp 承認が 1-3 営業日 SLA → Drop #1 launch を待てない / **Solution**: Hyperswitch (OSS Apache-2.0 payment orchestrator, Cloud free tier 100K txn/月) を Stripe + PayPal の前段に配置し常時稼働。Crossmint は env flag で並列共存可能 / **新規 9 ファイル**: `lib/payment-routing.ts` (12カ国 method allowlist) / `lib/payment-providers.ts` (env-driven feature flag) / `lib/hyperswitch.ts` (server fetch + HMAC SHA-512 webhook 検証) / `app/api/hyperswitch/create-intent` (mirror of /api/pay/create) / `app/api/hyperswitch/webhook` (mirror of /api/crossmint-webhook + fail-close production) / `components/HyperswitchPayment.tsx` (HyperLoader script-tag mount + sericia ink/paper appearance + 3-state UI) / `app/pay/[orderId]/page.tsx` (provider switcher) / `docs/hyperswitch-setup.md` (9-section operator runbook 60分) / `docs/launch-operator-checklist.md` §0 critical path に Hyperswitch 追加 / **Hotfix `27670e9a`**: `Partial<Record<CountryCode, ...>>` が pseo-matrix の 12 国制約で `jp` を弾いた → `Record<Iso2, ...>` に decouple (Sericia の home market は JP・支払い対応必須) / **Defensive**: HyperLoader は npm package 不採用で `<script>` tag 動的注入 (build-size + OOM risk 回避) / fail-close webhook (production で `HYPERSWITCH_WEBHOOK_SECRET` 未設定 = 503) / 既存 `crossmint_order_id` カラム再利用で hyperswitch payment_id 保存 (no schema migration; prefix `pay_` vs `cm_` で曖昧性無し) / **Operator gate**: Hyperswitch Cloud sign-up + Stripe `sk_live_*` + PayPal Business client id+secret + 5 Coolify env vars (HYPERSWITCH_API_KEY/PROFILE_ID/WEBHOOK_SECRET + NEXT_PUBLIC_HYPERSWITCH_PUBLISHABLE_KEY + HYPERSWITCH_API_URL) → $1 smoke test |
-| **F55 PaymentSettings global (CMS-first content rule)** | F54 hardcoded matrix + checkout copy を Payload で editor 編集可能化 | ✅ コード完了・seed auto-run 済 | `bfb64e72` → `a7726241`(main) | **User directive 2026-04-30**: 「全コンテンツはハードコードNG、DB化、PayloadCMSで編集可能に」 → F54 で導入した hardcoded matrix が違反していた / **新規**: `globals/PaymentSettings.ts` (countryMethods array + defaultMethods + checkoutCopy group + receiptCopy group + alternativeProviders group, 全 localized: true) / `lib/payment-settings.ts` (React `cache()` request-memo + try/catch fallback to `lib/payment-routing.ts` HARDCODED_*) / `scripts/seed-payment-settings.ts` (idempotent bootstrap, --reset で overwrite) / **変更**: `app/api/hyperswitch/create-intent` が `getEnabledMethodsForCountry()` 経由 (Payload-first / hardcoded fallback) / `app/pay/[orderId]/page.tsx` が `getPaymentSettings(locale)` から eyebrow/heading/subhead/receiptLine/payButtonLabel を `Promise.all` で並列取得 / `components/HyperswitchPayment.tsx` に optional `payButtonLabel` + `receiptLine` props 追加 (server-resolved string を渡す) / **Pattern**: payload-settings.ts (SiteSettings) と同じ silent-fallback 契約 — Payload outage で checkout 落ちない / **Editor wins over env**: CMS の `crossmintEnabled` toggle が `NEXT_PUBLIC_CROSSMINT_ENABLED` env より優先 (Crossmint Sales 承認後にエンジニア介在せず即時 ON 可) |
-| **F56 docker-entrypoint auto-seed (Phase 2b/2c)** | Payload globals/collections を container 起動時に自動 seed | ✅ コード完了 | `876061df` → `cd5dab92`(main) | **問題**: F55 seed script は operator が手動実行する必要があった → 新環境/再 deploy で seed 忘れて hardcoded fallback のままになる / **Fix**: `docker-entrypoint.sh` Phase 2b に paymentSettings seed、Phase 2c に faqEntries seed を追加 (両方 fail-open + idempotent) / `package.json` に `seed:payment-settings` + `seed:faq-entries` npm scripts 追加 / **Reset hatch**: `SEED_PAYMENT_SETTINGS_RESET=1` / `SEED_FAQ_RESET=1` env で operator 強制 overwrite 可 / **Trace**: 起動時 `[entrypoint] seeding paymentSettings global (idempotent)... ok` ログで成否確認 |
-| **F57 /faq → Payload faqEntries collection** | hardcoded SECTIONS array を CMS-managed collection に移行 | ✅ コード完了 | `876061df` → `cd5dab92`(main) | **問題**: `/faq` page は 443 行、SECTIONS array に 15 Q+A を hardcode していた (User directive 違反) / **Fix**: ① `collections/FaqEntries.ts` 新規 (section select 6 buckets / question + answer richText + plainAnswer textarea / displayOrder + active / 全 localized: true) ② `lib/faq.ts` (cache() memo + payload.find / fallback to FALLBACK_ENTRIES embedded / `plainTextToLexicalRichText()` で fallback path も RichText renderer 互換) ③ `scripts/seed-faq-entries.ts` 15-entry idempotent seed ④ `/faq/page.tsx` を 443 → 175 行に rewrite (`getFaqSections(locale)` 経由・JSON-LD FAQPage を resolved data から build → editor 追記が即 Google rich result + Perplexity citation 対象) ⑤ `payload.config.ts` に FaqEntries 登録 / **Migration roadmap**: `docs/content-migration-roadmap.md` 全 hardcoded surface 監査 (/about=P1/shipping=P1/refund=P2/tokushoho=P2/terms=P3/privacy=P3/accessibility=P3/tools/*=P2) + 7-step migration template → 後続 F58+ 用に体系化 |
+### 直近の状態（2026-05-13）
 
-### M1 根本原因（完了済）
+| Milestone | 状態 |
+|-----------|------|
+| M1〜M4c (storefront + Medusa + Payload + i18n 10 locales) | ✅ 完了 |
+| F58〜F66 (Stripe primary rail + 9 pages × 10 locales i18n) | ✅ 完了 (E2E 49/49) |
+| F67 (Stripe pk_live + /pay i18n hybrid resolver) | ✅ LIVE |
+| **F68** (HTML DOCTYPE 欠落) | ✅ 修正済 (no-transform header) |
+| **F69** (perf + i18n sweep) | ✅ 本セッション完了 |
+| Drop #1 ローンチ | ⏳ 起票待ち (Crossmint Sales activation 並走) |
+| pSEO Engine 量産 | ⏳ brief 投入待ち (基盤は F44/F46/F47 完成) |
+| Push PWA + Referrals | ⏳ 配信開始待ち (基盤完成) |
+| Arabic RTL audit (T3-A-RTL-audit) | ⏳ ms-/me-/start-/end- 物理→論理 pass |
 
-**/tools/* 500**: `SiteHeader`/`SiteFooter` が async server component として `getTranslations`（server-only）を呼んでいたが、`/tools/*` は `"use client"` のためクライアント境界でクラッシュ。**`useTranslations` hook に切り替え**て解決（`fe30f8c2`）。
+### F69 — Perf + i18n sweep（本セッション・2026-05-13）
 
-**/tools/* 404**: Coolifyが古いビルド（`87c813f4` 以前）をサーブしていた。再デプロイで解消。
+**Performance (4 fixes)**:
+1. **middleware.ts**: `supabase.auth.getUser()` を `/account/*` に gate → ゲスト全ページ TTFB -100〜300ms
+2. **middleware.ts**: `Cache-Control: no-transform` を全 response に append → Cloudflare Auto Minify による `<!DOCTYPE html><html>` strip を抑制 (F68 fix)
+3. **`<DeferredOverlays>`**: DifyChat / Analytics / CookieConsent / SocialProofToastGate / ServiceWorkerRegister を `lazy()` + `requestIdleCallback` 2s で post-paint mount → TTI -500〜1500ms
+4. **Noto Sans JP**: `preload: false` + locale=ja 以外で CSS variable 省略 → preload signal -110kB on 90% traffic
 
-**Dify（現行: M4a-Dify v2 / `f31e17a0`）**: `components/DifyChat.tsx` を **自前カスタムUI + `/api/dify-chat` サーバープロキシ** に全面刷新。旧アーキテクチャ（`udify.app/embed.min.js` SDK + iframe fallback / `87782adf`）は破棄した。
+**i18n hardcoded English sweep (60+ strings × 10 locales = 600 translations)**:
+- Detected via 5-pattern grep (JSX text / placeholders / aria-labels / toast / fallback strings)
+- Translated via DeepSeek V4 cached batch — 20 namespaces, 8064 cache-hit tokens, 4866 cache-miss tokens, 17324 completion tokens, **$0.0056 USD** total
+- Wired 15+ components: page.tsx (home `<dt>` labels) / products listing (No matches) / PDP (The story) / WaitlistForm / FooterSubscribeForm / NotifyMeModal / PushOptIn / CartCheckoutForm (30 keys) / CartClient / CartDrawer (aria) / BackToTop (aria) / AddToCartButton (aria) / journal listing + slug / compare / uses
+- New namespaces: `home_sections.spec` / `products.listing_extras` / `pdp.extras` / `journal.listing` / `compare.sections` / `uses.sections` / `forms.waitlist` / `forms.footer_subscribe` / `forms.notify_me` / `forms.push_optin` / `cart.checkout_extras` / `common.sidebar` / `common.a11y`
 
-**なぜ刷新したか**:
-1. **秘密鍵漏洩リスク除去**: Dify の `app-*` キーは Service API の全権限を持つ SECRET。`NEXT_PUBLIC_DIFY_TOKEN` 方式だと `.next/static/chunks/*.js` にバンドルされ全訪問者のDevToolsから見える。サーバープロキシなら `DIFY_SERVICE_API_KEY`（Coolify env・runtime-only）が一度もブラウザに届かない
-2. **`udify.app/chatbot/{token}` が 404 を返すようになった**: URL パターン変更 or 公開共有トグル問題。`api.dify.ai/v1/chat-messages` Service API は健全
+**Open follow-ups (F70+)**:
+- Operator action: Disable CF Auto Minify HTML on sericia.com zone via dashboard (definitive fix; no-transform header is the belt-and-suspenders signal)
+- CheckoutForm.tsx (legacy, less-used path) i18n wire-up
+- ContentSidebar.tsx + AccountNav.tsx i18n
+- Hetzner CPX22 → CPX31 upgrade (€10/月 増 / build OOM 撲滅)
+- F70 verify: probe `https://sericia.com/` HTML body for DOCTYPE presence after deploy
 
-**構成**:
-- `storefront/app/api/dify-chat/route.ts` — Service API プロキシ（Rule V 準拠で secret 未設定時は 503 + `dify_not_configured`）
-- `storefront/components/DifyChat.tsx` — カスタム UI（`sericia-accent` / `sericia-paper-card` トークン・Enter で送信・Shift+Enter で改行・conversation_id 維持・localStorage 匿名 user_id・offline 状態で `hello@sericia.com` 案内）
-- Coolify env: `DIFY_SERVICE_API_KEY=app-WnX69EkeJYork2rTBtbB3wnY` / `DIFY_API_URL=https://api.dify.ai/v1`（両方 runtime-only）
+---
 
-### M2 スコープ（完了・`db83336b`）
-
-**目的**: 記事/メディア/テスティモニアル/ヒーロー/サイト設定をエディタが編集可能にする。
-
-**配置**: `/cms/admin`（既存 `/admin/*` スクラッチ管理画面との衝突回避）・route group `app/(payload)/`
-
-**DB**: Supabase Postgres + schemaName `payload`（既存 `app.*` テーブルと衝突回避）
-
-**ロケール**: 現在 **9 言語**（en/ja/de/fr/es/it/ko/zh-TW/**ru**）稼働中。M4 で `ar` を追加して 10 言語化（RTL 有効化）
-
-**インストール済パッケージ** (全て `3.83.0`):
-- `payload` / `@payloadcms/next` / `@payloadcms/db-postgres` / `@payloadcms/richtext-lexical` / `@payloadcms/plugin-cloud-storage` / `@payloadcms/storage-s3` / `sharp 0.34.5` / `graphql 16.13.2`
-
-**Collections** (7): Users / Articles / Guides / Tools / Media / Testimonials / PressMentions
-
-**Globals** (2): SiteSettings / Homepage
-
-**Blocks** (6): Hero / Drop / Testimonials / PressStrip / Story / Newsletter
-
-**ビルド検証**: `node ./node_modules/next/dist/bin/next build` 成功・新規ルート 4 個登録:
-- `/cms/admin/[[...segments]]` (Payload admin UI、730kB)
-- `/cms/api/[...slug]` (REST)
-- `/cms/api/graphql` + `/cms/api/graphql-playground`
-
-**既存ルート**（`/admin/*`・`/tools/*`・`/products`・`/guides`・`/journal`等 20+）は全て変更なしでコンパイル成功。
-
-**Coolifyデプロイ手順** (✅ M2-activate `f60042fc` で完了済):
-1. ✅ Coolify env 投入済: `PAYLOAD_SECRET` (64-hex) / `DATABASE_URL_PAYLOAD` (`?schema=payload&sslmode=no-verify` 必須) / `PAYLOAD_ADMIN_EMAIL` / `PAYLOAD_ADMIN_PASSWORD`（SUPABASE_S3_* はpost-open）
-2. ✅ `docker-entrypoint.sh` が起動時に `payload:migrate` → `payload:bootstrap` を冪等に自動実行（新しいコンテナ再起動でも安全）
-3. ✅ `https://sericia.com/cms/admin` ログイン検証完了（HTTP 200 + JWT）
-4. 認証情報は `~/.claude/projects/C--Users-apple-OneDrive-Desktop-sericiacom/memory/reference_api_keys.md` 参照
-
-**既知の留意点**:
-- Windowsビルドは `node ./node_modules/next/dist/bin/next build` 直呼び必要（`npm run build` の cmd.exe PATH 問題）。Linux/Coolifyでは問題なし
-- `S3` プラグインは `SUPABASE_S3_*` 4変数揃って有効化。未設定時はローカルディスクにフォールバック
-- Next.js 15.1.3 で `turbopack` 警告（無害・15.2+で解消予定）
-
-### M3 スコープ（完了・`46384141` + `6737fd61` / 2026-04-21）
-
-**目的**: Medusa v2 Admin を本番稼働させ、商品・注文・在庫・割引・配送を集中管理。
-
-**配置**: `api.sericia.com/app` (Coolify Hetzner CPX22 / UUID `wl8ke5lf6rxjoepi058qv89u`)
-
-**リソース**:
-- Coolify project `qnry7poqtz364qhgupfq4c0k`
-- Postgres `h128il6uh7sxdkb5s3w0vuz7` / Redis `yau9i5yafa98tc8dm8ag5kmp`
-
-**Seed 実績** (idempotent `medusa-backend/src/scripts/seed.ts`):
-- **9 regions**: JP / US / EU (×11 countries) / GB / CA / AU (×2) / SG / HK / ME (×6)
-- **4 products**: sencha / miso / shiitake 単体 + `drop-001` bundle
-- **7 SKUs × 100 units** @ Tokyo Fulfillment stock location
-- **EMS Worldwide** shipping profile + shipping options
-- Default Sericia sales channel + publishable API key
-- Admin: `admin@sericia.com`
-
-**検証 (全 200)**:
-| Endpoint | 結果 |
-|---------|------|
-| `GET /health` | 200 |
-| `GET /store/regions` (pk 認証) | 200 / 9 regions |
-| `GET /store/products` (pk 認証) | 200 / 4 products |
-| `POST /auth/user/emailpass` | 200 + JWT |
-| `GET /admin/inventory-items` (bearer) | 200 / 7 SKUs × 100 stock |
-
-**クレデンシャル**: `~/.claude/projects/C--Users-apple-OneDrive-Desktop-sericiacom/memory/reference_api_keys.md` に永続保存済（R ルール準拠）
-
-**Storefront 接続用 env vars** (Coolify Storefront に要設定):
-```
-NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.sericia.com
-NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_3cbe523eed266eb8eead0a6d75841c341ddc63faa31275c37b7e025b1c64798e
-NEXT_PUBLIC_DEFAULT_REGION=jp
-```
-
-**Postmortem (Medusa v2.4 learnings)**:
-1. `shipping_profile_id` は **もはや `product` テーブルに存在しない**（v2.4で削除）。`createLinksWorkflow` で商品作成後に module link を張る必要あり
-2. `createLinksWorkflow` は (product ↔ shipping_profile) ペアの **リンク登録が事前に必要**。デフォルトでは Medusa は登録しないため、`medusa-backend/src/links/product-shipping-profile.ts` に `defineLink(ProductModule.linkable.product, FulfillmentModule.linkable.shippingProfile)` を追加
-
-### M4a-1 スコープ（完了・`40d7b9e6` + `f858ac5c` / 2026-04-21）
-
-**目的**: storefront の商品一覧/詳細/検索インデックスの **データソースを Supabase `sericia_products` から Medusa v2 Store API に完全切替**する。cart-store が保持する `productId` は Medusa `prod_01K...` id に切替わるため、以降追加される checkout 経路も Medusa cart API を前提に設計できる。
-
-**実装**:
-- `storefront/lib/medusa.ts` 新規: `@medusajs/js-sdk@2.4.0` singleton ＋ region slug→region_id resolver (1h Next fetch cache)。env guard (`NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` 未設定時は console.error でCoolifyログに可視化、silent 空配列化は避ける — rule V 準拠)
-- `storefront/lib/products-medusa.ts` 新規: Medusa Store API から `Product` 型形状で fetch する shim。3 関数（`listActiveProducts` / `getProductBySlug` / `getProductsByIds`）を実装し、variants から cheapest price を選出・images は thumbnail 先頭 + gallery、weight/stock も Medusa 由来に統一
-- `storefront/lib/products.ts` を **facade に転換**: `Product` 型 + `categoryLabel` は canonical 定義としてここに残し、fetcher は `./products-medusa` から re-export。consumer 4 箇所（`app/products/page.tsx` / `app/products/[slug]/page.tsx` / `app/page.tsx` / `app/api/products/search-index/route.ts`）は import 文無変更のまま Medusa データで稼働
-- `medusa-backend/src/scripts/categorize-products.ts` 新規: 4 top-level product_category（tea/miso/mushroom/seasoning）を冪等生成し、seed の4製品を紐付け。新規環境・DB リセット時の再現性を担保
-
-**カテゴリ戦略 (B: category handle)**:
-| product handle | category handle | Medusa ID |
-|---------------|----------------|-----------|
-| `product-sencha` | `tea` | `pcat_01KPQRFNWAVKCYN8YBPH0RXGBK` |
-| `product-miso` | `miso` | `pcat_01KPQRFQ53QN8TBER8Z9J3343A` |
-| `product-shiitake` | `mushroom` | `pcat_01KPQRFRD5C0JXVJ5VQ7430QH3` |
-| `drop-001-tea-miso-shiitake` | `seasoning` | `pcat_01KPQRFSN1Q6GPWDEV7A4JDKMF` *(仮置・専用"drops"カテゴリ検討余地)* |
-
-`inferCategory()` は categories[0].handle → 4-enum 変換、fallback として handle keyword match（新管理画面追加商品がカテゴリ未設定でも UI に現れる安全網）
-
-**Coolify Storefront に必須の env vars**:
-```
-NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.sericia.com
-NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_3cbe523eed266eb8eead0a6d75841c341ddc63faa31275c37b7e025b1c64798e
-NEXT_PUBLIC_DEFAULT_REGION=jp
-```
-
-未設定のままデプロイ → storefront の商品一覧は空になる（env guard で console.error が Coolify ログに流れる）。設定後に再デプロイ必須。
-
-**残件（M4a-2）**: `/api/orders/create-cart` は依然として Supabase `sericia_products` を参照（checkout 経路は未移行）。admin UI 3 ページも同じ。カート→決済を Medusa `sdk.store.cart.*` + `createPaymentCollection` → Stripe 経由に rewrite する作業を M4a-2 として切り出し
-
-### 2026-04-21 i18n ホットフィックス（完了・`302f037b` + `874a903d`）
-
-ユーザー指摘による本番UX修正3点を M3 稼働中に差し込みで対応:
-
-1. **🇬🇧 → 🇺🇸 切替** (`302f037b`): LocaleSwitcher の `en` ロケールが 🇬🇧 に固定されていて US ユーザーを視覚的に疎外していた。Sericia は `en` ロケール1つで US+UK+CA+AU+SG+HK を hreflang 経由でサーブする設計のため、最大市場の🇺🇸を採用。ラベルも "EN" → "English" に変更してネイティブ表記（日本語/Deutsch/Español等）と統一
-2. **Windows 国旗絵文字レンダリング修正** (`874a903d`): Windows の Segoe UI Emoji が Regional Indicator Symbol を描画拒否し "US"/"JP" 等のテキスト2文字で表示されていた問題。`flag-icons@^7.5.0` の SVG スプライトCSS を導入（`app/globals.css` で import）、`<span class="fi fi-*" />` でクロスプラットフォーム描画。国旗は 18×14 (trigger) / 22×16 (dropdown) + 0.5px ink border-shadow でラグジュアリー仕上げ
-3. **🇷🇺 Russian ロケール追加** (`874a903d`): 145M ネイティブ・top-10 e-commerce 市場・日本クラフト食品（抹茶/味噌/椎茸）との文化的親和性が高いロシア語圏を追加。`messages/ru.json` (en.json 1:1 スキーマ・完全ネイティブ翻訳) + `routing.ts`/`middleware.ts` LOCALES + `accountGuard` regex + `app/layout.tsx` hreflang (`ru-RU` + 不足していた `ja-JP`/`ko-KR`/`zh-TW`/`es-ES`/`it-IT` も追加)
-
-### M4 スコープ（待機中・要件確定済）
-
-`M2`+`M3` 完了後に以下を統合:
-
-1. **記事・固定ページ・ツール 全ページ共通サイドバー**（2026-04-21 ユーザー指示）
-   - 現在 `ContentSidebar` は 4 新ツール + `/journal/[slug]` + `/guides/[country]/[product]` のみ
-   - 要追加: `/tools/shelf-life` `/tools/miso-finder` `/tools/matcha-grade` `/tools/ems-calculator` / `/tools`(index) / `/journal`(index) / `/guides` / `/guides/[country]` / `/privacy` / `/terms` / `/refund` / `/shipping`
-   - 共通 layout（例: `app/(with-sidebar)/layout.tsx` route group）で一度だけ定義してDRY化
-
-2. **Aesop シネマティックヒーロー** — 背景動画（Payload Media 経由で差し替え可能）・スクロール連動ズームアウト・paper-cream 配色維持
-
-3. **日本らしい演出** — 桜が散るパーティクル（tsparticles・prefers-reduced-motion尊重）・ウィッシュリストハート赤塗り（`fill-red-500` + framer-motion bounce）
-
-4. **マーケティング（品よく）**:
-   - 初回クーポン（-10% first order・静的バナー・popupなし）
-   - ドロップカウントダウンタイマー（ホーム + PDP、`react-countdown`）
-   - "Most requested" ランキング（Medusa 売上 top 3）
-   - `<social-proof>` トースト（Sonner、最近の購入地域表示）
-   - ❌ 採用しない: 派手な割引スタンプ / 強制ポップアップ / 恐怖系タイマー
-
-5. **PLG/UGC バイラル**:
-   - 15-20 seeded testimonials（Payload Testimonials 経由）
-   - "As seen in" プレスストリップ（Payload PressMentions）
-   - 紹介プログラム（refer-a-friend → 次注文 $10 OFF）
-   - `#SericiaDrop` ハッシュタグ CTA
-
-6. **カテゴリー/タグソート** — 商品一覧に category chips + sort dropdown（URL sync `?category=&sort=`）
-
-7. **pUtility 拡充** — 5 新ツール + 記事内埋め込み（ContentSidebar / 記事中 `<ToolEmbed>` blocks）
-
-8. **アラビア語（ar）** — UAE/サウジ/カタール向け RTL 対応（next-intl `as const` + Tailwind `[dir=rtl]`）
-
-9. **PWA** — manifest.json拡充・service-worker.js・web-push基盤（Supabase `push_subscriptions`）
-
-10. **SEO/GEO** — JSON-LD Article/FAQ/Product/Recipe、sitemap auto-gen、hreflang、TL;DR先出し
-
-### M5 スコープ（待機中）
-
-**DeepSeek V3 Context Caching 基盤**（$0.014/1M = 90% OFF）:
-- n8n workflow で 1 プロンプト × 1,000 キーワード × 9 言語を自動量産
-- Ahrefs/Mangools で月検索100-1,000件のロングテールを収集（徹底リサーチ後）
-- 競合（Bokksu / Misfits Market / The Feedfeed 等）のSEOギャップを特定
-- 最初に 20 記事サンプルを手動レビューしてプロンプトを固める → その後自動量産
-- 記事は Payload `articles` コレクションに投入（ローカライズ 9 言語）
-
-**注意**: やみくもな量産禁止（Googleペナルティリスク）。TL;DR先出し・自社統計・一次データ・Recipe Schema 完備で GEO（AI検索）評価も狙う。
-
-### 共通サイドバー仕様（M4 で実装）
-
-```tsx
-// app/(with-sidebar)/layout.tsx
-<div className="mx-auto max-w-7xl lg:grid lg:grid-cols-[1fr_300px] lg:gap-12">
-  <main className="min-w-0">{children}</main>
-  <aside className="hidden lg:block sticky top-24 h-fit">
-    <ContentSidebar />
-  </aside>
-</div>
-```
-
-**ContentSidebar セクション**:
-1. **Tools**（ツール一覧リンク・現在ページハイライト）
-2. **Guides**（国別配送ガイド）
-3. **Shop**（Most requested + Drop #1 CTA）
-4. **Newsletter**（メール登録）
-5. **Journal**（最近の記事 3件）
-
-モバイル: hidden（下部タブで代替・タッチしやすい単一カラム）
-
+> このファイル末尾に到達。実装ディテール・過去 milestone の根拠は `docs/knowledge/poss-sericia-implementation.md` を参照。
