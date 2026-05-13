@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 type SidebarLink = { href: string; label: string };
 type ShopCard = { href: string; label: string; price?: string; note?: string };
@@ -41,6 +42,7 @@ export default function ContentSidebar({
   shopCards = DEFAULT_SHOP,
   languageNote = "Available in 8 languages — switch in the header.",
 }: Props) {
+  const tSidebar = useTranslations("common.sidebar");
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -69,7 +71,7 @@ export default function ContentSidebar({
   async function subscribe(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !/.+@.+\..+/.test(email)) {
-      toast.error("Enter a valid email address.");
+      toast.error(tSidebar("toast_invalid_email"));
       return;
     }
     setSubmitting(true);
@@ -81,12 +83,12 @@ export default function ContentSidebar({
         signal: AbortSignal.timeout(10_000),
       });
       if (!res.ok) throw new Error(`Subscribe failed (${res.status})`);
-      toast.success("Thank you — you're on the list.");
+      toast.success(tSidebar("toast_subscribed"));
       setEmail("");
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("[sidebar] subscribe failed", err);
-      toast.error(msg || "Subscription failed. Try again shortly.");
+      toast.error(msg || tSidebar("toast_invalid_email"));
     } finally {
       setSubmitting(false);
     }
@@ -162,10 +164,11 @@ function SidebarSections({
   setEmail: (v: string) => void;
   submitting: boolean;
 }) {
+  const t = useTranslations("common.sidebar");
   return (
     <>
       {sections && sections.length > 0 && (
-        <nav aria-label="In-page navigation">
+        <nav aria-label={t("in_page_nav")}>
           <p className="label mb-4">{sectionTitle}</p>
           <ul className="space-y-2.5 border-l border-sericia-line pl-4">
             {sections.map((s) => {
@@ -190,8 +193,8 @@ function SidebarSections({
         </nav>
       )}
 
-      <nav aria-label="Related tools">
-        <p className="label mb-4">Tools</p>
+      <nav aria-label={t("related_tools")}>
+        <p className="label mb-4">{t("related_tools")}</p>
         <ul className="space-y-2.5">
           {relatedTools.map((t) => (
             <li key={t.href}>
@@ -206,8 +209,8 @@ function SidebarSections({
         </ul>
       </nav>
 
-      <nav aria-label="Related guides">
-        <p className="label mb-4">Guides</p>
+      <nav aria-label={t("related_guides")}>
+        <p className="label mb-4">{t("related_guides")}</p>
         <ul className="space-y-2.5">
           {relatedGuides.map((g) => (
             <li key={g.href}>
@@ -223,7 +226,7 @@ function SidebarSections({
       </nav>
 
       <section>
-        <p className="label mb-4">Shop the story</p>
+        <p className="label mb-4">{t("shop_the_story")}</p>
         <div className="space-y-3">
           {shopCards.map((c) => (
             <Link
@@ -244,7 +247,7 @@ function SidebarSections({
       </section>
 
       <section>
-        <p className="label mb-4">Drop alerts</p>
+        <p className="label mb-4">{t("drop_alerts")}</p>
         <p className="text-sericia-ink-soft leading-relaxed mb-4">
           One email per drop. No marketing. Unsubscribe anytime.
         </p>
@@ -254,8 +257,8 @@ function SidebarSections({
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@domain.com"
-            aria-label="Email address"
+            placeholder={t("newsletter_placeholder")}
+            aria-label={t("newsletter_placeholder")}
             className="w-full border border-sericia-line bg-sericia-paper px-3 py-2.5 text-[13px] focus:border-sericia-ink focus:outline-none"
           />
           <button
@@ -263,7 +266,7 @@ function SidebarSections({
             disabled={submitting}
             className="w-full bg-sericia-ink text-sericia-paper py-2.5 text-[12px] tracking-[0.18em] uppercase hover:bg-sericia-accent transition-colors disabled:opacity-40"
           >
-            {submitting ? "Subscribing..." : "Notify me"}
+            {submitting ? "…" : t("newsletter_cta")}
           </button>
         </form>
       </section>

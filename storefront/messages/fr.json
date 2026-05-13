@@ -628,6 +628,12 @@
       "signed_out": "Déconnecté",
       "signed_in": "Connecté",
       "drop_not_available": "Drop non disponible."
+    },
+    "account_nav": {
+      "panel_title": "Compte",
+      "settings": "Paramètres",
+      "referrals": "Parrainages",
+      "sign_out": "Déconnexion"
     }
   },
   "journal": {

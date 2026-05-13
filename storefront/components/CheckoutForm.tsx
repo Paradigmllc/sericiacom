@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
 const Schema = z.object({
@@ -36,6 +37,7 @@ const COUNTRIES: [string, string][] = [
 
 export default function CheckoutForm({ dropId, amountUSD, title, defaultCountry }: Props) {
   const router = useRouter();
+  const t = useTranslations("cart.checkout_extras");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -78,18 +80,18 @@ export default function CheckoutForm({ dropId, amountUSD, title, defaultCountry 
       if (!res.ok) {
         toast.error(
           data?.error === "insufficient_inventory"
-            ? "Sold out — this drop just sold its last unit"
-            : "Could not create order. Please try again.",
+            ? t("toast_unavailable")
+            : t("toast_interrupted"),
         );
         console.error("[checkout] order create failed", data);
         setLoading(false);
         return;
       }
-      toast.success("Order reserved. Redirecting to payment…");
+      toast.success(t("toast_redirect"));
       router.push(`/pay/${data.order_id}`);
     } catch (err) {
       console.error("[checkout] network error", err);
-      toast.error("Network error — please try again");
+      toast.error(t("toast_network"));
       setLoading(false);
     }
   }
@@ -102,89 +104,92 @@ export default function CheckoutForm({ dropId, amountUSD, title, defaultCountry 
   return (
     <form onSubmit={onSubmit} className="space-y-7">
       <div>
-        <label className={labelCls}>Email address</label>
+        <label className={labelCls}>{t("label_email")}</label>
         <input
           type="email"
           required
           value={form.email}
           onChange={update("email")}
           className={inputCls}
-          placeholder="you@example.com"
+          placeholder={t("placeholder_email")}
           autoComplete="email"
         />
       </div>
       <div>
-        <label className={labelCls}>Full name</label>
+        <label className={labelCls}>{t("label_full_name")}</label>
         <input
           type="text"
           required
           value={form.full_name}
           onChange={update("full_name")}
           className={inputCls}
-          placeholder="First and last"
+          placeholder={t("placeholder_full_name")}
           autoComplete="name"
         />
       </div>
       <div>
-        <label className={labelCls}>Address line 1</label>
+        <label className={labelCls}>{t("label_address1")}</label>
         <input
           type="text"
           required
           value={form.address_line1}
           onChange={update("address_line1")}
           className={inputCls}
-          placeholder="Street, number"
+          placeholder={t("placeholder_address1")}
           autoComplete="address-line1"
         />
       </div>
       <div>
-        <label className={labelCls}>Address line 2 <span className="text-sericia-ink-mute normal-case tracking-normal">— optional</span></label>
+        <label className={labelCls}>{t("label_address2")}</label>
         <input
           type="text"
           value={form.address_line2}
           onChange={update("address_line2")}
           className={inputCls}
-          placeholder="Apartment, suite, unit"
+          placeholder={t("placeholder_address2")}
           autoComplete="address-line2"
         />
       </div>
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <label className={labelCls}>City</label>
+          <label className={labelCls}>{t("label_city")}</label>
           <input
             type="text"
             required
             value={form.city}
             onChange={update("city")}
             className={inputCls}
+            placeholder={t("placeholder_city")}
             autoComplete="address-level2"
           />
         </div>
         <div>
-          <label className={labelCls}>State / Region</label>
+          <label className={labelCls}>{t("label_state")}</label>
           <input
             type="text"
             value={form.region}
             onChange={update("region")}
             className={inputCls}
+            placeholder={t("placeholder_state")}
             autoComplete="address-level1"
           />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <label className={labelCls}>Postal code</label>
+          <label className={labelCls}>{t("label_postal")}</label>
           <input
             type="text"
             required
             value={form.postal_code}
             onChange={update("postal_code")}
             className={inputCls}
+            placeholder={t("placeholder_postal")}
             autoComplete="postal-code"
           />
         </div>
         <div>
-          <label className={labelCls}>Country</label>
+          <label className={labelCls}>{t("label_country")}</label>
           <select
             required
             value={form.country_code}
@@ -200,12 +205,13 @@ export default function CheckoutForm({ dropId, amountUSD, title, defaultCountry 
         </div>
       </div>
       <div>
-        <label className={labelCls}>Phone <span className="text-sericia-ink-mute normal-case tracking-normal">— for customs</span></label>
+        <label className={labelCls}>{t("label_phone")}</label>
         <input
           type="tel"
           value={form.phone}
           onChange={update("phone")}
           className={inputCls}
+          placeholder={t("placeholder_phone")}
           autoComplete="tel"
         />
       </div>
@@ -215,7 +221,7 @@ export default function CheckoutForm({ dropId, amountUSD, title, defaultCountry 
           disabled={loading}
           className="w-full bg-sericia-ink text-sericia-paper py-5 text-[14px] tracking-wider hover:bg-sericia-accent transition-colors disabled:opacity-40"
         >
-          {loading ? "Reserving…" : `Continue to payment — $${amountUSD}`}
+          {loading ? t("submit_reserving") : `${t("submit_reserve")} — $${amountUSD}`}
         </button>
         <p className="text-[12px] text-sericia-ink-mute text-center mt-5 leading-relaxed">
           {title} · EMS worldwide · By continuing you agree to our{" "}

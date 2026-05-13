@@ -628,6 +628,12 @@
       "signed_out": "已登出",
       "signed_in": "已登入",
       "drop_not_available": "限定上架暫不可用。"
+    },
+    "account_nav": {
+      "panel_title": "帳戶",
+      "settings": "設定",
+      "referrals": "推薦",
+      "sign_out": "登出"
     }
   },
   "journal": {

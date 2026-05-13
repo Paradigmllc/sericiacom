@@ -651,6 +651,12 @@
       "signed_out": "ログアウト中",
       "signed_in": "ログイン中",
       "drop_not_available": "ドロップはご利用いただけません。"
+    },
+    "account_nav": {
+      "panel_title": "アカウント",
+      "settings": "設定",
+      "referrals": "紹介",
+      "sign_out": "ログアウト"
     }
   },
   "journal": {

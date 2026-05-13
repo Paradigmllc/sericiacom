@@ -651,6 +651,12 @@
       "signed_out": "Abgemeldet",
       "signed_in": "Angemeldet",
       "drop_not_available": "Drop nicht verfügbar."
+    },
+    "account_nav": {
+      "panel_title": "Konto",
+      "settings": "Einstellungen",
+      "referrals": "Empfehlungen",
+      "sign_out": "Abmelden"
     }
   },
   "journal": {

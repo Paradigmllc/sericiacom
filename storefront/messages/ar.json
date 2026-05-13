@@ -628,6 +628,12 @@
       "signed_out": "تم تسجيل الخروج",
       "signed_in": "تم تسجيل الدخول",
       "drop_not_available": "الإصدار المحدود غير متاح."
+    },
+    "account_nav": {
+      "panel_title": "الحساب",
+      "settings": "الإعدادات",
+      "referrals": "الإحالات",
+      "sign_out": "تسجيل الخروج"
     }
   },
   "journal": {
