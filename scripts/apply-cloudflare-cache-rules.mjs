@@ -4,14 +4,16 @@
 // http_request_cache_settings ruleset entrypoint with the same 3 rules.
 //
 // Required env:
-//   CLOUDFLARE_API_TOKEN  — must have `Zone.Cache Rules:Edit` permission
-//                           on sericia.com. The default sericia token in
-//                           memory is read-only; create a new one at
+//   CLOUDFLARE_API_TOKEN  — must have the following permissions on sericia.com:
+//                             Zone > Cache Rules > Edit     (for F72)
+//                             Zone > Settings > Edit        (for F70 Auto Minify)
+//                           The default appexx.me-scoped token cannot be used.
+//                           Create a new token at:
 //                           https://dash.cloudflare.com/profile/api-tokens
-//                           with this permission and run the script.
 //   CLOUDFLARE_ZONE_ID    — defaults to the sericia.com zone (auto-resolved
 //                           if you only have CLOUDFLARE_API_TOKEN with
 //                           zones:read)
+//   SKIP_MINIFY_FIX=1     — skip the F70 Auto Minify HTML disable step
 //
 // Usage:
 //   CLOUDFLARE_API_TOKEN=cfut_... node scripts/apply-cloudflare-cache-rules.mjs
@@ -97,11 +99,14 @@ const rules = [
     enabled: true,
   },
   // Rule 2 — HTML pages (1 hour edge + SWR + 60s browser)
-  // F51: added /uses/* and /compare/* (F40 missed them when introducing the
-  // routes). Without those expression matches, /uses and /compare hit the
-  // default (no cache rule) → DYNAMIC every time → origin TTFB 200-1300ms
-  // depending on cold/warm container memory state. With the rule applied
-  // they collapse to <100ms cached HIT after the first hit.
+  // F51: added /uses/* and /compare/*
+  // F72: added all locale-prefixed paths (/ja /de /fr /es /it /ko /zh-TW /ru /ar
+  //      and their subpaths). Without these, locale pages hit CF's default
+  //      DYNAMIC treatment because Next.js ISR emits Cache-Control: private.
+  //      override_origin TTL bypasses the origin's private directive so CF
+  //      can cache them at the edge. Prerequisite: F71 (conditional
+  //      Set-Cookie) must be deployed first, otherwise CF marks every
+  //      locale request DYNAMIC due to the Set-Cookie response header.
   {
     description: "Storefront HTML — 1h edge cache + SWR + 60s browser",
     expression:
@@ -117,15 +122,23 @@ const rules = [
       '(starts_with(http.request.uri.path, "/compare/")) or ' +
       '(http.request.uri.path eq "/tools") or ' +
       '(starts_with(http.request.uri.path, "/tools/")) or ' +
-      '(http.request.uri.path in {"/about" "/shipping" "/refund" "/terms" "/privacy" "/accessibility" "/faq" "/sitemap" "/tokushoho"})',
+      '(http.request.uri.path in {"/about" "/shipping" "/refund" "/terms" "/privacy" "/accessibility" "/faq" "/sitemap" "/tokushoho"}) or ' +
+      // F72 — locale-prefixed paths (9 non-default locales)
+      '(http.request.uri.path eq "/ja") or (starts_with(http.request.uri.path, "/ja/")) or ' +
+      '(http.request.uri.path eq "/de") or (starts_with(http.request.uri.path, "/de/")) or ' +
+      '(http.request.uri.path eq "/fr") or (starts_with(http.request.uri.path, "/fr/")) or ' +
+      '(http.request.uri.path eq "/es") or (starts_with(http.request.uri.path, "/es/")) or ' +
+      '(http.request.uri.path eq "/it") or (starts_with(http.request.uri.path, "/it/")) or ' +
+      '(http.request.uri.path eq "/ko") or (starts_with(http.request.uri.path, "/ko/")) or ' +
+      '(http.request.uri.path eq "/zh-TW") or (starts_with(http.request.uri.path, "/zh-TW/")) or ' +
+      '(http.request.uri.path eq "/ru") or (starts_with(http.request.uri.path, "/ru/")) or ' +
+      '(http.request.uri.path eq "/ar") or (starts_with(http.request.uri.path, "/ar/"))',
     action: "set_cache_settings",
     action_parameters: {
       cache: true,
       edge_ttl: { mode: "override_origin", default: 3600 }, // 1h
       browser_ttl: { mode: "override_origin", default: 60 }, // 60s
       serve_stale: { disable_stale_while_updating: false },
-      // SWR is implicit via Cache Rules SDK — Cloudflare uses this
-      // automatically when serve_stale.disable_stale_while_updating is false.
     },
     enabled: true,
   },
@@ -146,7 +159,43 @@ console.log(`[cf-rules] rules now active:`);
 result.result.rules.forEach((r, i) => {
   console.log(`   ${i + 1}. ${r.description}`);
 });
+
+// 4. F70 — Disable CF Auto Minify HTML (requires Zone:Settings:Edit permission)
+// CF Auto Minify HTML strips <!DOCTYPE html> + <html> tags from cached
+// responses, which breaks React hydration. Must be OFF for any SSR/ISR app.
+// Bypass: curl -k -H "Host: sericia.com" https://46.62.217.172/ | head -c 100
+//   → origin returns <!DOCTYPE html> correctly; CF minified version does not.
+if (!process.env.SKIP_MINIFY_FIX) {
+  console.log("");
+  console.log("[cf-rules] F70 — disabling CF Auto Minify HTML…");
+  try {
+    const minifyResult = await cf(
+      `/zones/${ZONE_ID}/settings/minify`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ value: { html: false, css: false, js: false } }),
+      },
+    );
+    const v = minifyResult.result?.value ?? minifyResult.result;
+    console.log(`[cf-rules] ✅ Auto Minify disabled. html=${v?.html} css=${v?.css} js=${v?.js}`);
+  } catch (err) {
+    if (String(err).includes("403") || String(err).includes("10000")) {
+      console.warn("[cf-rules] ⚠️  Auto Minify step needs Zone:Settings:Edit permission.");
+      console.warn("           Re-create the API token with that scope and re-run.");
+      console.warn("           Set SKIP_MINIFY_FIX=1 to skip this step.");
+    } else {
+      throw err;
+    }
+  }
+}
+
 console.log("");
 console.log("[cf-rules] verification:");
-console.log("   curl -sI https://sericia.com/products | grep -i cf-cache-status");
-console.log("   1st: MISS  /  2nd within 2min: HIT  /  later: REVALIDATED");
+console.log("   # Check locale caching (F72):");
+console.log("   curl -sI https://sericia.com/ja | grep -i cf-cache-status");
+console.log("   curl -sI https://sericia.com/de | grep -i cf-cache-status");
+console.log("   # 1st: MISS  /  2nd within 1h: HIT");
+console.log("");
+console.log("   # Check DOCTYPE present (F70):");
+console.log("   curl -s https://sericia.com/ | head -c 100");
+console.log("   # Expected: <!DOCTYPE html><html ...");
