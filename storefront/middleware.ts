@@ -265,28 +265,6 @@ export async function middleware(req: NextRequest) {
     res.cookies.set("country", country, { maxAge: 60 * 60 * 24 * 30, path: "/" });
   }
 
-  // --- F68 — disable Cloudflare HTML transformations (Auto Minify) ---
-  // Cloudflare's Auto Minify HTML feature was stripping `<!DOCTYPE html>`
-  // and the opening `<html>` tag from cached responses (confirmed by
-  // bypassing CF with `curl https://46.62.217.172/` -H "Host: sericia.com"
-  // which returned proper `<!DOCTYPE html><html lang="en" dir="ltr" ...>`).
-  // The HTTP-standard signal to tell intermediaries "do not transform this
-  // payload" is `Cache-Control: no-transform`. CF docs explicitly honour it
-  // for Auto Minify and Polish.
-  //
-  // We APPEND no-transform without overwriting the page-level cache-control
-  // because pages set their own `revalidate` (private, max-age=N) values.
-  // If the page didn't set anything, default to a safe `no-store` for
-  // dynamic surfaces (signal NOT to cache + NOT to transform).
-  const existing = res.headers.get("cache-control");
-  if (existing) {
-    if (!existing.includes("no-transform")) {
-      res.headers.set("cache-control", `${existing}, no-transform`);
-    }
-  } else {
-    res.headers.set("cache-control", "no-transform");
-  }
-
   // --- Supabase SSR session refresh (GATED) ---
   // PERF: pre-F69 every page request hit Supabase auth REST to call
   // `getUser()`, even for guests who never need an auth check. That cost
