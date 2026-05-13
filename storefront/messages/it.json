@@ -628,6 +628,12 @@
       "signed_out": "Disconnesso",
       "signed_in": "Connesso",
       "drop_not_available": "Drop non disponibile."
+    },
+    "account_nav": {
+      "panel_title": "Account",
+      "settings": "Impostazioni",
+      "referrals": "Segnalazioni",
+      "sign_out": "Esci"
     }
   },
   "journal": {

@@ -555,6 +555,16 @@ const TARGETS = [
     },
   },
   {
+    name: "account_nav_extras",
+    keyPath: "common.account_nav",
+    enValues: {
+      panel_title: "Account",
+      settings: "Settings",
+      referrals: "Referrals",
+      sign_out: "Sign out",
+    },
+  },
+  {
     name: "a11y_common",
     keyPath: "common.a11y",
     enValues: {

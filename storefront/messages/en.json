@@ -651,6 +651,12 @@
       "signed_out": "Signed out",
       "signed_in": "Signed in",
       "drop_not_available": "Drop not available."
+    },
+    "account_nav": {
+      "panel_title": "Account",
+      "settings": "Settings",
+      "referrals": "Referrals",
+      "sign_out": "Sign out"
     }
   },
   "journal": {

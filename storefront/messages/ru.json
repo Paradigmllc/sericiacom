@@ -628,6 +628,12 @@
       "signed_out": "Вышли",
       "signed_in": "Вошли",
       "drop_not_available": "Дроп недоступен."
+    },
+    "account_nav": {
+      "panel_title": "Аккаунт",
+      "settings": "Настройки",
+      "referrals": "Рефералы",
+      "sign_out": "Выйти"
     }
   },
   "journal": {

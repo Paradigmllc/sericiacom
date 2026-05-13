@@ -628,6 +628,12 @@
       "signed_out": "Sesión cerrada",
       "signed_in": "Sesión iniciada",
       "drop_not_available": "Drop no disponible."
+    },
+    "account_nav": {
+      "panel_title": "Cuenta",
+      "settings": "Ajustes",
+      "referrals": "Referidos",
+      "sign_out": "Cerrar sesión"
     }
   },
   "journal": {

@@ -3,25 +3,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
-const NAV: Array<{ href: string; label: string }> = [
-  { href: "/account", label: "Overview" },
-  { href: "/account/orders", label: "Orders" },
-  { href: "/account/wishlist", label: "Wishlist" },
-  { href: "/account/referrals", label: "Referrals" },
-  { href: "/account/addresses", label: "Addresses" },
-  { href: "/account/settings", label: "Settings" },
+// NAV labels are resolved via translations at render time so labels follow the
+// active locale. The `key` field is the stable identifier used to look up
+// the localised label in the `nav` namespace.
+const NAV: Array<{ href: string; key: string }> = [
+  { href: "/account", key: "overview" },
+  { href: "/account/orders", key: "orders" },
+  { href: "/account/wishlist", key: "wishlist" },
+  { href: "/account/referrals", key: "referrals" },
+  { href: "/account/addresses", key: "addresses" },
+  { href: "/account/settings", key: "settings" },
 ];
 
 export default function AccountNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const tNav = useTranslations("nav");
+  const tAccountNav = useTranslations("common.account_nav");
+  const tA11y = useTranslations("common.a11y");
 
   async function signOut() {
     try {
       await supabaseBrowser().auth.signOut();
-      toast.success("Signed out");
+      toast.success(tA11y("signed_out"));
       router.push("/");
       router.refresh();
     } catch (err) {
@@ -31,9 +38,26 @@ export default function AccountNav() {
     }
   }
 
+  // Map item.key → its translated label. `overview`, `orders`, `wishlist`,
+  // `addresses` live in the pre-existing `nav.*` namespace (so the header
+  // and account sidebar share copy). `settings` + `referrals` were added
+  // in F69-followup under `common.account_nav.*` because `nav.*` didn't
+  // have them and the i18n batch translator only writes to empty keypaths
+  // to avoid clobbering hand-curated translations.
+  function labelFor(key: string): string {
+    switch (key) {
+      case "settings":
+        return tAccountNav("settings");
+      case "referrals":
+        return tAccountNav("referrals");
+      default:
+        return tNav(key as "overview" | "orders" | "wishlist" | "addresses");
+    }
+  }
+
   return (
-    <nav aria-label="Account navigation" className="md:sticky md:top-8">
-      <p className="label mb-6">Your account</p>
+    <nav aria-label={tA11y("signed_in")} className="md:sticky md:top-8">
+      <p className="label mb-6">{tAccountNav("panel_title")}</p>
       <ul className="space-y-1 border-t border-sericia-line">
         {NAV.map((item) => {
           const active = pathname === item.href || (item.href !== "/account" && pathname.startsWith(item.href));
@@ -45,7 +69,7 @@ export default function AccountNav() {
                   active ? "text-sericia-ink" : "text-sericia-ink-soft hover:text-sericia-ink"
                 }`}
               >
-                {item.label}
+                {labelFor(item.key)}
               </Link>
             </li>
           );
@@ -56,7 +80,7 @@ export default function AccountNav() {
             onClick={signOut}
             className="w-full text-left py-4 text-[13px] tracking-wider text-sericia-ink-soft hover:text-sericia-ink transition"
           >
-            Sign out
+            {tAccountNav("sign_out")}
           </button>
         </li>
       </ul>

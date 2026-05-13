@@ -651,6 +651,12 @@
       "signed_out": "로그아웃됨",
       "signed_in": "로그인됨",
       "drop_not_available": "드롭을 사용할 수 없습니다."
+    },
+    "account_nav": {
+      "panel_title": "계정",
+      "settings": "설정",
+      "referrals": "추천인",
+      "sign_out": "로그아웃"
     }
   },
   "journal": {
