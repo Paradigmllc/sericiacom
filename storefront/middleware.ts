@@ -217,11 +217,17 @@ export async function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.pathname = pathWithoutLocale;
     res = NextResponse.rewrite(url);
-    res.cookies.set(LOCALE_COOKIE, prefixLocale, {
-      path: "/",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 365,
-    });
+    // Only write the cookie when the value actually changes — prevents
+    // Set-Cookie on every request, which would block Cloudflare from
+    // caching locale-prefixed pages (/ja, /de, …) even on repeat visits.
+    const currentLocaleCookie = req.cookies.get(LOCALE_COOKIE)?.value;
+    if (currentLocaleCookie !== prefixLocale) {
+      res.cookies.set(LOCALE_COOKIE, prefixLocale, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
   } else if (prefixLocale && isNonI18nPath(pathWithoutLocale)) {
     // e.g. /ja/guides/... — redirect to the unlocalized canonical.
     const url = req.nextUrl.clone();
